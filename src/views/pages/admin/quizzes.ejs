@@ -1,2 +1,27 @@
-﻿<h1>Управление квизами</h1>
-<!-- TODO: таблица quiz + кнопки удаления -->
+﻿<h1>Квизы</h1>
+<%- include('../../partials/flash') %>
+
+<table>
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Автор</th>
+        <th>Public</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% quizzes.forEach(q => { %>
+        <tr>
+            <td><a href="/quizzes/<%= q._id %>"><%= q.title %></a></td>
+            <td><%= q.author.name %></td>
+            <td><%= q.isPublic ? '✔' : '🔒' %></td>
+            <td>
+                <form action="/admin/quizzes/<%= q._id %>?_method=DELETE" method="post">
+                    <button onclick="return confirm('Удалить квиз?')">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>

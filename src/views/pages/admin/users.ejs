@@ -1,2 +1,37 @@
-﻿<h1>Управление пользователями</h1>
-<!-- TODO: таблица users с delete/edit -->
+﻿<h1>Пользователи</h1>
+<% if (successMsg.length) { %>
+    <div class="flash success"><%= successMsg %></div>
+<% } %>
+<% if (errorMsg.length) { %>
+    <div class="flash error"><%= errorMsg %></div>
+<% } %>
+
+<table>
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Email</th>
+        <th>Роль</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% users.forEach(u => { %>
+        <tr>
+            <td><%= u.name %></td>
+            <td><%= u.email %></td>
+            <td><%= u.role %></td>
+            <td>
+                <!-- Toggle Admin -->
+                <form action="/admin/users/<%= u._id %>/toggle-admin" method="post" style="display:inline">
+                    <button><%= u.role === 'admin' ? 'Сделать юзером' : 'Сделать админом' %></button>
+                </form>
+                <!-- Delete -->
+                <form action="/admin/users/<%= u._id %>?_method=DELETE" method="post" style="display:inline">
+                    <button onclick="return confirm('Уверен?')">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>

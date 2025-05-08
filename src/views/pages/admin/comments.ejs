@@ -1,2 +1,15 @@
-﻿<h1>Модерация комментариев</h1>
-<!-- TODO: список comment + удаление -->
+﻿<h1>Комментарии</h1>
+<%- include('../../partials/flash') %>
+
+<ul>
+    <% comments.forEach(c => { %>
+        <li>
+            <strong><%= c.author.name %></strong> в <em><a
+                        href="/quizzes/<%= c.quiz._id %>"><%= c.quiz.title %></a></em>:
+            «<%= c.text %>»
+            <form action="/admin/comments/<%= c._id %>?_method=DELETE" method="post" style="display:inline">
+                <button onclick="return confirm('Удалить этот коммент?')">✕</button>
+            </form>
+        </li>
+    <% }) %>
+</ul>

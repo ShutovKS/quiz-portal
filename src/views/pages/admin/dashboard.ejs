@@ -1,3 +1,14 @@
-﻿<h1>Админка: обзор</h1>
-<p>Пользователей: <%= uCount %>, Квизов: <%= qCount %>, Комментариев: <%= cCount %></p>
-<!-- TODO: быстрые ссылки -->
+﻿<h1>Панель администратора</h1>
+<%- include('../../partials/flash') %>
+
+<ul>
+    <li>Пользователей: <strong><%= uCount %></strong></li>
+    <li>Квизов: <strong><%= qCount %></strong></li>
+    <li>Комментариев:<strong><%= cCount %></strong></li>
+</ul>
+
+<nav>
+    <a href="/admin/users">Пользователи</a> |
+    <a href="/admin/quizzes">Квизы</a> |
+    <a href="/admin/comments">Комментарии</a>
+</nav>

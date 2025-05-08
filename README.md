@@ -15,16 +15,16 @@
 
 ```
 
-─ config/      # db.js, passport.js
-─ public/      # статика (css, js, картинки)
+─ config/ # db.js, passport.js
+─ public/ # статика (css, js, картинки)
 ─ src/
-├─ controllers/  # логика маршрутов (auth, users, quizzes, comments, admin)
-├─ middleware/   # ensureAuthenticated, requireAdmin, requireOwnerOrAdmin
-├─ models/       # User, Quiz, Question, Comment, Attempt
-├─ routes/       # auth, users, quizzes, comments, admin, api
-└─ views/        # EJS-шаблоны: layouts, partials, pages
-─ .env          # MONGO\_URI, SESSION\_SECRET, PORT
-─ app.js        # точка входа сервера
+│ ├─ controllers/ # логика маршрутов (auth, users, quizzes, comments, admin)
+│ ├─ middleware/ # ensureAuthenticated, requireAdmin, requireOwnerOrAdmin
+│ ├─ models/ # User, Quiz, Question, Comment, Attempt
+│ ├─ routes/ # auth, users, quizzes, comments, admin, api
+│ └─ views/ # EJS-шаблоны: layouts, partials, pages
+─ .env # MONGO\_URI, SESSION\_SECRET, PORT
+─ app.js # точка входа сервера
 ─ package.json
 
 ````
@@ -53,7 +53,7 @@
     - `views/partials/header.ejs` — навигация, учитывает `currentUser`
     - `views/partials/flash.ejs`  — вывод ошибок/успехов из `req.flash`
     - `views/partials/footer.ejs`
-- Подключение в `app.js`:
+- В `app.js`:
   ```js
   app.use((req, res, next) => {
     res.locals.currentUser = req.user || null;
@@ -65,7 +65,7 @@
 
 - **Аутентификация и авторизация**
 - **Регистрация** (`GET /register`, `POST /register`)
-    - Валидация полей через `express-validator`
+    - Валидация через `express-validator`
     - Хеширование `bcrypt.hash(password, 10)`
 - **Вход** (`GET /login`, `POST /login`) — Passport-Local
 - **Выход** (`GET /logout`)
@@ -87,48 +87,68 @@
 
 ### Просмотр и прохождение квизов
 
-- **Маршруты**
-- `GET /quizzes/:id` — рендер страницы квиза с вопросами (single, multiple, text, truefalse)
-- `POST /quizzes/:id` — подсчёт правильных ответов, сохранение `Attempt`, обновление `Quiz.stats`
-- `GET /quizzes/:id/result` — страница результата с подсветкой правильных/неправильных вариантов
+- **Маршруты**  
+  `GET /quizzes/:id` — рендер страницы квиза  
+  `POST /quizzes/:id` — подсчёт ответов, сохранение `Attempt`, обновление `Quiz.stats`  
+  `GET /quizzes/:id/result` — страница результата
 
-- **Контроллеры** (`src/controllers/quizzesController.js`)
-- `showQuiz`, `submitQuizAnswers`, `showQuizResult`
-- Логика подсчёта для разных типов вопросов
-- Обновление статистики:
-    - `stats.attemptsCount`
-    - `stats.averageScore`
+- **Контроллеры** (`src/controllers/quizzesController.js`)  
+  `showQuiz`, `submitQuizAnswers`, `showQuizResult`
+- Поддержка типов `single`, `multiple`, `text`, `truefalse`
+- Обновление `stats.attemptsCount` и `stats.averageScore`
 
-- **Модель Attempt**
-- Поле `answers` теперь `Map<Schema.Types.Mixed>` для хранения любых ответов
+- **Модель Attempt**  
+  `answers: Map<Schema.Types.Mixed>` для любых ответов
 
 ### Комментарии к квизам
 
-- **Модель Comment** (text, rating, ссылки на Quiz и User)
-- **Контроллеры** (`src/controllers/commentsController.js`)
-- `createComment`, `deleteComment`
-- **Маршруты**
-- `POST /quizzes/:id/comments`
-- `DELETE /comments/:id`
-- **EJS-шаблон** `show.ejs`
-- Отображение списка комментариев и формы добавления
+- **Модель Comment** (text, rating, ref на Quiz и User)
+- **Контроллеры** (`src/controllers/commentsController.js`): `createComment`, `deleteComment`
+- **Маршруты**  
+  `POST /quizzes/:id/comments`  
+  `DELETE /comments/:id`
 - Инкремент/декремент `stats.commentsCount` в `Quiz`
 
 ### Редактирование и удаление квизов
 
-- **Контроллеры**
-- `updateQuiz` — сохранение изменений с flash-сообщениями
-- `deleteQuiz` — каскадное удаление `Quiz`, `Question`, `Attempt`, `Comment`
-- **Middleware**
-- `requireOwnerOrAdmin` (авторизация через `req.user._id`)
+- **Контроллеры**:  
+  `updateQuiz` (flash + редирект),  
+  `deleteQuiz` (каскад: `Question`, `Attempt`, `Comment`)
+- **Middleware**: `requireOwnerOrAdmin`
 
-### EJS-шаблоны для CRUD квизов
+### Админ-панель и функции администратора
 
-- `src/views/pages/quizzes/index.ejs` — список квизов, кнопки «Редактировать»/«Удалить»
-- `src/views/pages/quizzes/new.ejs` — форма создания квиза
-- `src/views/pages/quizzes/edit.ejs` — редактирование полей квиза и список вопросов
-- `src/views/pages/quizzes/show.ejs` — прохождение квиза + комментарии
-- `src/views/pages/quizzes/result.ejs` — вывод результатов прохождения
+- **Middleware**  
+  `requireAdmin` блокирует `/admin/*` по `req.user.role !== 'admin'`
+
+- **Маршруты** (`src/routes/admin.js`)
+- `GET /admin` — статистика (кол-во юзеров, квизов, комментов)
+- **Пользователи**
+    - `GET  /admin/users` — список
+    - `DELETE /admin/users/:id` — удалить + каскад (квизы → вопросы/попытки/комменты; попытки/комменты юзера)
+    - `POST   /admin/users/:id/toggle-admin` — переключить роль `user ↔ admin`
+- **Квизы**
+    - `GET    /admin/quizzes` — список
+    - `DELETE /admin/quizzes/:id` — удалить + каскад (вопросы, попытки, комменты)
+- **Комментарии**
+    - `GET    /admin/comments` — список всех
+    - `DELETE /admin/comments/:id` — удалить
+
+- **Контроллеры** (`src/controllers/adminController.js`)
+- `showDashboard`, `listUsers`, `deleteUser`, `toggleAdmin`
+- `listQuizzes`, `deleteQuiz`
+- `listComments`, `deleteComment`
+- Всё через EJS → flash → редирект
+
+- **EJS-шаблоны** (`views/pages/admin/…`)
+- `dashboard.ejs`
+- `users.ejs`
+- `quizzes.ejs`
+- `comments.ejs`
+
+- **Flash & method-override**
+- Используем `<form …?_method=DELETE>` + `method-override('_method')`
+- Flash-сообщения на каждом экшене
 
 ---
 
@@ -141,7 +161,7 @@
  npm install
 ````
 
-3. Создать файл `.env` рядом с `app.js`:
+3. Создать `.env` рядом с `app.js`:
 
    ```dotenv
    MONGO_URI=mongodb://localhost:27017/quizdb
@@ -158,5 +178,3 @@
    ```
 5. Открыть в браузере:
    [http://localhost:3000](http://localhost:3000)
-
-```
