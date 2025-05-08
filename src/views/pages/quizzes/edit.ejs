@@ -1,2 +1,47 @@
-﻿<h1>Редактировать квиз: <%= quiz.title %></h1>
-<!-- TODO: форма редактирования квиза и вопросов -->
+﻿<h1>Редактировать квиз</h1>
+
+<form action="/quizzes/<%= quiz._id %>?_method=PUT" method="POST">
+    <div>
+        <label>Название:
+            <input
+                    type="text"
+                    name="title"
+                    required
+                    value="<%= quiz.title %>"
+            >
+        </label>
+    </div>
+
+    <div>
+        <label>Описание:
+            <textarea name="description"><%= quiz.description %></textarea>
+        </label>
+    </div>
+
+    <div>
+        <label>
+            <input
+                    type="checkbox"
+                    name="isPublic"
+                    <%= quiz.isPublic ? 'checked' : '' %>
+            >
+            Публичный
+        </label>
+    </div>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<hr>
+
+<h2>Вопросы квиза</h2>
+<ul>
+    <% questions.forEach(q => { %>
+        <li>
+            <%= q.text %> (<%= q.type %>)
+            <!-- тут можно втыкать свои CRUD-ссылки для вопросов -->
+        </li>
+    <% }) %>
+</ul>
+<!-- ссылка на добавление нового вопроса, когда сделаешь CRUD для Question -->
+<a href="/quizzes/<%= quiz._id %>/questions/new">+ Добавить вопрос</a>

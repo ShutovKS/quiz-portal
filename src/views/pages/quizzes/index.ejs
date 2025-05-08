@@ -1,2 +1,25 @@
 <h1>Все квизы</h1>
-<!-- TODO: каталог public-квизов -->
+
+<% if (currentUser) { %>
+    <a href="/quizzes/new">+ Новый квиз</a>
+<% } %>
+
+<ul>
+    <% quizzes.forEach(q => { %>
+        <li>
+            <a href="/quizzes/<%= q._id %>"><%= q.title %></a>
+            <% if (q.author) { %>
+                <small>от <%= q.author.name %></small>
+            <% } %>
+            <% if (
+                    currentUser &&
+                    (currentUser._id.toString() === q.author?._id.toString() || currentUser.role === 'admin')
+            ) { %>
+                <a href="/quizzes/<%= q._id %>/edit">[Ред.]</a>
+                <form action="/quizzes/<%= q._id %>?_method=DELETE" method="POST" style="display:inline">
+                    <button type="submit">[Удалить]</button>
+                </form>
+            <% } %>
+        </li>
+    <% }) %>
+</ul>

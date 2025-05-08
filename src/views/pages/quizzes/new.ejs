@@ -1,2 +1,24 @@
-﻿<h1>Создать новый квиз</h1>
-<!-- TODO: форма создания квиза -->
+﻿<h1>Новый квиз</h1>
+
+<form action="/quizzes" method="POST">
+    <div>
+        <label>Название:
+            <input type="text" name="title" required>
+        </label>
+    </div>
+
+    <div>
+        <label>Описание:
+            <textarea name="description"></textarea>
+        </label>
+    </div>
+
+    <div>
+        <label>
+            <input type="checkbox" name="isPublic" checked>
+            Публичный
+        </label>
+    </div>
+
+    <button type="submit">Создать</button>
+</form>

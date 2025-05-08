@@ -8,7 +8,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import path from 'path';
 import dotenv from 'dotenv';
-import {connectDB} from './config/db.js';
+import {connectDB} from './src/config/db.js';
 import indexRouter from './src/routes/index.js';
 import passport from './src/config/passport.js';
 

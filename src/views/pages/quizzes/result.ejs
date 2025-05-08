@@ -1,2 +1,33 @@
 ﻿<h1>Результат: <%= attempt.quiz.title %></h1>
-<!-- TODO: разбивка по вопросам и баллы -->
+<p>Правильных ответов: <%= attempt.score %> из <%= total %></p>
+
+<% questions.forEach((q, i) => {
+    const ua = attempt.answers.get(q._id.toString());
+    const corrOpts = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
+%>
+<div class="q-result">
+    <p><strong><%= i + 1 %>. <%= q.text %></strong></p>
+    <% if(q.type === 'single' || q.type === 'truefalse'){ %>
+        <% q.options.forEach(o=>{
+            const id = o._id.toString();
+            const ok = id === corrOpts[0], sel = ua === id;
+        %>
+        <label style="<% if(ok){ %>background:#cfc<% }else if(sel){ %>background:#fcc<% } %>">
+            <%= o.text %>
+        </label><br>
+        <% }) %>
+    <% } else if(q.type === 'multiple'){ %>
+        <% q.options.forEach(o=>{
+            const id = o._id.toString();
+            const ok = corrOpts.includes(id), sel = (ua || []).includes(id);
+        %>
+        <label style="<% if(ok){ %>background:#cfc<% }else if(sel){ %>background:#fcc<% } %>">
+            <%= o.text %>
+        </label><br>
+        <% }) %>
+    <% } else if(q.type === 'text'){ %>
+        <p>Ваш ответ: <%= ua %></p>
+    <% } %>
+</div>
+<hr>
+<% }) %>

@@ -1,3 +1,67 @@
 ﻿<h1><%= quiz.title %></h1>
 <p><%= quiz.description %></p>
-<!-- TODO: список вопросов с формой ответов -->
+
+<form action="/quizzes/<%= quiz._id %>" method="POST">
+    <% questions.forEach((q, i) => { %>
+        <div class="question">
+            <p><strong><%= i + 1 %>. <%= q.text %></strong></p>
+            <% if (q.type === 'single' || q.type === 'truefalse') { %>
+                <% q.options.forEach(o=>{ %>
+                    <label>
+                        <input type="radio" name="answers[<%= q._id %>]" value="<%= o._id %>" required>
+                        <%= o.text %>
+                    </label><br>
+                <% }) %>
+            <% } else if (q.type === 'multiple') { %>
+                <% q.options.forEach(o=>{ %>
+                    <label>
+                        <input type="checkbox" name="answers[<%= q._id %>]" value="<%= o._id %>">
+                        <%= o.text %>
+                    </label><br>
+                <% }) %>
+            <% } else if (q.type === 'text') { %>
+                <input type="text" name="answers[<%= q._id %>]" required><br>
+            <% } %>
+        </div>
+        <hr>
+    <% }) %>
+    <button type="submit">Отправить</button>
+</form>
+
+<hr>
+<h2>Комментарии (<%= quiz.stats.commentsCount %>)</h2>
+
+<% if (currentUser) { %>
+    <form action="/quizzes/<%= quiz._id %>/comments" method="POST">
+        <textarea name="text" rows="3" required></textarea><br>
+        <label>Рейтинг:
+            <select name="rating">
+                <option value="">—</option>
+                <% for(let r = 1; r <= 5; r++){ %>
+                    <option value="<%= r %>"><%= r %></option>
+                <% } %>
+            </select>
+        </label><br>
+        <button type="submit">Оставить</button>
+    </form>
+<% } else { %>
+    <p><a href="/login">Войдите</a>, чтобы комментировать.</p>
+<% } %>
+
+<ul>
+    <% comments.forEach(c=>{ %>
+        <li>
+            <strong><%= c.author.name %></strong>
+            <small><%= c.createdAt.toLocaleString() %></small>
+            <p><%= c.text %>
+                <% if(c.rating){ %> (★<%= c.rating %>)
+                <% } %>
+            </p>
+            <% if(currentUser && (currentUser._id == c.author._id.toString() || currentUser.role === 'admin')){ %>
+                <form action="/comments/<%= c._id %>?_method=DELETE" method="POST" style="display:inline">
+                    <button type="submit">Удалить</button>
+                </form>
+            <% } %>
+        </li>
+    <% }) %>
+</ul>

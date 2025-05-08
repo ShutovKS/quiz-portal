@@ -15,16 +15,16 @@
 
 ```
 
-─ config/ # db.js, passport.js
-─ public/ # статика (css, js, картинки)
+─ config/      # db.js, passport.js
+─ public/      # статика (css, js, картинки)
 ─ src/
-├─ controllers/ # логика маршрутов (auth, users, quizzes, comments, admin)
-├─ middleware/ # ensureAuthenticated, requireAdmin, requireOwnerOrAdmin
-├─ models/ # User, Quiz, Question, Comment, Attempt
-├─ routes/ # auth, users, quizzes, comments, admin, api
-└─ views/ # EJS-шаблоны: layouts, partials, pages
-─ .env # MONGO\_URI, SESSION\_SECRET, PORT
-─ app.js # точка входа сервера
+├─ controllers/  # логика маршрутов (auth, users, quizzes, comments, admin)
+├─ middleware/   # ensureAuthenticated, requireAdmin, requireOwnerOrAdmin
+├─ models/       # User, Quiz, Question, Comment, Attempt
+├─ routes/       # auth, users, quizzes, comments, admin, api
+└─ views/        # EJS-шаблоны: layouts, partials, pages
+─ .env          # MONGO\_URI, SESSION\_SECRET, PORT
+─ app.js        # точка входа сервера
 ─ package.json
 
 ````
@@ -65,46 +65,72 @@
 
 - **Аутентификация и авторизация**
 - **Регистрация** (`GET /register`, `POST /register`)
-    - Валидация полей через `express-validator`:
-        - `name` не пустое
-        - `email` — валидный и нормализованный
-        - `password` ≥ 6 символов и совпадение `password2`
+    - Валидация полей через `express-validator`
     - Хеширование `bcrypt.hash(password, 10)`
-    - Обработка дубликата email (`err.code === 11000`)
-    - Flash-уведомления об ошибках и успехе
-- **Вход** (`GET /login`, `POST /login`)
-    - Passport-Local по полям `email`/`password`
-    - При неуспехе возвращаемся на `/login` с `failureFlash`
-    - Подставляем старые данные (email) в форму через `req.flash('oldData')`
+- **Вход** (`GET /login`, `POST /login`) — Passport-Local
 - **Выход** (`GET /logout`)
-    - `req.logout()`, flash-сообщение, редирект на `/login`
 - **Passport-config** (`config/passport.js`)
-    - LocalStrategy, `serializeUser`/`deserializeUser` (без `passwordHash`)
 
 - **Профиль пользователя**
-- **Просмотр**
-    - `/profile` → свой профиль
-    - `/user/:id` → чужой профиль (показываем только публичные квизы, без попыток)
-    - Контроллеры собирают:
-        - `user` (без `passwordHash`)
-        - `quizzes` (автором – user._id, фильтрация по `isPublic`)
-        - `attempts` (populate `quiz`, только для своего профиля)
-- **Редактирование**
-    - `GET /user/:id/edit` — форма (name, email, новый пароль)
-    - `PUT /user/:id` — валидация через `express-validator`
-        - `name`, `email` обязательны
-        - `newPassword` ≥ 6 символов и совпадение `newPassword2` (опционально)
-    - При смене пароля – новый хеш `bcrypt`
-    - Flash-сообщения об ошибках/успехе
-    - Защита через `requireOwnerOrAdmin('User')`
+- **Просмотр** `/profile`, `/user/:id`
+- **Редактирование** `/user/:id/edit`, `PUT /user/:id`
 
 - **Основные маршруты**
-- `/` — главная страница
-- `/register`, `/login`, `/logout`
-- `/profile`, `/user/:id`, `/user/:id/edit`
+- `/`, `/register`, `/login`, `/logout`
 - `/quizzes`, `/quizzes/new`, `/quizzes/:id`, `/quizzes/:id/edit`, …
-- `/admin/*` (только для `role=admin`)
-- REST API под `/api/*` (JSON-эндпоинты для quizzes, users, comments)
+- `/admin/*`
+- REST API под `/api/*`
+
+---
+
+## ✨ Новый функционал и доработки
+
+### Просмотр и прохождение квизов
+
+- **Маршруты**
+- `GET /quizzes/:id` — рендер страницы квиза с вопросами (single, multiple, text, truefalse)
+- `POST /quizzes/:id` — подсчёт правильных ответов, сохранение `Attempt`, обновление `Quiz.stats`
+- `GET /quizzes/:id/result` — страница результата с подсветкой правильных/неправильных вариантов
+
+- **Контроллеры** (`src/controllers/quizzesController.js`)
+- `showQuiz`, `submitQuizAnswers`, `showQuizResult`
+- Логика подсчёта для разных типов вопросов
+- Обновление статистики:
+    - `stats.attemptsCount`
+    - `stats.averageScore`
+
+- **Модель Attempt**
+- Поле `answers` теперь `Map<Schema.Types.Mixed>` для хранения любых ответов
+
+### Комментарии к квизам
+
+- **Модель Comment** (text, rating, ссылки на Quiz и User)
+- **Контроллеры** (`src/controllers/commentsController.js`)
+- `createComment`, `deleteComment`
+- **Маршруты**
+- `POST /quizzes/:id/comments`
+- `DELETE /comments/:id`
+- **EJS-шаблон** `show.ejs`
+- Отображение списка комментариев и формы добавления
+- Инкремент/декремент `stats.commentsCount` в `Quiz`
+
+### Редактирование и удаление квизов
+
+- **Контроллеры**
+- `updateQuiz` — сохранение изменений с flash-сообщениями
+- `deleteQuiz` — каскадное удаление `Quiz`, `Question`, `Attempt`, `Comment`
+- **Middleware**
+- `requireOwnerOrAdmin` (авторизация через `req.user._id`)
+
+### EJS-шаблоны для CRUD квизов
+
+- `src/views/pages/quizzes/index.ejs` — список квизов, кнопки «Редактировать»/«Удалить»
+- `src/views/pages/quizzes/new.ejs` — форма создания квиза
+- `src/views/pages/quizzes/edit.ejs` — редактирование полей квиза и список вопросов
+- `src/views/pages/quizzes/show.ejs` — прохождение квиза + комментарии
+- `src/views/pages/quizzes/result.ejs` — вывод результатов прохождения
+
+---
 
 ## 📦 Установка и запуск
 
@@ -133,4 +159,4 @@
 5. Открыть в браузере:
    [http://localhost:3000](http://localhost:3000)
 
----
+```
