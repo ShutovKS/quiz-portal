@@ -1,4 +1,5 @@
-﻿import passport from 'passport';
+﻿// src/config/passport.js
+import passport from 'passport';
 import {Strategy as LocalStrategy} from 'passport-local';
 import bcrypt from 'bcrypt';
 import User from '../models/User.js';

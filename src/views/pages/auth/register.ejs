@@ -1,2 +1,15 @@
-﻿<h1>Регистрация</h1>
-<!-- TODO: форма регистрации -->
+﻿<% if (errorMsg.length) { %>
+    <ul class="errors">
+        <% errorMsg.forEach(m => { %>
+            <li><%= m %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<form action="/register" method="POST">
+    <input name="name" placeholder="Имя" required>
+    <input name="email" type="email" placeholder="Email" required>
+    <input name="password" type="password" placeholder="Пароль" required>
+    <input name="password2" type="password" placeholder="Повторите пароль" required>
+    <button>Зарегистрироваться</button>
+</form>

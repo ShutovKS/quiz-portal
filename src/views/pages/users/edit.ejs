@@ -1,0 +1,19 @@
+﻿<% if (errorMsg.length) { %>
+    <ul class="errors">
+        <% errorMsg.forEach(m => { %>
+            <li><%= m %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<form action="/user/<%= user.id %>?_method=PUT" method="POST">
+    <input name="name" value="<%= user.name %>" required>
+    <input name="email" type="email" value="<%= user.email %>" required>
+
+    <hr>
+    <p>Сменить пароль (необязательно):</p>
+    <input name="newPassword" type="password" placeholder="Новый пароль">
+    <input name="newPassword2" type="password" placeholder="Повторите пароль">
+
+    <button>Сохранить</button>
+</form>

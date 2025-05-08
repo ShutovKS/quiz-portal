@@ -59,7 +59,7 @@ app.use(flash());
 
 // — Прокинуть в locals, чтобы в любом шаблоне был доступ
 app.use((req, res, next) => {
-    res.locals.currentUser = req.session.userId || null;
+    res.locals.currentUser = req.user || null;
     res.locals.successMsg = req.flash('success');
     res.locals.errorMsg = req.flash('error');
     next();
