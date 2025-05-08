@@ -2,8 +2,8 @@
 import User from '../models/User.js';
 import Quiz from '../models/Quiz.js';
 import Comment from '../models/Comment.js';
-import Attempt from "../models/Attempt";
-import Question from "../models/Question";
+import Attempt from "../models/Attempt.js";
+import Question from "../models/Question.js";
 
 export const showDashboard = async (req, res) => {
     const [uCount, qCount, cCount] = await Promise.all([
@@ -21,18 +21,18 @@ export const listUsers = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const userId = req.params.id;
     // 1) удалить все квизы автора и связанные с ними сущности
-    const quizzes = await Quiz.find({ author: userId }).select('_id');
+    const quizzes = await Quiz.find({author: userId}).select('_id');
     const quizIds = quizzes.map(q => q._id);
     await Promise.all([
-        Question.deleteMany({ quiz: { $in: quizIds } }),
-        Attempt.deleteMany({ quiz: { $in: quizIds } }),
-        Comment.deleteMany({ quiz: { $in: quizIds } }),
-        Quiz.deleteMany({ author: userId })
+        Question.deleteMany({quiz: {$in: quizIds}}),
+        Attempt.deleteMany({quiz: {$in: quizIds}}),
+        Comment.deleteMany({quiz: {$in: quizIds}}),
+        Quiz.deleteMany({author: userId})
     ]);
     // 2) удалить все попытки и комменты самого юзера
     await Promise.all([
-        Attempt.deleteMany({ user: userId }),
-        Comment.deleteMany({ author: userId })
+        Attempt.deleteMany({user: userId}),
+        Comment.deleteMany({author: userId})
     ]);
     // 3) удалить юзера
     await User.findByIdAndDelete(userId);
@@ -63,9 +63,9 @@ export const deleteQuiz = async (req, res) => {
     const quizId = req.params.id;
     // каскадное удаление
     await Promise.all([
-        Question.deleteMany({ quiz: quizId }),
-        Attempt.deleteMany({ quiz: quizId }),
-        Comment.deleteMany({ quiz: quizId }),
+        Question.deleteMany({quiz: quizId}),
+        Attempt.deleteMany({quiz: quizId}),
+        Comment.deleteMany({quiz: quizId}),
         Quiz.findByIdAndDelete(quizId)
     ]);
     req.flash('success', 'Квиз и всё связанное удалены');

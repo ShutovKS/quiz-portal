@@ -2,6 +2,7 @@
   "name": "quiz-portal",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
@@ -33,6 +34,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^9.7.0",
     "eslint": "^9.26.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.5.3"
