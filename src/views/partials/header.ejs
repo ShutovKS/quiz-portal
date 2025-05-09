@@ -1,14 +1,46 @@
-﻿<header>
-    <nav>
-        <a href="/">Главная</a>
-        <a href="/quizzes">Все квизы</a>
-        <a href="/quizzes/new">Создать квиз</a>
-        <% if (currentUser) { %>
-            <a href="/profile">Профиль</a>
-            <a href="/logout">Выйти</a>
-        <% } else { %>
-            <a href="/login">Войти</a>
-            <a href="/register">Регистрация</a>
-        <% } %>
-    </nav>
-</header>
+﻿<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Quiz Portal</a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Левая часть: навигация по квизам -->
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/quizzes">Все квизы</a>
+                </li>
+                <% if (currentUser) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/quizzes/new">Создать квиз</a>
+                    </li>
+                <% } %>
+            </ul>
+
+            <!-- Правая часть: авторизация / профиль -->
+            <ul class="navbar-nav ms-auto">
+                <% if (!currentUser) { %>
+                    <li class="nav-item"><a class="nav-link" href="/login">Вход</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/register">Регистрация</a></li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Привет, <%= currentUser.name %></a>
+                    </li>
+                    <% if (currentUser.role === 'admin') { %>
+                        <li class="nav-item"><a class="nav-link" href="/admin">Админ-панель</a></li>
+                    <% } %>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Выход</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>

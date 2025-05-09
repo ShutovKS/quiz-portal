@@ -2,7 +2,6 @@
 import Quiz from '../models/Quiz.js';
 import Question from '../models/Question.js';
 import Attempt from '../models/Attempt.js';
-import Comment from '../models/Comment.js';
 
 export const listQuizzes = async (req, res) => {
     const quizzes = await Quiz.find({isPublic: true});
@@ -19,19 +18,18 @@ export const createQuiz = async (req, res) => {
         title,
         description,
         isPublic: !!isPublic,
-        author: req.user._id
+        user: req.user._id
     });
     // Если вопросы передаются сразу — тут можно их сохранить
     res.redirect(`/quizzes/${quiz._id}`);
 };
 
 export const showQuiz = async (req, res) => {
-    const quiz = await Quiz.findById(req.params.id).populate('author');
-    if (!quiz.isPublic && quiz.author._id.toString() !== req.user?._id.toString())
+    const quiz = await Quiz.findById(req.params.id).populate('user');
+    if (!quiz.isPublic && quiz.user._id.toString() !== req.user?._id.toString())
         return res.status(403).send('Приватный квиз');
     const questions = await Question.find({quiz: quiz._id});
-    const comments = await Comment.find({quiz: quiz._id}).populate('author');
-    res.render('pages/quizzes/show', {title: quiz.title, quiz, questions, comments});
+    res.render('pages/quizzes/show', {title: quiz.title, quiz, questions});
 };
 
 export const showQuizEditForm = async (req, res) => {
@@ -79,7 +77,6 @@ export const deleteQuiz = async (req, res) => {
         await Promise.all([
             Question.deleteMany({quiz: quizId}),
             Attempt.deleteMany({quiz: quizId}),
-            Comment.deleteMany({quiz: quizId}),
         ]);
 
         req.flash('success', 'Квиз и всё связанное удалены');

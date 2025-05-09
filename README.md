@@ -15,14 +15,20 @@
 
 ```
 
-─ config/ # db.js, passport.js
 ─ public/ # статика (css, js, картинки)
+- scripts/ # seed-скрипт
 ─ src/
-│ ├─ controllers/ # логика маршрутов (auth, users, quizzes, comments, admin)
+│ ├─ config/ # db.js, passport.js
+│ ├─ controllers/ # логика маршрутов (auth, users, quizzes, admin, admin, index)
+│    └─ api/ # quizzes
 │ ├─ middleware/ # ensureAuthenticated, requireAdmin, requireOwnerOrAdmin
-│ ├─ models/ # User, Quiz, Question, Comment, Attempt
-│ ├─ routes/ # auth, users, quizzes, comments, admin, api
+│ ├─ models/ # User, Quiz, Question, Attempt
+│ ├─ routes/ # index, auth, users, quizzes, admin, home
+│    └─ api/ # quizzes
 │ └─ views/ # EJS-шаблоны: layouts, partials, pages
+│    ├─ layouts/ # main
+│    ├─ pages/ # auth, users, quizzes, admin, home
+└    └─ partials/ # header, footer, flash
 ─ .env # MONGO\_URI, SESSION\_SECRET, PORT
 ─ app.js # точка входа сервера
 ─ package.json
@@ -32,11 +38,10 @@
 - **База данных (MongoDB + Mongoose)**
 - Подключение через `config/db.js`, URI в `.env`
 - Модели со схемами и `ref`-связями:
-    - `User` (name, email – unique, passwordHash, role, timestamps)
-    - `Quiz` (title, description, author, isPublic, accessToken, stats, timestamps)
-    - `Question` (text, type, options, ссылка на Quiz)
-    - `Comment` (text, rating, ссылка на Quiz и User)
     - `Attempt` (user, quiz, answers, score, timestamps)
+    - `Question` (quiz, text, type, options [text, isCorrect], timestamps)
+    - `User` (name, email – unique, passwordHash, role, timestamps)
+    - `Quiz` (title, description, user, isPublic, accessToken, stats, timestamps)
 
 - **Безопасность и утилиты**
 - `helmet()` для HTTP-заголовков
@@ -81,10 +86,6 @@
 - `/admin/*`
 - REST API под `/api/*`
 
----
-
-## ✨ Новый функционал и доработки
-
 ### Просмотр и прохождение квизов
 
 - **Маршруты**  
@@ -100,20 +101,11 @@
 - **Модель Attempt**  
   `answers: Map<Schema.Types.Mixed>` для любых ответов
 
-### Комментарии к квизам
-
-- **Модель Comment** (text, rating, ref на Quiz и User)
-- **Контроллеры** (`src/controllers/commentsController.js`): `createComment`, `deleteComment`
-- **Маршруты**  
-  `POST /quizzes/:id/comments`  
-  `DELETE /comments/:id`
-- Инкремент/декремент `stats.commentsCount` в `Quiz`
-
 ### Редактирование и удаление квизов
 
 - **Контроллеры**:  
   `updateQuiz` (flash + редирект),  
-  `deleteQuiz` (каскад: `Question`, `Attempt`, `Comment`)
+  `deleteQuiz` (каскад: `Question`, `Attempt`)
 - **Middleware**: `requireOwnerOrAdmin`
 
 ### Админ-панель и функции администратора
@@ -122,29 +114,24 @@
   `requireAdmin` блокирует `/admin/*` по `req.user.role !== 'admin'`
 
 - **Маршруты** (`src/routes/admin.js`)
-- `GET /admin` — статистика (кол-во юзеров, квизов, комментов)
+- `GET /admin` — статистика (кол-во юзеров, квизов
 - **Пользователи**
     - `GET  /admin/users` — список
-    - `DELETE /admin/users/:id` — удалить + каскад (квизы → вопросы/попытки/комменты; попытки/комменты юзера)
+    - `DELETE /admin/users/:id` — удалить + каскад (квизы → вопросы/попытки; попытки юзера)
     - `POST   /admin/users/:id/toggle-admin` — переключить роль `user ↔ admin`
 - **Квизы**
     - `GET    /admin/quizzes` — список
-    - `DELETE /admin/quizzes/:id` — удалить + каскад (вопросы, попытки, комменты)
-- **Комментарии**
-    - `GET    /admin/comments` — список всех
-    - `DELETE /admin/comments/:id` — удалить
+    - `DELETE /admin/quizzes/:id` — удалить + каскад (вопросы, попытки)
 
 - **Контроллеры** (`src/controllers/adminController.js`)
 - `showDashboard`, `listUsers`, `deleteUser`, `toggleAdmin`
 - `listQuizzes`, `deleteQuiz`
-- `listComments`, `deleteComment`
 - Всё через EJS → flash → редирект
 
 - **EJS-шаблоны** (`views/pages/admin/…`)
 - `dashboard.ejs`
 - `users.ejs`
 - `quizzes.ejs`
-- `comments.ejs`
 
 - **Flash & method-override**
 - Используем `<form …?_method=DELETE>` + `method-override('_method')`

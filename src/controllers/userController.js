@@ -15,7 +15,7 @@ export const showUserProfile = async (req, res, next) => {
         const user = await User.findById(req.params.id).select('-passwordHash');
         if (!user) return res.status(404).send('Пользователь не найден');
 
-        const myQuizzes = await Quiz.find({author: user._id});
+        const myQuizzes = await Quiz.find({user: user._id});
         const myAttempts = await Attempt.find({user: user._id}).populate('quiz');
 
         // если не свой профиль, режем список (пример)

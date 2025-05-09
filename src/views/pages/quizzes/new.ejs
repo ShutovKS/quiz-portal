@@ -1,24 +1,56 @@
-﻿<h1>Новый квиз</h1>
+﻿<h1 class="h3 mb-4">Новый квиз</h1>
+<%- include('../../partials/flash') %>
 
-<form action="/quizzes" method="POST">
-    <div>
-        <label>Название:
-            <input type="text" name="title" required>
+<form action="/quizzes" method="POST" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label for="title" class="form-label">Название</label>
+        <input
+                id="title"
+                name="title"
+                type="text"
+                class="form-control"
+                required
+        >
+        <div class="invalid-feedback">Нужно название.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Описание</label>
+        <textarea
+                id="description"
+                name="description"
+                class="form-control"
+                rows="3"
+        ></textarea>
+    </div>
+
+    <div class="form-check mb-4">
+        <input
+                id="isPublic"
+                name="isPublic"
+                type="checkbox"
+                class="form-check-input"
+                checked
+        >
+        <label class="form-check-label" for="isPublic">
+            Публичный квиз
         </label>
     </div>
 
-    <div>
-        <label>Описание:
-            <textarea name="description"></textarea>
-        </label>
-    </div>
-
-    <div>
-        <label>
-            <input type="checkbox" name="isPublic" checked>
-            Публичный
-        </label>
-    </div>
-
-    <button type="submit">Создать</button>
+    <button type="submit" class="btn btn-primary">Создать</button>
 </form>
+
+<script>
+    // тот же скрипт validation можно вынести в partial
+    (() => {
+        'use strict'
+        const form = document.querySelector('.needs-validation')
+        form.addEventListener('submit', e => {
+            if (!form.checkValidity()) {
+                e.preventDefault()
+                e.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })()
+</script>

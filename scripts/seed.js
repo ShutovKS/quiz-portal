@@ -2,7 +2,6 @@
 import User from "../src/models/User.js";
 import Quiz from "../src/models/Quiz.js";
 import Question from "../src/models/Question.js";
-import Comment from "../src/models/Comment.js";
 import Attempt from "../src/models/Attempt.js";
 import {faker} from "@faker-js/faker";
 import mongoose from "mongoose";
@@ -39,11 +38,10 @@ async function seed() {
             title: faker.lorem.words(3),
             description: faker.lorem.sentence(),
             isPublic: true,
-            author: faker.helpers.arrayElement(users)._id,
+            user: faker.helpers.arrayElement(users)._id,
             stats: {
                 attemptsCount: 0,
                 averageScore: 0,
-                commentsCount: 0
             }
         });
         quizzes.push(q);
@@ -83,22 +81,9 @@ async function seed() {
         }
     }
 
-    // 4) Комменты и попытки
-    console.log('💬 Создаём комменты и попытки…');
+    // 4) Попытки
+    console.log('🧪 Создаём попытки…');
     for (const quiz of quizzes) {
-        // комментариев
-        const comCnt = faker.number.int({min: 0, max: 5});
-        for (let i = 0; i < comCnt; i++) {
-            await Comment.create({
-                text: faker.lorem.sentences(1),
-                rating: faker.number.int({min: 1, max: 5}),
-                quiz: quiz._id,
-                author: faker.helpers.arrayElement(users)._id
-            });
-            quiz.stats.commentsCount++;
-        }
-
-        // попыток
         const atCnt = faker.number.int({min: 0, max: 10});
         let totalScore = 0;
         for (let i = 0; i < atCnt; i++) {

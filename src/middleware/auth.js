@@ -10,6 +10,15 @@ export function requireAdmin(req, res, next) {
     next();
 }
 
+export function requireOwnerOrAdminForProfile(req, res, next) {
+    if (!req.session.userId || req.user.role !== 'admin') {
+        if (req.user._id.toString() !== req.params.id) {
+            return res.status(403).send('Forbidden');
+        }
+    }
+    next();
+}
+
 export function requireOwnerOrAdmin(modelName) {
     return async (req, res, next) => {
 
@@ -18,9 +27,9 @@ export function requireOwnerOrAdmin(modelName) {
         const id = req.params.id || req.params.quizId;
         const resource = await Model.findById(id);
         if (!resource) return res.status(404).send('Not found');
-        const ownerId = resource.author?.toString() || resource.user?.toString();
+        const ownerId = resource.user?.toString() || resource.user?.toString();
         if (ownerId !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(403).send('Forbidden');
+            return res.status(403).send('Forbidden ' + req.user + ' ' + ownerId);
         }
         next();
     };

@@ -1,19 +1,82 @@
-﻿<% if (errorMsg.length) { %>
-    <ul class="errors">
-        <% errorMsg.forEach(m => { %>
-            <li><%= m %></li>
-        <% }) %>
-    </ul>
-<% } %>
+﻿<h1 class="h3 mb-4">Редактировать профиль</h1>
+<%- include('../../partials/flash') %>
 
-<form action="/user/<%= user.id %>?_method=PUT" method="POST">
-    <input name="name" value="<%= user.name %>" required>
-    <input name="email" type="email" value="<%= user.email %>" required>
+<form
+        action="/user/<%= currentUser._id %>?_method=PUT"
+        method="POST"
+        class="needs-validation"
+        novalidate
+>
+    <div class="mb-3">
+        <label for="name" class="form-label">Имя</label>
+        <input
+                id="name"
+                name="name"
+                type="text"
+                class="form-control"
+                value="<%= currentUser.name %>"
+                required
+        >
+        <div class="invalid-feedback">Имя не может быть пустым.</div>
+    </div>
 
-    <hr>
-    <p>Сменить пароль (необязательно):</p>
-    <input name="newPassword" type="password" placeholder="Новый пароль">
-    <input name="newPassword2" type="password" placeholder="Повторите пароль">
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+                id="email"
+                name="email"
+                type="email"
+                class="form-control"
+                value="<%= currentUser.email %>"
+                required
+        >
+        <div class="invalid-feedback">Нужен валидный email.</div>
+    </div>
 
-    <button>Сохранить</button>
+    <hr class="border-secondary">
+
+    <p class="mb-2">Сменить пароль (необязательно):</p>
+    <div class="mb-3">
+        <label for="newPassword" class="form-label">Новый пароль</label>
+        <input
+                id="newPassword"
+                name="newPassword"
+                type="password"
+                class="form-control"
+                placeholder="Минимум 6 символов"
+                minlength="6"
+        >
+        <div class="invalid-feedback">Пароль минимум 6 символов.</div>
+    </div>
+    <div class="mb-4">
+        <label for="newPassword2" class="form-label">Повторите пароль</label>
+        <input
+                id="newPassword2"
+                name="newPassword2"
+                type="password"
+                class="form-control"
+                placeholder="Ещё раз"
+        >
+        <div class="invalid-feedback">Пароли должны совпадать.</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
+
+<script>
+    // валидация + проверка совпадения паролей
+    (() => {
+        'use strict'
+        const form = document.querySelector('.needs-validation')
+        form.addEventListener('submit', e => {
+            if (!form.checkValidity() || form.newPassword.value !== form.newPassword2.value) {
+                e.preventDefault()
+                e.stopPropagation()
+                if (form.newPassword.value !== form.newPassword2.value) {
+                    form.newPassword2.setCustomValidity('Пароли не совпадают')
+                }
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })()
+</script>

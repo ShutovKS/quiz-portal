@@ -1,2 +1,48 @@
-﻿<h1>Профиль: <%= user.name %></h1>
-<!-- TODO: список созданных квизов, результатов и редактирование -->
+﻿<h1 class="h3 mb-4">Профиль</h1>
+<%- include('../../partials/flash') %>
+
+<div class="card text-bg-dark border-secondary mb-4">
+    <div class="card-body">
+        <h5 class="card-title"><%= currentUser.name %></h5>
+        <p class="card-text mb-1">
+            <strong>Email:</strong> <%= currentUser.email %>
+        </p>
+        <p class="card-text text-muted">
+            Зарегистрирован:
+            <%= new Date(currentUser.createdAt)
+                    .toLocaleDateString('ru-RU', {
+                        day: '2-digit', month: 'long', year: 'numeric'
+                    })
+            %>
+        </p>
+        <a href="/user/<%= currentUser._id %>/edit" class="btn btn-outline-light btn-sm">
+            Редактировать профиль
+        </a>
+    </div>
+</div>
+
+<% if (typeof quizzes !== 'undefined' && quizzes.length) { %>
+    <h2 class="h5 mb-3">Мои квизы</h2>
+    <div class="list-group mb-4">
+        <% quizzes.forEach(q => { %>
+            <a
+                    href="/quizzes/<%= q._id %>"
+                    class="list-group-item list-group-item-action list-group-item-dark"
+            >
+                <%= q.title %>
+            </a>
+        <% }) %>
+    </div>
+<% } %>
+
+<% if (typeof stats !== 'undefined') { %>
+    <h2 class="h5 mb-3">Статистика</h2>
+    <ul class="list-group mb-4">
+        <li class="list-group-item list-group-item-dark">
+            Пройдено квизов: <strong><%= stats.attemptsCount %></strong>
+        </li>
+        <li class="list-group-item list-group-item-dark">
+            Средний балл: <strong><%= stats.averageScore.toFixed(2) %></strong>
+        </li>
+    </ul>
+<% } %>

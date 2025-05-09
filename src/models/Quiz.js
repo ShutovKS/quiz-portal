@@ -13,7 +13,7 @@ const quizSchema = new Schema({
         type: String,
         trim: true,
     },
-    author: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,

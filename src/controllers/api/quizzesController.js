@@ -13,7 +13,7 @@ export const get = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-    const quiz = await Quiz.create({...req.body, author: req.session.userId});
+    const quiz = await Quiz.create({...req.body, user: req.session.userId});
     res.status(201).json(quiz);
 };
 

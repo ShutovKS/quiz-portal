@@ -1,6 +1,6 @@
 ﻿import {Router} from 'express';
 import {body} from 'express-validator';
-import {ensureAuthenticated} from '../middleware/auth.js';
+import {ensureAuthenticated, requireOwnerOrAdminForProfile} from '../middleware/auth.js';
 import {requireOwnerOrAdmin} from '../middleware/auth.js';
 import * as UC from '../controllers/userController.js';
 
@@ -16,7 +16,7 @@ router.get('/user/:id', ensureAuthenticated, UC.showUserProfile);
 router.get(
     '/user/:id/edit',
     ensureAuthenticated,
-    requireOwnerOrAdmin('User'),
+    requireOwnerOrAdminForProfile,
     UC.showEditForm
 );
 
@@ -24,7 +24,7 @@ router.get(
 router.put(
     '/user/:id',
     ensureAuthenticated,
-    requireOwnerOrAdmin('User'),
+    requireOwnerOrAdminForProfile,
     body('name').trim().notEmpty().withMessage('Имя не пустое'),
     body('email').isEmail().withMessage('Неверный email').normalizeEmail(),
     body('newPassword').optional().isLength({min: 6}).withMessage('Пароль ≥ 6 символов'),

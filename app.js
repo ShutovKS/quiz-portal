@@ -25,6 +25,7 @@ app.use(morgan('dev'));
 
 // — Layouts для EJS
 app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 app.set('views', path.resolve('src', 'views'));
 app.set('view engine', 'ejs');
 

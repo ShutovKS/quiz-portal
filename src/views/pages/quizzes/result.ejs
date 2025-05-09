@@ -1,33 +1,45 @@
-﻿<h1>Результат: <%= attempt.quiz.title %></h1>
-<p>Правильных ответов: <%= attempt.score %> из <%= total %></p>
+﻿<h1 class="h3 mb-3">Результат: <%= attempt.quiz.title %></h1>
+<p class="mb-4">Правильных ответов: <strong><%= attempt.score %></strong> из <%= total %></p>
 
-<% questions.forEach((q, i) => {
+<% questions.forEach((q,i) => {
     const ua = attempt.answers.get(q._id.toString());
-    const corrOpts = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
+    const corr = q.options.filter(o=>o.isCorrect).map(o=>o._id.toString());
 %>
-<div class="q-result">
-    <p><strong><%= i + 1 %>. <%= q.text %></strong></p>
-    <% if(q.type === 'single' || q.type === 'truefalse'){ %>
-        <% q.options.forEach(o=>{
-            const id = o._id.toString();
-            const ok = id === corrOpts[0], sel = ua === id;
-        %>
-        <label style="<% if(ok){ %>background:#cfc<% }else if(sel){ %>background:#fcc<% } %>">
-            <%= o.text %>
-        </label><br>
-        <% }) %>
-    <% } else if(q.type === 'multiple'){ %>
-        <% q.options.forEach(o=>{
-            const id = o._id.toString();
-            const ok = corrOpts.includes(id), sel = (ua || []).includes(id);
-        %>
-        <label style="<% if(ok){ %>background:#cfc<% }else if(sel){ %>background:#fcc<% } %>">
-            <%= o.text %>
-        </label><br>
-        <% }) %>
-    <% } else if(q.type === 'text'){ %>
-        <p>Ваш ответ: <%= ua %></p>
-    <% } %>
+<div class="card mb-3 text-bg-dark border-<%= ua && ((Array.isArray(ua)? ua.some(a=>corr.includes(a)): corr.includes(ua))) ? 'success' : 'danger' %>">
+    <div class="card-body">
+        <p class="fw-bold"><%= i+1 %>. <%= q.text %></p>
+
+        <% if(q.type==='single' || q.type==='truefalse'){ %>
+            <% q.options.forEach(o=>{
+                const ok = o.isCorrect, sel = ua===o._id.toString();
+            %>
+            <div class="form-check mb-1">
+                <input class="form-check-input" disabled <%= sel?'checked':'' %>>
+                <label class="form-check-label <%= ok?'text-success':'<%= sel?\'text-danger\':\'\' %>' %>">
+                    <%= o.text %>
+                </label>
+            </div>
+            <% }) %>
+
+            <% } else if(q.type==='multiple'){ %>
+                <% q.options.forEach(o=>{
+                    const ok = o.isCorrect, sel = (ua||[]).includes(o._id.toString());
+                %>
+                <div class="form-check mb-1">
+                    <input class="form-check-input" disabled <%= sel?'checked':'' %>>
+                    <label class="form-check-label <%= ok?'text-success':'<%= sel?\'text-danger\':\'\' %>' %>">
+                        <%= o.text %>
+                    </label>
+                </div>
+                <% }) %>
+
+                <% } else if(q.type==='text'){ %>
+                    <p>Ваш ответ: <%= ua %></p>
+                    <p class="text-success">Правильный: <%= q.options.find(o=>o.isCorrect)?.text %></p>
+                <% } %>
+
+    </div>
 </div>
-<hr>
 <% }) %>
+
+<a href="/quizzes/<%= quiz._id %>" class="btn btn-outline-light">Назад к квизу</a>

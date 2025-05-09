@@ -18,8 +18,4 @@ router.post('/users/:id/toggle-admin', C.toggleAdmin);
 router.get('/quizzes', C.listQuizzes);
 router.delete('/quizzes/:id', C.deleteQuiz);
 
-// Комментарии
-router.get('/comments', C.listComments);
-router.delete('/comments/:id', C.deleteComment);
-
 export default router;

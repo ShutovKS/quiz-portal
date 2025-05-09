@@ -2,7 +2,6 @@
 import {Router} from 'express';
 
 import authRouter from './auth.js';
-import commentsRouter from './comments.js';
 import homeRouter from './home.js';
 import quizzesRouter from './quizzes.js';
 import usersRouter from './users.js';
@@ -15,7 +14,6 @@ import apiQuizRouter from './api/quizzes.js';
 const router = Router();
 
 router.use('/', authRouter);
-router.use('/', commentsRouter);
 router.use('/', homeRouter);
 router.use('/', quizzesRouter);
 router.use('/', usersRouter);
