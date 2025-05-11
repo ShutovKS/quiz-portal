@@ -29,4 +29,18 @@ const userSchema = new Schema({
     timestamps: {createdAt: 'registeredAt', updatedAt: false}
 });
 
+userSchema.virtual('createdCount', {
+    ref: 'Quiz',
+    localField: '_id',
+    foreignField: 'user',
+    count: true
+});
+
+userSchema.virtual('takenCount', {
+    ref: 'Attempt',
+    localField: '_id',
+    foreignField: 'user',
+    count: true
+});
+
 export default model('User', userSchema);

@@ -32,10 +32,27 @@ const quizSchema = new Schema({
     stats: {
         attemptsCount: {type: Number, default: 0},
         averageScore: {type: Number, default: 0},
-        commentsCount: {type: Number, default: 0},
     },
 }, {
     timestamps: true,
+});
+
+quizSchema.virtual('attemptsCountDynamic', {
+    ref: 'Attempt',
+    localField: '_id',
+    foreignField: 'quiz',
+    count: true
+});
+
+quizSchema.virtual('uniqueUsersCount', {
+    ref: 'Attempt',
+    let: {quizId: '$_id'},
+    pipeline: [
+        {$match: {$expr: {$eq: ['$quiz', '$$quizId']}}},
+        {$group: {_id: '$user'}},
+        {$count: 'count'}
+    ],
+    justOne: true
 });
 
 // генерить токен при создании приватного квиза
