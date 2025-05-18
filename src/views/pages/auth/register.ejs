@@ -1,85 +1,133 @@
-﻿<h1 class="h3 mb-4">Регистрация</h1>
-<%- include('../../partials/flash') %>
+﻿<div class="d-flex align-items-center justify-content-center min-vh-100">
+    <div class="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4">
+        <div class="card shadow-sm border-0 animate__fadeIn">
+            <div class="card-body p-4 p-sm-5">
+                <h1 class="h3 text-center mb-4">Регистрация</h1>
+                <%- include('../../partials/flash') %>
 
-<form action="/register" method="POST" class="needs-validation" novalidate>
-    <div class="mb-3">
-        <label for="name" class="form-label">Имя</label>
-        <input
-                id="name"
-                name="name"
-                type="text"
-                class="form-control"
-                placeholder="Ваше имя"
-                value="<%= oldData?.name || '' %>"
-                required
-        >
-        <div class="invalid-feedback">Имя обязательно.</div>
+                <form action="/register" method="POST"
+                      class="needs-validation" novalidate>
+
+                    <!-- name -->
+                    <div class="form-floating mb-3">
+                        <input id="name"
+                               name="name"
+                               type="text"
+                               class="form-control"
+                               placeholder="Имя"
+                               value="<%= oldData?.name || '' %>"
+                               required>
+                        <label for="name"><i class="bi bi-person me-1"></i>Имя</label>
+                        <div class="invalid-feedback">Имя обязательно.</div>
+                    </div>
+
+                    <!-- email -->
+                    <div class="form-floating mb-3">
+                        <input id="email"
+                               name="email"
+                               type="email"
+                               class="form-control"
+                               placeholder="name@example.com"
+                               value="<%= oldData?.email || '' %>"
+                               required>
+                        <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
+                        <div class="invalid-feedback">Валидный email обязателен.</div>
+                    </div>
+
+                    <!-- password -->
+                    <div class="form-floating mb-3 position-relative">
+                        <input id="password"
+                               name="password"
+                               type="password"
+                               class="form-control"
+                               placeholder="Пароль"
+                               minlength="6"
+                               required>
+                        <label for="password"><i class="bi bi-lock me-1"></i>Пароль</label>
+                        <button type="button"
+                                class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">Мин. 6 символов.</div>
+                    </div>
+
+                    <!-- confirm -->
+                    <div class="form-floating mb-4 position-relative">
+                        <input id="password2"
+                               name="password2"
+                               type="password"
+                               class="form-control"
+                               placeholder="Повторите пароль"
+                               required>
+                        <label for="password2"><i class="bi bi-check2-square me-1"></i>Повторите пароль</label>
+                        <button type="button"
+                                class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">Пароли должны совпадать.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                </form>
+
+                <p class="mt-3 text-center small">
+                    Уже есть аккаунт?
+                    <a href="/login" class="link-info text-decoration-underline">Войти</a>
+                </p>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-                id="email"
-                name="email"
-                type="email"
-                class="form-control"
-                placeholder="you@example.com"
-                value="<%= oldData?.email || '' %>"
-                required
-        >
-        <div class="invalid-feedback">Нужно валидное email-адрес.</div>
-    </div>
+<style>
+    :root {
+        --bs-body-bg: linear-gradient(135deg, #1e1e34 0%, #151522 100%);
+    }
 
-    <div class="mb-3">
-        <label for="password" class="form-label">Пароль</label>
-        <input
-                id="password"
-                name="password"
-                type="password"
-                class="form-control"
-                placeholder="Минимум 6 символов"
-                required
-                minlength="6"
-        >
-        <div class="invalid-feedback">Пароль минимум 6 символов.</div>
-    </div>
+    @keyframes pop-in {
+        0% {
+            transform: scale(.9);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
 
-    <div class="mb-4">
-        <label for="password2" class="form-label">Повторите пароль</label>
-        <input
-                id="password2"
-                name="password2"
-                type="password"
-                class="form-control"
-                placeholder="Ещё раз пароль"
-                required
-        >
-        <div class="invalid-feedback">Пароли должны совпадать.</div>
-    </div>
-
-    <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
-</form>
-
-<p class="mt-3 text-center">
-    Уже есть аккаунт? <a href="/login" class="link-light">Войти</a>
-</p>
+    .card.animate__fadeIn {
+        animation: pop-in .4s ease-out;
+    }
+</style>
 
 <script>
-    // Bootstrap client‐side validation
     (() => {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-        Array.from(forms).forEach(f => {
+        'use strict';
+        // валидация BS + проверка совпадения паролей
+        document.querySelectorAll('.needs-validation').forEach(f => {
             f.addEventListener('submit', e => {
-                if (!f.checkValidity() || f.password.value !== f.password2.value) {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    if (f.password.value !== f.password2.value) {
-                        f.password2.setCustomValidity('Пароли не совпадают')
-                    }
+                if (f.password.value !== f.password2.value) {
+                    f.password2.setCustomValidity('Пароли не совпадают');
+                } else {
+                    f.password2.setCustomValidity('');
                 }
-                f.classList.add('was-validated')
-            }, false)
-        })
-    })()
+                if (!f.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                f.classList.add('was-validated');
+            }, false);
+        });
+
+        // общий show/hide для всех .toggle-pass
+        document.querySelectorAll('.toggle-pass').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.previousElementSibling;          // input перед кнопкой
+                input.type = input.type === 'password' ? 'text' : 'password';
+                const icon = btn.querySelector('i');
+                icon.classList.toggle('bi-eye');
+                icon.classList.toggle('bi-eye-slash');
+            });
+        });
+    })();
 </script>

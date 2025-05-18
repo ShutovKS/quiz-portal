@@ -1,14 +1,86 @@
-﻿<h1>Панель администратора</h1>
+﻿<h1 class="h4 mb-4 fw-semibold d-flex align-items-center gap-2">
+    <i class="bi bi-speedometer2"></i> Панель администратора
+</h1>
 <%- include('../../partials/flash') %>
 
-<ul>
-    <li>Пользователей: <strong><%= uCount %></strong></li>
-    <li>Квизов: <strong><%= qCount %></strong></li>
-    <li>Комментариев:<strong><%= cCount %></strong></li>
+<!-- KPI-cards ------------------------------------------------------- -->
+<div class="row g-4 mb-4">
+    <div class="col-12 col-sm-4">
+        <a href="/admin/users" class="text-reset text-decoration-none">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+          <span class="kpi-icon bg-primary">
+            <i class="bi bi-people-fill"></i>
+          </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Пользователи</h6>
+                        <span class="fs-4 fw-semibold"><%= uCount %></span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-sm-4">
+        <a href="/admin/quizzes" class="text-reset text-decoration-none">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+          <span class="kpi-icon bg-success">
+            <i class="bi bi-puzzle-fill"></i>
+          </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Квизы</h6>
+                        <span class="fs-4 fw-semibold"><%= qCount %></span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-12 col-sm-4">
+        <a href="/admin/comments" class="text-reset text-decoration-none">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+          <span class="kpi-icon bg-warning">
+            <i class="bi bi-chat-dots-fill"></i>
+          </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Комментариев</h6>
+                        <span class="fs-4 fw-semibold"><%= cCount %></span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- nav-pills ------------------------------------------------------- -->
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/users"><i class="bi bi-people"></i> Пользователи</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/quizzes"><i class="bi bi-puzzle"></i> Квизы</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/comments"><i class="bi bi-chat-dots"></i> Комментарии</a>
+    </li>
 </ul>
 
-<nav>
-    <a href="/admin/users">Пользователи</a> |
-    <a href="/admin/quizzes">Квизы</a> |
-    <a href="/admin/comments">Комментарии</a>
-</nav>
+<style>
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        transition: .15s;
+    }
+
+    .kpi-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.35rem;
+    }
+</style>

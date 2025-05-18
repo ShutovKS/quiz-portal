@@ -1,38 +1,48 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Все квизы</h1>
+<div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
+    <h1 class="h3 mb-0 flex-grow-1">Все&nbsp;квизы</h1>
+
+    <!-- поиск -->
+    <form class="d-inline-block" action="/search" method="GET">
+        <div class="input-group input-group-sm shadow-sm">
+            <input type="text" name="q" class="form-control"
+                   placeholder="Поиск…" value="<%= q || '' %>">
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </form>
+
     <% if (currentUser) { %>
-        <a href="/quizzes/new" class="btn btn-outline-light">+ Новый квиз</a>
+        <a href="/quizzes/new" class="btn btn-outline-light d-inline-flex align-items-center">
+            <i class="bi bi-plus-lg me-1"></i> Новый
+        </a>
     <% } %>
 </div>
 
+<!-- чипы-категории -->
+<% if ((categories || []).length) { %>
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <% categories.forEach(c => { %>
+            <a href="/quizzes?cat=<%= c.slug %>"
+               class="badge rounded-pill category-chip <%= cat === c.slug ? 'active' : '' %>">
+                <i class="bi bi-tag me-1"></i><%= c.name %>
+            </a>
+        <% }) %>
+    </div>
+<% } %>
+
+<!-- сетка карточек -->
 <% if (quizzes.length) { %>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         <% quizzes.forEach(q => { %>
-            <div class="col">
-                <div class="card h-100 text-bg-dark border-secondary">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title"><%= q.title %></h5>
-                        <% if (q.user) { %>
-                            <p class="card-subtitle mb-2 text-muted">от <%= q.user.name %></p>
-                        <% } %>
-                        <div class="mt-auto">
-                            <a href="/quizzes/<%= q._id %>" class="btn btn-primary btn-sm">Пройти</a>
-                            <% if (currentUser && (currentUser._id.toString() === q.user?._id.toString() || currentUser.role === 'admin')) { %>
-                                <a href="/quizzes/<%= q._id %>/edit" class="btn btn-outline-light btn-sm ms-2">Ред.</a>
-                                <form
-                                        action="/quizzes/<%= q._id %>?_method=DELETE"
-                                        method="POST"
-                                        style="display:inline"
-                                >
-                                    <button class="btn btn-sm btn-outline-danger ms-1">Х</button>
-                                </form>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <%- include('../../partials/quizCard', {
+            quiz: q,
+            currentUser,
+            showDesc: false, // описание не нужно
+            showActions: true // оставить меню
+            }) %>
         <% }) %>
     </div>
 <% } else { %>
-    <p class="text-center text-muted">Квизы не найдены.</p>
+    <p class="text-center text-muted">Пока ничего не нашли 🙁</p>
 <% } %>

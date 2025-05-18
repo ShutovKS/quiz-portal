@@ -1,82 +1,112 @@
-﻿<h1 class="h3 mb-4">Редактировать профиль</h1>
-<%- include('../../partials/flash') %>
+﻿<div class="col-12 col-sm-10 col-md-8 col-lg-6 mx-auto">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-sm-5">
+            <h1 class="h4 text-center mb-4">Редактировать профиль</h1>
+            <%- include('../../partials/flash') %>
 
-<form
-        action="/user/<%= currentUser._id %>?_method=PUT"
-        method="POST"
-        class="needs-validation"
-        novalidate
->
-    <div class="mb-3">
-        <label for="name" class="form-label">Имя</label>
-        <input
-                id="name"
-                name="name"
-                type="text"
-                class="form-control"
-                value="<%= currentUser.name %>"
-                required
-        >
-        <div class="invalid-feedback">Имя не может быть пустым.</div>
+            <form action="/user/<%= currentUser._id %>?_method=PUT"
+                  method="POST"
+                  class="needs-validation"
+                  novalidate>
+
+                <!-- name -->
+                <div class="form-floating mb-3">
+                    <input id="name"
+                           name="name"
+                           type="text"
+                           class="form-control"
+                           placeholder="Имя"
+                           value="<%= currentUser.name %>"
+                           required>
+                    <label for="name"><i class="bi bi-person me-1"></i>Имя</label>
+                    <div class="invalid-feedback">Имя не может быть пустым.</div>
+                </div>
+
+                <!-- email -->
+                <div class="form-floating mb-4">
+                    <input id="email"
+                           name="email"
+                           type="email"
+                           class="form-control"
+                           placeholder="name@example.com"
+                           value="<%= currentUser.email %>"
+                           required>
+                    <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
+                    <div class="invalid-feedback">Валидный email, плиз.</div>
+                </div>
+
+                <!-- divider -->
+                <h6 class="text-uppercase text-muted small mb-3">Сменить пароль (необязательно)</h6>
+
+                <!-- new password -->
+                <div class="form-floating mb-3 position-relative">
+                    <input id="newPassword"
+                           name="newPassword"
+                           type="password"
+                           class="form-control"
+                           placeholder="Новый пароль"
+                           minlength="6">
+                    <label for="newPassword"><i class="bi bi-lock me-1"></i>Новый пароль</label>
+                    <button type="button"
+                            class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="invalid-feedback">Мин. 6 символов.</div>
+                </div>
+
+                <!-- confirm -->
+                <div class="form-floating mb-4 position-relative">
+                    <input id="newPassword2"
+                           name="newPassword2"
+                           type="password"
+                           class="form-control"
+                           placeholder="Повторите пароль">
+                    <label for="newPassword2"><i class="bi bi-check2-square me-1"></i>Повторите пароль</label>
+                    <button type="button"
+                            class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="invalid-feedback">Пароли должны совпадать.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Сохранить&nbsp;изменения</button>
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-                id="email"
-                name="email"
-                type="email"
-                class="form-control"
-                value="<%= currentUser.email %>"
-                required
-        >
-        <div class="invalid-feedback">Нужен валидный email.</div>
-    </div>
-
-    <hr class="border-secondary">
-
-    <p class="mb-2">Сменить пароль (необязательно):</p>
-    <div class="mb-3">
-        <label for="newPassword" class="form-label">Новый пароль</label>
-        <input
-                id="newPassword"
-                name="newPassword"
-                type="password"
-                class="form-control"
-                placeholder="Минимум 6 символов"
-                minlength="6"
-        >
-        <div class="invalid-feedback">Пароль минимум 6 символов.</div>
-    </div>
-    <div class="mb-4">
-        <label for="newPassword2" class="form-label">Повторите пароль</label>
-        <input
-                id="newPassword2"
-                name="newPassword2"
-                type="password"
-                class="form-control"
-                placeholder="Ещё раз"
-        >
-        <div class="invalid-feedback">Пароли должны совпадать.</div>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Сохранить</button>
-</form>
+</div>
 
 <script>
-    // валидация + проверка совпадения паролей
     (() => {
-        'use strict'
-        const form = document.querySelector('.needs-validation')
+        'use strict';
+
+        // BS validation + пароли
+        const form = document.querySelector('.needs-validation');
         form.addEventListener('submit', e => {
-            if (!form.checkValidity() || form.newPassword.value !== form.newPassword2.value) {
-                e.preventDefault()
-                e.stopPropagation()
-                if (form.newPassword.value !== form.newPassword2.value) {
-                    form.newPassword2.setCustomValidity('Пароли не совпадают')
-                }
+            const p1 = form.newPassword.value;
+            const p2 = form.newPassword2.value;
+
+            if (p1 || p2) {
+                form.newPassword2.setCustomValidity(p1 === p2 ? '' : 'Пароли не совпадают');
+            } else {
+                // оба пустые → не валидируем совпадение
+                form.newPassword2.setCustomValidity('');
             }
-            form.classList.add('was-validated')
-        }, false)
-    })()
+
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+
+        // show/hide pass
+        document.querySelectorAll('.toggle-pass').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.previousElementSibling;
+                input.type = input.type === 'password' ? 'text' : 'password';
+                btn.children[0].classList.toggle('bi-eye');
+                btn.children[0].classList.toggle('bi-eye-slash');
+            });
+        });
+    })();
 </script>

@@ -1,27 +1,99 @@
-﻿<h1>Квизы</h1>
+﻿<h1 class="h4 mb-4 fw-semibold d-flex align-items-center gap-2">
+    <i class="bi bi-puzzle"></i> Квизы
+</h1>
 <%- include('../../partials/flash') %>
 
-<table>
-    <thead>
-    <tr>
-        <th>Название</th>
-        <th>Автор</th>
-        <th>Public</th>
-        <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% quizzes.forEach(q => { %>
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-light">
         <tr>
-            <td><a href="/quizzes/<%= q._id %>"><%= q.title %></a></td>
-            <td><%= q.user.name %></td>
-            <td><%= q.isPublic ? '✔' : '🔒' %></td>
-            <td>
-                <form action="/admin/quizzes/<%= q._id %>?_method=DELETE" method="post">
-                    <button onclick="return confirm('Удалить квиз?')">Удалить</button>
-                </form>
-            </td>
+            <th>Название</th>
+            <th>Автор</th>
+            <th class="text-center">Статус</th>
+            <th class="text-end">Действия</th>
         </tr>
-    <% }) %>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <% quizzes.forEach(q => { %>
+            <tr>
+                <!-- title -->
+                <td>
+                    <a href="/quizzes/<%= q._id %>" class="text-reset text-decoration-none fw-semibold">
+                        <%= q.title %>
+                    </a>
+                    <span class="text-muted small d-block">
+            <i class="bi bi-question-circle"></i> <%= q.questionsCount %> вопр.
+          </span>
+                </td>
+
+                <!-- author -->
+                <td><%= q.user?.name || '—' %></td>
+
+                <!-- status -->
+                <td class="text-center">
+                    <% if (q.isPublic) { %>
+                        <span class="badge bg-success"><i class="bi bi-unlock"></i> public</span>
+                    <% } else { %>
+                        <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> private</span>
+                    <% } %>
+                </td>
+
+                <!-- actions -->
+                <td class="text-end">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-light dropdown-toggle"
+                                data-bs-toggle="dropdown"></button>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item d-flex gap-2 align-items-center"
+                                   href="/quizzes/<%= q._id %>/edit">
+                                    <i class="bi bi-pencil-square"></i>Редактировать
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex gap-2 align-items-center"
+                                   href="/quizzes/<%= q._id %>">
+                                    <i class="bi bi-eye"></i>Открыть
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="dropdown-item d-flex gap-2 align-items-center text-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#del-<%= q._id %>">
+                                    <i class="bi bi-trash"></i>Удалить
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- delete-modal -->
+            <div class="modal fade" id="del-<%= q._id %>" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-dark border-secondary">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title">Удалить квиз?</h5>
+                            <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            «<%= q.title %>» исчезнет навсегда. Точно?
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <form action="/admin/quizzes/<%= q._id %>?_method=DELETE" method="POST">
+                                <button class="btn btn-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <% }) %>
+        </tbody>
+    </table>
+</div>

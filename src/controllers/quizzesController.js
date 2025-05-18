@@ -2,10 +2,46 @@
 import Quiz from '../models/Quiz.js';
 import Question from '../models/Question.js';
 import Attempt from '../models/Attempt.js';
+import Category from '../models/Category.js';
 
-export const listQuizzes = async (req, res) => {
-    const quizzes = await Quiz.find({isPublic: true});
-    res.render('pages/quizzes/index', {title: 'Все квизы', quizzes});
+export const listQuizzes = async (req, res, next) => {
+    try {
+        /* --- параметры фильтра --- */
+        const search = (req.query.q || '').trim();
+        const cat = req.query.cat || '';
+
+        const filter = {isPublic: true};
+
+        if (search) {
+            const re = new RegExp(search, 'i');
+            filter.$or = [{title: re}, {description: re}];
+        }
+
+        if (cat) {
+            const category = await Category.findOne({slug: cat}).select('_id');
+            if (category) filter.categories = category._id;
+        }
+
+        /* --- данные --- */
+        const [quizzes, categories] = await Promise.all([
+            Quiz.find(filter)
+                .populate('user', 'name')
+                .lean()
+                .sort({createdAt: -1}),
+
+            Category.find().sort({name: 1}).lean()
+        ]);
+
+        res.render('pages/quizzes/index', {
+            title: 'Все квизы',
+            quizzes,
+            categories,
+            q: search,
+            cat
+        });
+    } catch (err) {
+        next(err);
+    }
 };
 
 export const showQuizCreateForm = (req, res) => {

@@ -1,48 +1,74 @@
-﻿<h1 class="h3 mb-4">Профиль</h1>
-<%- include('../../partials/flash') %>
+﻿<div class="profile-hero p-4 mb-4 text-center text-white position-relative">
+    <!-- аватар -->
+    <div class="avatar mx-auto mb-3" id="avatar"></div>
 
-<div class="card text-bg-dark border-secondary mb-4">
-    <div class="card-body">
-        <h5 class="card-title"><%= currentUser.name %></h5>
-        <p class="card-text mb-1">
-            <strong>Email:</strong> <%= currentUser.email %>
-        </p>
-        <p class="card-text text-muted">
-            Зарегистрирован:
-            <%= new Date(currentUser.createdAt)
-                    .toLocaleDateString('ru-RU', {
-                        day: '2-digit', month: 'long', year: 'numeric'
-                    })
-            %>
-        </p>
-        <a href="/user/<%= currentUser._id %>/edit" class="btn btn-outline-light btn-sm">
-            Редактировать профиль
-        </a>
-    </div>
+    <!-- инфо -->
+    <h1 class="h4 mb-1"><%= currentUser.name %></h1>
+    <p class="small mb-0">
+        <i class="bi bi-envelope me-1"></i><%= currentUser.email %>
+    </p>
+    <p class="small text-opacity-75">
+        Зарегистрирован:
+        <%= new Date(currentUser.createdAt).toLocaleDateString('ru-RU', {
+            day: '2-digit', month: 'long', year: 'numeric'
+        }) %>
+    </p>
+
+    <!-- кнопка -->
+    <a href="/user/<%= currentUser._id %>/edit"
+       class="btn btn-outline-light btn-sm btn-edit">
+        <i class="bi bi-pencil-square me-1"></i>Редактировать
+    </a>
 </div>
 
-<% if (typeof quizzes !== 'undefined' && quizzes.length) { %>
-    <h2 class="h5 mb-3">Мои квизы</h2>
-    <div class="list-group mb-4">
-        <% quizzes.forEach(q => { %>
-            <a
-                    href="/quizzes/<%= q._id %>"
-                    class="list-group-item list-group-item-action list-group-item-dark"
-            >
-                <%= q.title %>
-            </a>
-        <% }) %>
-    </div>
-<% } %>
+<div class="row g-4">
+    <!-- Статистика -->
+    <% if (typeof stats !== 'undefined') { %>
+        <div class="col-6">
+            <div class="card text-bg h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title text-uppercase small mb-2">Квизов пройдено</h6>
+                    <span class="display-6 fw-semibold"><%= stats.attemptsCount %></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card text-bg h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title text-uppercase small mb-2">Средний балл</h6>
+                    <span class="display-6 fw-semibold"><%= stats.averageScore.toFixed(2) %></span>
+                </div>
+            </div>
+        </div>
+    <% } %>
 
-<% if (typeof stats !== 'undefined') { %>
-    <h2 class="h5 mb-3">Статистика</h2>
-    <ul class="list-group mb-4">
-        <li class="list-group-item list-group-item-dark">
-            Пройдено квизов: <strong><%= stats.attemptsCount %></strong>
-        </li>
-        <li class="list-group-item list-group-item-dark">
-            Средний балл: <strong><%= stats.averageScore.toFixed(2) %></strong>
-        </li>
-    </ul>
-<% } %>
+    <!-- Квизы -->
+    <% if (typeof quizzes !== 'undefined' && quizzes.length) { %>
+        <div class="col-12">
+            <div class="card text-bg">
+                <div class="card-header border-secondary">
+                    <i class="bi bi-puzzle me-2"></i>Мои квизы
+                </div>
+                <ul class="list-group list-group-flush list-group">
+                    <% quizzes.forEach(q => { %>
+                        <li class="list-group-item list-group-item d-flex justify-content-between align-items-center">
+                            <a href="/quizzes/<%= q._id %>" class="stretched-link text-reset text-decoration-none">
+                                <%= q.title %>
+                            </a>
+                            <i class="bi bi-chevron-right"></i>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // генерим аватар-инициалы
+    (function () {
+        const name = `<%= currentUser.name %>`;
+        const initials = name.trim().split(/\s+/).map(w => w[0].toUpperCase()).slice(0, 2).join('');
+        document.getElementById('avatar').textContent = initials;
+    })();
+</script>

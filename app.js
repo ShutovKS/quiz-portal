@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
@@ -7,30 +8,45 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import path from 'path';
-import dotenv from 'dotenv';
+import {fileURLToPath} from 'url';
+
 import {connectDB} from './src/config/db.js';
 import indexRouter from './src/routes/index.js';
 import passport from './src/config/passport.js';
 
-dotenv.config();
+// эмуляция __dirname/__filename
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 await connectDB();
 
 const app = express();
 
 // — Безопасность HTTP-заголовков
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+            styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:"],
+            fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
+            connectSrc: ["'self'"],
+        }
+    }
+}));
 
 // — Логирование запросов
 app.use(morgan('dev'));
 
 // — Layouts для EJS
-app.use(expressLayouts);
+app.set('views', path.join(__dirname, 'src', 'views'));
 app.set('layout', 'layouts/main');
-app.set('views', path.resolve('src', 'views'));
 app.set('view engine', 'ejs');
+app.use(expressLayouts);
 
 // — Статика
-app.use(express.static(path.resolve('public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // — Парсинг тела запросов
 app.use(express.urlencoded({extended: false}));

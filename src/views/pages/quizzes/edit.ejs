@@ -1,74 +1,161 @@
-﻿<h1 class="h3 mb-4">Редактировать квиз</h1>
-<%- include('../../partials/flash') %>
+﻿<div class="col-12 col-md-10 col-lg-8 mx-auto">
 
-<form
-        action="/quizzes/<%= quiz._id %>?_method=PUT"
-        method="POST"
-        class="needs-validation"
-        novalidate
->
-    <div class="mb-3">
-        <label for="title" class="form-label">Название</label>
-        <input
-                id="title"
-                type="text"
-                name="title"
-                class="form-control"
-                value="<%= quiz.title %>"
-                required
-        >
-        <div class="invalid-feedback">Нужно название.</div>
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body p-4 p-sm-5">
+            <h1 class="h4 text-center mb-4">Редактировать квиз</h1>
+            <%- include('../../partials/flash') %>
+
+            <!-- === quiz meta === -->
+            <form action="/quizzes/<%= quiz._id %>?_method=PUT"
+                  method="POST"
+                  class="needs-validation"
+                  novalidate>
+
+                <div class="form-floating mb-3">
+                    <input id="title"
+                           type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="Название"
+                           value="<%= quiz.title %>"
+                           required>
+                    <label for="title"><i class="bi bi-fonts me-1"></i>Название</label>
+                    <div class="invalid-feedback">Нужно название.</div>
+                </div>
+
+                <div class="form-floating mb-4">
+          <textarea id="description"
+                    name="description"
+                    class="form-control"
+                    style="height: 120px"
+                    placeholder="Описание"><%= quiz.description %></textarea>
+                    <label for="description"><i class="bi bi-card-text me-1"></i>Описание</label>
+                </div>
+
+                <!-- switch -->
+                <div class="form-check form-switch mb-4">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           role="switch"
+                           id="isPublic"
+                           name="isPublic"
+                            <%= quiz.isPublic ? 'checked' : '' %>>
+                    <label class="form-check-label" for="isPublic">
+                        Сделать публичным
+                    </label>
+                </div>
+
+                <button class="btn btn-primary w-100 mb-2">Сохранить&nbsp;изменения</button>
+            </form>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label for="description" class="form-label">Описание</label>
-        <textarea
-                id="description"
-                name="description"
-                class="form-control"
-                rows="3"
-        ><%= quiz.description %></textarea>
-    </div>
+    <!-- === questions === -->
+    <h2 class="h5 mb-3">Вопросы (<%= questions.length %>)</h2>
 
-    <div class="form-check mb-4">
-        <input
-                id="isPublic"
-                class="form-check-input"
-                type="checkbox"
-                name="isPublic"
-                <%= quiz.isPublic ? 'checked' : '' %>
-        >
-        <label class="form-check-label" for="isPublic">
-            Публичный квиз
-        </label>
-    </div>
+    <div class="accordion mb-4" id="quizQuestions">
+        <% questions.forEach((q, i) => { %>
+            <div class="accordion-item text-bg border-secondary">
+                <h2 class="accordion-header" id="h-<%= q._id %>">
+                    <button class="accordion-button collapsed text-bg"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#c-<%= q._id %>"
+                            aria-expanded="false">
+                        <span class="me-2 text-muted">#<%= i + 1 %></span>
+                        <%= q.text %> <small class="ms-2 text-secondary">(<%= q.type %>)</small>
+                    </button>
+                </h2>
+                <div id="c-<%= q._id %>"
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#quizQuestions">
+                    <div class="accordion-body d-flex justify-content-between align-items-start">
+                        <div>
+                            <% if (q.options?.length) { %>
+                                <ul class="list-unstyled mb-0 small">
+                                    <% q.options.forEach(o => { %>
+                                        <li>
+                                            <% if (o.isCorrect) { %>
+                                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                            <% } else { %>
+                                                <i class="bi bi-circle me-1"></i>
+                                            <% } %>
+                                            <%= o.text %>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            <% } %>
+                        </div>
 
-    <button type="submit" class="btn btn-primary">Сохранить</button>
-</form>
-
-<hr class="border-secondary">
-
-<h2 class="h5 mb-3">Вопросы квиза</h2>
-<ul class="list-group mb-3">
-    <% questions.forEach(q => { %>
-        <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-            <span><%= q.text %> (<%= q.type %>)</span>
-            <!-- CRUD ссылки -->
-            <div>
-                <a href="/quizzes/<%= quiz._id %>/questions/<%= q._id %>/edit"
-                   class="btn btn-sm btn-outline-light me-2">Ред.</a>
-                <form
-                        action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE"
-                        method="POST"
-                        style="display:inline"
-                >
-                    <button class="btn btn-sm btn-outline-danger">Удалить</button>
-                </form>
+                        <!-- dropdown -->
+                        <div class="dropdown ms-3">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle"
+                                    data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item d-flex gap-2 align-items-center"
+                                       href="/quizzes/<%= quiz._id %>/questions/<%= q._id %>/edit">
+                                        <i class="bi bi-pencil-square"></i>Редактировать
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <button class="dropdown-item d-flex gap-2 align-items-center text-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#delQ-<%= q._id %>">
+                                        <i class="bi bi-trash"></i>Удалить
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </li>
-    <% }) %>
-</ul>
 
-<a href="/quizzes/<%= quiz._id %>/questions/new" class="btn btn-outline-light">
-    + Добавить вопрос
-</a>
+            <!-- delete modal -->
+            <div class="modal fade" id="delQ-<%= q._id %>" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg border-secondary">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title">Удалить вопрос?</h5>
+                            <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <%= q.text %> <br> <small class="text-secondary">(<%= q.type %>)</small>
+                        </div>
+                        <div class="modal-footer border-secondary">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <form action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE"
+                                  method="POST">
+                                <button class="btn btn-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <a href="/quizzes/<%= quiz._id %>/questions/new" class="btn btn-outline-light w-100">
+        <i class="bi bi-plus-lg me-1"></i> Добавить вопрос
+    </a>
+</div>
+
+<script>
+    (() => {
+        'use strict';
+        // валидация BS (как всегда)
+        document.querySelectorAll('.needs-validation').forEach(f => {
+            f.addEventListener('submit', e => {
+                if (!f.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                f.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>

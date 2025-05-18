@@ -18,6 +18,10 @@ const quizSchema = new Schema({
         ref: 'User',
         required: true,
     },
+    categories: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Category'
+    }],
     isPublic: {
         type: Boolean,
         default: true,
@@ -46,14 +50,15 @@ quizSchema.virtual('attemptsCountDynamic', {
 
 quizSchema.virtual('uniqueUsersCount', {
     ref: 'Attempt',
-    let: {quizId: '$_id'},
+    localField: '_id',
+    foreignField: 'quiz',
+    justOne: true,
     pipeline: [
-        {$match: {$expr: {$eq: ['$quiz', '$$quizId']}}},
         {$group: {_id: '$user'}},
         {$count: 'count'}
-    ],
-    justOne: true
+    ]
 });
+
 
 // генерить токен при создании приватного квиза
 quizSchema.pre('save', function (next) {
