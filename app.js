@@ -13,6 +13,7 @@ import {fileURLToPath} from 'url';
 import {connectDB} from './src/config/db.js';
 import indexRouter from './src/routes/index.js';
 import passport from './src/config/passport.js';
+import apiRouter from './src/routes/api/index.js';
 
 // эмуляция __dirname/__filename
 const __filename = fileURLToPath(import.meta.url);
@@ -84,6 +85,7 @@ app.use((req, res, next) => {
 
 // — Роуты
 app.use('/', indexRouter);
+app.use('/api', apiRouter);
 
 // — 404
 app.use((req, res) => {

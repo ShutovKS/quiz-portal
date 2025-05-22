@@ -3,12 +3,73 @@ import User from '../models/User.js';
 import Quiz from '../models/Quiz.js';
 import Attempt from "../models/Attempt.js";
 import Question from "../models/Question.js";
+import {
+    getUserCount,
+    getQuizCount,
+    getAttemptCount,
+    getAverageScore,
+    getActiveUsersCount,
+    getUniqueParticipantsCount,
+    getMostPopularQuiz,
+    getQuestionCount,
+    getNewUsersCount,
+    getPublicQuizPercent,
+    getTopAvgQuizzes,
+    getQuizzesWithoutAttempts,
+    getAvgAttemptsPerUser
+} from './api/adminController.js';
 
 export const showDashboard = async (req, res) => {
-    const [uCount, qCount, cCount] = await Promise.all([
-        User.countDocuments(), Quiz.countDocuments()
+    const [
+        uCount,
+        qCount,
+        aCount,
+        avgScore,
+        activeUsersCount,
+        uniqueParticipantsCount,
+        mostPopularQuiz,
+        questionCount,
+        newUsersWeek,
+        newUsersMonth,
+        publicQuizPercent,
+        topAvgQuizzes,
+        quizzesWithoutAttempts,
+        avgAttemptsPerUser
+    ] = await Promise.all([
+        getUserCount(),
+        getQuizCount(),
+        getAttemptCount(),
+        getAverageScore(),
+        getActiveUsersCount(),
+        getUniqueParticipantsCount(),
+        getMostPopularQuiz(),
+        getQuestionCount(),
+        getNewUsersCount(7),
+        getNewUsersCount(30),
+        getPublicQuizPercent(),
+        getTopAvgQuizzes(),
+        getQuizzesWithoutAttempts(),
+        getAvgAttemptsPerUser()
     ]);
-    res.render('pages/admin/dashboard', {title: 'Admin', uCount, qCount, cCount});
+
+    res.render('pages/admin/dashboard', {
+        title: 'Admin',
+        uCount,
+        qCount,
+        aCount,
+        avgScore,
+        activeUsersCount,
+        uniqueParticipantsCount,
+        mostPopularQuiz: mostPopularQuiz.title,
+        mostPopularQuizAttempts: mostPopularQuiz.attempts,
+        avgAttemptsPerUser,
+        questionCount,
+        newUsersWeek,
+        newUsersMonth,
+        publicQuizPercent,
+        topAvgQuizzes,
+        quizzesWithoutAttempts
+    });
 };
 
 export const listUsers = async (req, res) => {

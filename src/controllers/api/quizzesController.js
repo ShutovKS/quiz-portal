@@ -1,5 +1,6 @@
 ﻿// src/controllers/api/quizzesController.js
 import Quiz from '../../models/Quiz.js';
+import Question from '../../models/Question.js';
 
 export const list = async (req, res) => {
     const quizzes = await Quiz.find();
@@ -25,4 +26,11 @@ export const update = async (req, res) => {
 export const remove = async (req, res) => {
     await Quiz.findByIdAndDelete(req.params.id);
     res.status(204).end();
+};
+
+export const addQuestion = async (req, res) => {
+    const {quizId} = req.params;
+    const {text, type} = req.body;
+    const question = await Question.create({quiz: quizId, text, type});
+    res.status(201).json(question);
 };
