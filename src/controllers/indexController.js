@@ -20,3 +20,17 @@ export const showHome = async (req, res, next) => {
         next(err);
     }
 };
+
+export const showAbout = (req, res) => {
+    res.render('pages/about', {
+        title: 'О проекте',
+        currentUser: req.user,
+    })
+};
+
+export const showContact = (req, res) => {
+    res.render('pages/contact', {
+        title: 'Контакты',
+        currentUser: req.user,
+    })
+}
