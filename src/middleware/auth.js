@@ -6,14 +6,17 @@ export function ensureAuthenticated(req, res, next) {
 }
 
 export function requireAdmin(req, res, next) {
-    if (!req.session.userId || req.user.role !== 'admin') return res.status(403).send('Forbidden');
+    if (!req.isAuthenticated() || req.user.role !== 'admin') {
+        console.log('User is not admin or not logged in', req.user);
+        return res.status(404).render('pages/404', {title: '404', layout: false});
+    }
     next();
 }
 
 export function requireOwnerOrAdminForProfile(req, res, next) {
     if (!req.session.userId || req.user.role !== 'admin') {
         if (req.user._id.toString() !== req.params.id) {
-            return res.status(403).send('Forbidden');
+            return res.status(404).render('pages/404');
         }
     }
     next();
