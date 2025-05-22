@@ -87,13 +87,13 @@ app.use('/', indexRouter);
 
 // — 404
 app.use((req, res) => {
-    res.status(404).render('pages/404', {title: '404'});
+    res.status(404).render('pages/404', {title: '404', layout: false});
 });
 
 // — Ошибки
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).render('pages/500', {title: 'Ошибка сервера'});
+app.use((req, res) => {
+    console.error(req.error);
+    res.status(500).render('pages/500', {title: 'Ошибка сервера', layout: false});
 });
 
 const PORT = process.env.PORT || 3000;

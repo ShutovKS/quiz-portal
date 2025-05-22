@@ -9,7 +9,6 @@ import usersRouter from './users.js';
 import adminRouter from './admin.js';
 
 import apiQuizRouter from './api/quizzes.js';
-// … и по аналогии api/users, api/comments
 
 const router = Router();
 
@@ -21,6 +20,5 @@ router.use('/', usersRouter);
 router.use('/admin', adminRouter);
 
 router.use('/api/quizzes', apiQuizRouter);
-// … остальные api
 
 export default router;
