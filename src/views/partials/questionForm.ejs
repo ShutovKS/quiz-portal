@@ -1,0 +1,21 @@
+<form id="questionForm" data-question-id="<%= question?._id || '' %>" data-quiz-id="<%= quizId %>">
+    <input type="hidden" name="quizId" value="<%= quizId %>">
+    <div class="mb-3">
+        <label for="questionText" class="form-label">Текст вопроса</label>
+        <input type="text" class="form-control" id="questionText" name="text" value="<%= question?.text || '' %>" required>
+    </div>
+    <div class="mb-3">
+        <label for="questionType" class="form-label">Тип вопроса</label>
+        <select class="form-select" id="questionType" name="type" required>
+            <option value="single" <%= question?.type === 'single' ? 'selected' : '' %>>Один вариант</option>
+            <option value="multiple" <%= question?.type === 'multiple' ? 'selected' : '' %>>Несколько вариантов</option>
+            <option value="truefalse" <%= question?.type === 'truefalse' ? 'selected' : '' %>>Верно/Неверно</option>
+            <option value="text" <%= question?.type === 'text' ? 'selected' : '' %>>Свободный ответ</option>
+        </select>
+    </div>
+    <!-- Здесь можно добавить динамическое добавление вариантов ответа через JS -->
+    <div id="optionsContainer"></div>
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </div>
+</form> 

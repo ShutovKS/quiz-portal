@@ -71,19 +71,59 @@
                      data-bs-parent="#quizQuestions">
                     <div class="accordion-body d-flex justify-content-between align-items-start">
                         <div>
-                            <% if (q.options?.length) { %>
-                                <ul class="list-unstyled mb-0 small">
-                                    <% q.options.forEach(o => { %>
-                                        <li>
-                                            <% if (o.isCorrect) { %>
-                                                <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                            <% } else { %>
-                                                <i class="bi bi-circle me-1"></i>
-                                            <% } %>
-                                            <%= o.text %>
+                            <% if (q.type === 'single' || q.type === 'multiple') { %>
+                                <div class="options-list" data-question-id="<%= q._id %>" data-question-type="<%= q.type %>">
+                                    <% if (q.options?.length) { %>
+                                        <ul class="list-unstyled mb-0 small">
+                                            <% q.options.forEach(o => { %>
+                                                <li class="d-flex align-items-center mb-1">
+                                                    <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= o._id %>" title="Сделать правильным/неправильным">
+                                                        <% if (o.isCorrect) { %>
+                                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                                        <% } else { %>
+                                                            <i class="bi bi-circle"></i>
+                                                        <% } %>
+                                                    </button>
+                                                    <span class="option-text flex-grow-1"><%= o.text %></span>
+                                                    <button type="button" class="btn btn-sm btn-link edit-option-btn" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= o._id %>" title="Редактировать вариант">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-link text-danger delete-option-btn" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= o._id %>" title="Удалить вариант">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </li>
+                                            <% }) %>
+                                        </ul>
+                                    <% } %>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2 add-option-btn" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>">
+                                        <i class="bi bi-plus"></i> Добавить вариант
+                                    </button>
+                                </div>
+                            <% } else if (q.type === 'truefalse') { %>
+                                <div class="options-list" data-question-id="<%= q._id %>" data-question-type="<%= q.type %>">
+                                    <ul class="list-unstyled mb-0 small">
+                                        <li class="d-flex align-items-center mb-1">
+                                            <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= q.options[0]?._id %>" title="Сделать правильным/неправильным">
+                                                <% if (q.options[0]?.isCorrect) { %>
+                                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                                <% } else { %>
+                                                    <i class="bi bi-circle"></i>
+                                                <% } %>
+                                            </button>
+                                            <span class="option-text flex-grow-1">Верно</span>
                                         </li>
-                                    <% }) %>
-                                </ul>
+                                        <li class="d-flex align-items-center mb-1">
+                                            <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= q.options[1]?._id %>" title="Сделать правильным/неправильным">
+                                                <% if (q.options[1]?.isCorrect) { %>
+                                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                                <% } else { %>
+                                                    <i class="bi bi-circle"></i>
+                                                <% } %>
+                                            </button>
+                                            <span class="option-text flex-grow-1">Неверно</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             <% } %>
                         </div>
 
@@ -93,8 +133,10 @@
                                     data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a class="dropdown-item d-flex gap-2 align-items-center"
-                                       href="/quizzes/<%= quiz._id %>/questions/<%= q._id %>/edit">
+                                    <a class="dropdown-item d-flex gap-2 align-items-center edit-question-btn"
+                                       href="#"
+                                       data-quiz-id="<%= quiz._id %>"
+                                       data-question-id="<%= q._id %>">
                                         <i class="bi bi-pencil-square"></i>Редактировать
                                     </a>
                                 </li>
@@ -139,10 +181,30 @@
         <% }) %>
     </div>
 
-    <a href="/quizzes/<%= quiz._id %>/questions/new" class="btn btn-outline-light w-100">
+    <a href="#" id="addQuestionBtn" class="btn btn-outline-light w-100">
         <i class="bi bi-plus-lg me-1"></i> Добавить вопрос
     </a>
 </div>
+
+<!-- Модалка для создания/редактирования вопроса -->
+<div class="modal fade" id="questionModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="questionModalTitle">Вопрос</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="questionFormContainer">
+                    <%- include('../../partials/questionForm', {quizId: quiz._id, question: null}) %>
+                </div>
+                <div id="questionFormMsg" class="mt-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/javascripts/quizzes-edit.js"></script>
 
 <script>
     (() => {

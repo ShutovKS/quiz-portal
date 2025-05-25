@@ -10,7 +10,6 @@ router.post('/quizzes', ensureAuthenticated, C.createQuiz);
 
 router.get('/quizzes/new', ensureAuthenticated, C.showQuizCreateForm);
 
-
 router.get('/quizzes/:id', C.showQuiz);
 router.put('/quizzes/:id', ensureAuthenticated, requireOwnerOrAdmin('Quiz'), C.updateQuiz);
 router.delete('/quizzes/:id', ensureAuthenticated, requireOwnerOrAdmin('Quiz'), C.deleteQuiz);

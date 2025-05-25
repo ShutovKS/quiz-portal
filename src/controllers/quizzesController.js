@@ -84,7 +84,55 @@ export const updateQuiz = async (req, res) => {
             req.flash('error', 'Квиз не найден');
             return res.redirect('/quizzes');
         }
-        // Обновить поля
+
+        // --- Предварительная очистка и валидация вопросов перед сохранением квиза ---
+        const questions = await Question.find({quiz: quizId});
+        for (const q of questions) {
+            // Очистка вариантов для truefalse вопросов (если есть некорректные старые)
+            if (q.type === 'truefalse') {
+                 let changed = false;
+                 // Удаляем все текущие варианты, если их не ровно 2 или их текст не 'Верно'/'Неверно'
+                 if (q.options.length !== 2 || !q.options.some(o => o.text === 'Верно') || !q.options.some(o => o.text === 'Неверно')) {
+                      q.options = [];
+                      changed = true;
+                 }
+                 // Добавляем стандартные, если их нет (т.е. после очистки или если изначально было 0)
+                 if (q.options.length === 0) {
+                      q.options.push({text: 'Верно', isCorrect: false});
+                      q.options.push({text: 'Неверно', isCorrect: false});
+                      changed = true;
+                 } else if (q.options.length === 2) {
+                    // Если ровно 2 варианта, убедимся, что их тексты 'Верно' и 'Неверно'
+                    const optionTexts = q.options.map(o => o.text).sort();
+                     if (optionTexts[0] !== 'Верно' || optionTexts[1] !== 'Неверно') {
+                         q.options = [];
+                         q.options.push({text: 'Верно', isCorrect: false});
+                         q.options.push({text: 'Неверно', isCorrect: false});
+                         changed = true;
+                     }
+                 }
+                // Сохраняем вопрос, если были изменения
+                 if (changed) {
+                    await q.save();
+                 }
+            }
+
+            // Валидация после потенциальной очистки
+            // Для single/multiple должны быть минимум 2 варианта
+            if ((q.type === 'single' || q.type === 'multiple') && (!q.options || q.options.length < 2)) {
+                req.flash('error', `Вопрос "${q.text}" (${q.type}) должен иметь минимум 2 варианта ответа.`);
+                return res.redirect(`/quizzes/${quizId}/edit`); // Редирект обратно на страницу редактирования
+            }
+             // Для truefalse проверяем ровно 2 варианта (после очистки они должны быть)
+             if (q.type === 'truefalse' && (!q.options || q.options.length !== 2)) {
+                 // Это уже не должно происходить после логики очистки выше, но оставляем как финальную проверку
+                 req.flash('error', `Вопрос "${q.text}" (${q.type}) должен иметь ровно 2 варианта ответа.`);
+                 return res.redirect(`/quizzes/${quizId}/edit`);
+             }
+        }
+        // --- Конец очистки и валидации вопросов ---
+
+        // Обновить поля квиза
         quiz.title = title;
         quiz.description = description;
         quiz.isPublic = !!isPublic;
