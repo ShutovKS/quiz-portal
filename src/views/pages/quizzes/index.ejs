@@ -1,5 +1,5 @@
 <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
-    <h1 class="h3 mb-0 flex-grow-1">Все&nbsp;квизы</h1>
+    <h1 class="h3 mb-0 flex-grow-1">Все квизы</h1>
 
     <!-- поиск -->
     <form class="d-inline-block" action="/search" method="GET">
@@ -33,7 +33,7 @@
 
 <!-- сетка карточек -->
 <% if (quizzes.length) { %>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-md-4 g-4">
         <% quizzes.forEach(q => { %>
             <%- include('../../partials/quizCard', {
             quiz: q,
