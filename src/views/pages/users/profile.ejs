@@ -9,7 +9,7 @@
     </p>
     <p class="small text-opacity-75">
         Зарегистрирован:
-        <%= new Date(currentUser.createdAt).toLocaleDateString('ru-RU', {
+        <%= new Date(currentUser.registeredAt).toLocaleDateString('ru-RU', {
             day: '2-digit', month: 'long', year: 'numeric'
         }) %>
     </p>
