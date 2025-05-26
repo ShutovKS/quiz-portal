@@ -1,4 +1,4 @@
-﻿// src/controllers/quizzesController.js
+// src/controllers/quizzesController.js
 import Quiz from '../models/Quiz.js';
 import Question from '../models/Question.js';
 import Attempt from '../models/Attempt.js';
@@ -32,9 +32,24 @@ export const listQuizzes = async (req, res, next) => {
             Category.find().sort({name: 1}).lean()
         ]);
 
+        // Получаем количество вопросов для каждого квиза
+        const quizIds = quizzes.map(q => q._id);
+        const questionsCounts = await Question.aggregate([
+            { $match: { quiz: { $in: quizIds } } },
+            { $group: { _id: '$quiz', count: { $sum: 1 } } }
+        ]);
+        const questionsCountMap = Object.fromEntries(questionsCounts.map(q => [q._id.toString(), q.count]));
+
+        // Фильтруем пустые квизы для всех, кроме их автора
+        const filteredQuizzes = quizzes.filter(q => {
+            const count = questionsCountMap[q._id.toString()] || 0;
+            if (req.user && q.user && q.user._id.toString() === req.user._id.toString()) return true;
+            return count > 0;
+        });
+
         res.render('pages/quizzes/index', {
             title: 'Все квизы',
-            quizzes,
+            quizzes: filteredQuizzes,
             categories,
             q: search,
             cat
@@ -57,7 +72,7 @@ export const createQuiz = async (req, res) => {
         user: req.user._id
     });
     // Если вопросы передаются сразу — тут можно их сохранить
-    res.redirect(`/quizzes/${quiz._id}`);
+    res.redirect(`/quizzes/${quiz._id}/edit`);
 };
 
 export const showQuiz = async (req, res) => {
@@ -153,6 +168,7 @@ export const deleteQuiz = async (req, res) => {
         // Удаляем сам квиз
         const quiz = await Quiz.findByIdAndDelete(quizId);
         if (!quiz) {
+            if (req.xhr) return res.status(404).json({error: 'Квиз не найден'});
             req.flash('error', 'Квиз не найден');
             return res.redirect('/quizzes');
         }
@@ -163,10 +179,17 @@ export const deleteQuiz = async (req, res) => {
             Attempt.deleteMany({quiz: quizId}),
         ]);
 
+        if (req.xhr) {
+            return res.json({success: true});
+        }
+
         req.flash('success', 'Квиз и всё связанное удалены');
         res.redirect('/quizzes');
     } catch (err) {
         console.error(err);
+        if (req.xhr) {
+            return res.status(500).json({error: 'Ошибка при удалении квиза'});
+        }
         req.flash('error', 'Ошибка при удалении квиза');
         res.redirect('back');
     }
@@ -175,6 +198,12 @@ export const deleteQuiz = async (req, res) => {
 export const submitQuizAnswers = async (req, res) => {
     const quizId = req.params.id;
     const raw = req.body.answers || {};
+    for (const key in req.body) {
+        const match = key.match(/^answers\[(.+)\]$/);
+        if (match) {
+            raw[match[1]] = req.body[key];
+        }
+    }
     const questions = await Question.find({quiz: quizId});
     // отфильтруем только те, что можно автоматически проверить
     const autoQ = questions.filter(q => q.type !== 'text');
@@ -192,10 +221,15 @@ export const submitQuizAnswers = async (req, res) => {
         }
     });
     // сохранить попытку
+    // answers приводим к обычному объекту (если вдруг Map)
+    let answersObj = raw;
+    if (raw instanceof Map) {
+        answersObj = Object.fromEntries(raw.entries());
+    }
     const attempt = await Attempt.create({
         user: req.user._id,
         quiz: quizId,
-        answers: raw,
+        answers: answersObj,
         score
     });
     // обновить статистику
@@ -217,4 +251,15 @@ export const showQuizResult = async (req, res) => {
         title: `Результат: ${attempt.quiz.title}`,
         attempt, questions, total
     });
+};
+
+// Просмотр приватного квиза по токену
+export const showPrivateQuiz = async (req, res) => {
+    const token = req.params.token;
+    const quiz = await Quiz.findOne({ accessToken: token }).populate('user');
+    if (!quiz) {
+        return res.status(404).send('Квиз не найден');
+    }
+    const questions = await Question.find({ quiz: quiz._id });
+    res.render('pages/quizzes/show', { title: quiz.title, quiz, questions });
 };

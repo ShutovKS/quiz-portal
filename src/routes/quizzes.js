@@ -18,4 +18,6 @@ router.post('/quizzes/:id', ensureAuthenticated, C.submitQuizAnswers);
 router.get('/quizzes/:id/edit', ensureAuthenticated, requireOwnerOrAdmin('Quiz'), C.showQuizEditForm);
 router.get('/quizzes/:id/result', ensureAuthenticated, C.showQuizResult);
 
+router.get('/quizzes/private/:token', C.showPrivateQuiz);
+
 export default router;

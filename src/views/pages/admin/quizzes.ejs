@@ -3,6 +3,10 @@
 </h1>
 <%- include('../../partials/flash') %>
 
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>
+
 <div class="table-responsive">
     <table class="table table-hover align-middle">
         <thead class="table-light">
@@ -40,52 +44,37 @@
 
                 <!-- actions -->
                 <td class="text-end">
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-light dropdown-toggle"
-                                data-bs-toggle="dropdown"></button>
-                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item d-flex gap-2 align-items-center"
-                                   href="/quizzes/<%= q._id %>/edit">
-                                    <i class="bi bi-pencil-square"></i>Редактировать
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex gap-2 align-items-center"
-                                   href="/quizzes/<%= q._id %>">
-                                    <i class="bi bi-eye"></i>Открыть
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <button class="dropdown-item d-flex gap-2 align-items-center text-danger"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#del-<%= q._id %>">
-                                    <i class="bi bi-trash"></i>Удалить
-                                </button>
-                            </li>
-                        </ul>
+                    <div class="admin-action-btns d-inline">
+                        <a class="btn btn-sm btn-outline-primary me-1" href="/quizzes/<%= q._id %>/edit" title="Редактировать">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a class="btn btn-sm btn-outline-secondary me-1" href="/quizzes/<%= q._id %>" title="Открыть">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#del-<%= q._id %>" title="Удалить">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </div>
                 </td>
             </tr>
 
             <!-- delete-modal -->
-            <div class="modal fade" id="del-<%= q._id %>" tabindex="-1">
+            <div class="modal fade modal-custom-mint" id="del-<%= q._id %>" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-dark border-secondary">
-                        <div class="modal-header border-secondary">
-                            <h5 class="modal-title">Удалить квиз?</h5>
-                            <button type="button" class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"></button>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                Удалить квиз?
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                         </div>
                         <div class="modal-body">
-                            «<%= q.title %>» исчезнет навсегда. Точно?
+                            <div class="mb-2">«<strong><%= q.title %></strong>» исчезнет навсегда.<br>Вы уверены?</div>
                         </div>
-                        <div class="modal-footer border-secondary">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <form action="/admin/quizzes/<%= q._id %>?_method=DELETE" method="POST">
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <form action="/admin/quizzes/<%= q._id %>?_method=DELETE" method="POST" class="d-inline">
                                 <button class="btn btn-danger">Удалить</button>
                             </form>
                         </div>

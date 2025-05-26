@@ -43,10 +43,17 @@
 <!-- лента квизов -->
 <% if ((quizzes || []).length) { %>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        <% quizzes.forEach(q => { %>
-            <%- include('../partials/quizCard', { quiz: q, currentUser }) %>
+        <% quizzes.forEach((q, i) => { %>
+            <div style="--card-delay: <%= i * 0.07 %>s" class="quiz-card-animated">
+                <%- include('../partials/quizCard', { quiz: q, currentUser }) %>
+            </div>
         <% }) %>
     </div>
 <% } else { %>
     <p class="text-center text-muted">Пока пусто — будь первым, создай контент!</p>
 <% } %>
+
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+
+<script src="/javascripts/main.js"></script>

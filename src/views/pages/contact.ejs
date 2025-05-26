@@ -6,25 +6,39 @@
                 Есть вопросы, предложения или хотите сотрудничать? Напишите нам!
             </p>
             <ul class="list-unstyled mb-4 text-center">
-                <li><i class="bi bi-envelope me-2"></i> support@quizportal.ru</li>
-                <li><i class="bi bi-telegram me-2"></i> @quizportal_support</li>
+                <li><i class="bi bi-envelope me-2"></i> i@shutovks.ru</li>
+                <li><i class="bi bi-telegram me-2"></i> @shutovks</li>
                 <li><i class="bi bi-geo-alt me-2"></i> Москва, Россия</li>
             </ul>
-            <form>
+            <% if (typeof success !== 'undefined') { %>
+                <div class="alert alert-success" role="alert">
+                    <%= success %>
+                </div>
+            <% } %>
+            <% if (typeof error !== 'undefined') { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+            <form action="/contact" method="POST">
                 <div class="mb-3">
                     <label for="name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="name" placeholder="Ваше имя">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Ваше имя" required>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Ваш email">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Ваш email" required>
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Сообщение</label>
-                    <textarea class="form-control" id="message" rows="4" placeholder="Ваше сообщение..."></textarea>
+                    <textarea class="form-control" id="message" name="message" rows="4" placeholder="Ваше сообщение..." required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Отправить</button>
             </form>
         </div>
     </div>
 </div>
+
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>

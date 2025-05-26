@@ -32,7 +32,7 @@ const passed = pct >= 70;          // или твой own threshold
         </p>
 
         <div class="d-flex justify-content-center gap-2">
-            <a href="/quizzes/<%= attempt.quiz._id %>" class="btn btn-outline-light">
+            <a href="/quizzes/<%= attempt.quiz._id %>" class="btn btn-outline-primary">
                 Попробовать ещё раз
             </a>
             <a href="/quizzes" class="btn btn-primary">К списку квизов</a>
@@ -43,12 +43,23 @@ const passed = pct >= 70;          // или твой own threshold
 <!-- ===== details ================================================== -->
 <div class="accordion mb-5" id="resultDetails">
     <% questions.forEach((q, i) => {
-        const ua = attempt.answers.get(q._id.toString());
+        // Получаем ответ пользователя для текущего вопроса
+        let ua = attempt.answers instanceof Map
+            ? attempt.answers.get(q._id.toString())
+            : attempt.answers[q._id.toString()];
+        // Для multiple всегда массив
+        if(q.type === 'multiple' && !Array.isArray(ua)) ua = ua ? [ua] : [];
+        // Для single/truefalse всегда строка
+        if((q.type === 'single' || q.type === 'truefalse') && Array.isArray(ua)) ua = ua[0] || '';
         const corr = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
-
-        const ok = q.type === 'text'
-                ? ua?.trim().toLowerCase() === q.options.find(o => o.isCorrect)?.text.trim().toLowerCase()
-                : (Array.isArray(ua) ? ua.some(a => corr.includes(a)) : corr.includes(ua));
+        let ok;
+        if(q.type === 'text') {
+            ok = ua?.trim().toLowerCase() === q.options.find(o => o.isCorrect)?.text.trim().toLowerCase();
+        } else if(q.type === 'multiple') {
+            ok = corr.length === ua.length && corr.every(id => ua.includes(id));
+        } else {
+            ok = corr.includes(ua);
+        }
     %>
     <div class="accordion-item border-2
               <%= ok ? 'border-success' : 'border-danger' %>">
@@ -113,3 +124,7 @@ const passed = pct >= 70;          // или твой own threshold
         c.setAttribute('stroke', varName);
     });
 </script>
+
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>

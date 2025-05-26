@@ -5,6 +5,22 @@
             <h1 class="h4 text-center mb-4">Редактировать квиз</h1>
             <%- include('../../partials/flash') %>
 
+            <% if (typeof success !== 'undefined' && success) { %>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast({message: '<%= success %>', type: 'success', icon: 'bi-check-circle-fill'});
+                });
+            </script>
+            <% } %>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showToast({message: '<%= error %>', type: 'error', icon: 'bi-x-circle-fill'});
+                });
+            </script>
+            <% } %>
+
             <!-- === quiz meta === -->
             <form action="/quizzes/<%= quiz._id %>?_method=PUT"
                   method="POST"
@@ -129,7 +145,7 @@
 
                         <!-- dropdown -->
                         <div class="dropdown ms-3">
-                            <button class="btn btn-sm btn-outline-light dropdown-toggle"
+                            <button class="btn btn-sm btn-outline-primary dropdown-toggle"
                                     data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu dropdown-menu-end">
                                 <li>
@@ -157,21 +173,22 @@
             </div>
 
             <!-- delete modal -->
-            <div class="modal fade" id="delQ-<%= q._id %>" tabindex="-1">
+            <div class="modal fade modal-custom-mint" id="delQ-<%= q._id %>" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg border-secondary">
-                        <div class="modal-header border-secondary">
-                            <h5 class="modal-title">Удалить вопрос?</h5>
-                            <button type="button" class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"></button>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                Удалить вопрос?
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                         </div>
                         <div class="modal-body">
                             <%= q.text %> <br> <small class="text-secondary">(<%= q.type %>)</small>
                         </div>
-                        <div class="modal-footer border-secondary">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <form action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE"
-                                  method="POST">
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <form action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE" method="POST" class="d-inline">
                                 <button class="btn btn-danger">Удалить</button>
                             </form>
                         </div>
@@ -181,18 +198,21 @@
         <% }) %>
     </div>
 
-    <a href="#" id="addQuestionBtn" class="btn btn-outline-light w-100">
+    <a href="#" id="addQuestionBtn" class="btn btn-outline-primary w-100">
         <i class="bi bi-plus-lg me-1"></i> Добавить вопрос
     </a>
 </div>
 
 <!-- Модалка для создания/редактирования вопроса -->
-<div class="modal fade" id="questionModal" tabindex="-1">
+<div class="modal fade modal-custom-mint" id="questionModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title" id="questionModalTitle">Вопрос</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionModalTitle">
+                    <i class="bi bi-question-circle text-primary"></i>
+                    Вопрос
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
                 <div id="questionFormContainer">
@@ -203,6 +223,10 @@
         </div>
     </div>
 </div>
+
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>
 
 <script src="/javascripts/quizzes-edit.js"></script>
 

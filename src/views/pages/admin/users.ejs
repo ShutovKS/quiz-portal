@@ -38,51 +38,37 @@
                 <!-- actions -->
                 <td class="text-end">
                     <% if (!u._id.equals(currentUser._id)) { %>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-light dropdown-toggle"
-                                    data-bs-toggle="dropdown"></button>
-                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                <!-- toggle role -->
-                                <li>
-                                    <form action="/admin/users/<%= u._id %>/toggle-admin" method="POST">
-                                        <button class="dropdown-item d-flex gap-2 align-items-center" type="submit">
-                                            <i class="bi bi-person-gear"></i>
-                                            <%= u.role === 'admin' ? 'Сделать юзером' : 'Сделать админом' %>
-                                        </button>
-                                    </form>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <!-- delete -->
-                                <li>
-                                    <button class="dropdown-item d-flex gap-2 align-items-center text-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#del-<%= u._id %>">
-                                        <i class="bi bi-trash"></i> Удалить
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="admin-action-btns d-inline">
+                        <form action="/admin/users/<%= u._id %>/toggle-admin" method="POST" class="d-inline">
+                            <button class="btn btn-sm btn-outline-secondary me-1" title="<%= u.role === 'admin' ? 'Сделать юзером' : 'Сделать админом' %>">
+                                <i class="bi bi-person-gear"></i>
+                            </button>
+                        </form>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#del-<%= u._id %>" title="Удалить">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
                     <% } %>
                 </td>
             </tr>
 
             <!-- delete modal -->
-            <div class="modal fade" id="del-<%= u._id %>" tabindex="-1">
+            <div class="modal fade modal-custom-mint" id="del-<%= u._id %>" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-dark border-secondary">
-                        <div class="modal-header border-secondary">
-                            <h5 class="modal-title">Удалить пользователя?</h5>
-                            <button type="button" class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"></button>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                Удалить пользователя?
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                         </div>
                         <div class="modal-body">
-                            <%= u.name %> &lt;<%= u.email %>&gt;
+                            <strong><%= u.name %></strong> &lt;<%= u.email %>&gt;
                         </div>
-                        <div class="modal-footer border-secondary">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <form action="/admin/users/<%= u._id %>?_method=DELETE" method="POST">
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <form action="/admin/users/<%= u._id %>?_method=DELETE" method="POST" class="d-inline">
                                 <button class="btn btn-danger">Удалить</button>
                             </form>
                         </div>
@@ -94,3 +80,7 @@
         </tbody>
     </table>
 </div>
+
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>

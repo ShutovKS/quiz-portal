@@ -7,5 +7,6 @@ const router = Router();
 router.get('/', C.showHome);
 router.get('/about', C.showAbout);
 router.get('/contact', C.showContact);
+router.post('/contact', C.postContact);
 
 export default router;

@@ -22,10 +22,10 @@
                             <input type="radio"
                                    class="btn-check"
                                    name="answers[<%= q._id %>]"
-                                   id="opt-<%= o._id %>"
+                                   id="opt-<%= q._id %>-<%= o._id %>"
                                    value="<%= o._id %>" required>
                             <label class="btn btn-outline-primary text-start"
-                                   for="opt-<%= o._id %>"><%= o.text %></label>
+                                   for="opt-<%= q._id %>-<%= o._id %>"><%= o.text %></label>
                         <% }) %>
                     </div>
 
@@ -35,11 +35,11 @@
                         <% q.options.forEach(o => { %>
                             <input type="checkbox"
                                    class="btn-check"
-                                   name="answers[<%= q._id %>]"
-                                   id="opt-<%= o._id %>"
+                                   name="answers[<%= q._id %>][]"
+                                   id="opt-<%= q._id %>-<%= o._id %>"
                                    value="<%= o._id %>">
                             <label class="btn btn-outline-primary text-start"
-                                   for="opt-<%= o._id %>"><%= o.text %></label>
+                                   for="opt-<%= q._id %>-<%= o._id %>"><%= o.text %></label>
                         <% }) %>
                     </div>
 
@@ -69,20 +69,25 @@
         /* авто-фокус на первом text-input */
         form.querySelector('textarea, input[type="text"]')?.focus();
 
-        /* прогресс-бар + active-state для labels */
+        /* прогресс-бар */
         form.addEventListener('change', () => {
-            const answered = new Set(
-                [...new FormData(form).keys()].map(k => k.match(/answers\[(.+)\]/)?.[1])
-            ).size;
-            bar.style.width = (answered / qCount * 100) + '%';
-        });
-
-        /* активный стиль для btn-check */
-        document.querySelectorAll('.btn-check').forEach(inp => {
-            inp.addEventListener('change', () => {
-                const lbl = form.querySelector(`label[for="${inp.id}"]`);
-                lbl.classList.toggle('active', inp.checked);
+            let answered = 0;
+            // Для каждого блока вопроса ищем, есть ли ответ
+            document.querySelectorAll('.card').forEach(card => {
+                // radio
+                if (card.querySelector('input[type="radio"]')) {
+                    if (card.querySelector('input[type="radio"]:checked')) answered++;
+                }
+                // checkbox
+                else if (card.querySelector('input[type="checkbox"]')) {
+                    if (card.querySelectorAll('input[type="checkbox"]:checked').length > 0) answered++;
+                }
+                // textarea
+                else if (card.querySelector('textarea')) {
+                    if (card.querySelector('textarea').value.trim()) answered++;
+                }
             });
+            bar.style.width = (answered / qCount * 100) + '%';
         });
     })();
 </script>

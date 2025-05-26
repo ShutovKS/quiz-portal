@@ -1,5 +1,6 @@
 ﻿// src/models/Quiz.js
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 
 const {Schema, model} = mongoose;
 
@@ -63,7 +64,7 @@ quizSchema.virtual('uniqueUsersCount', {
 // генерить токен при создании приватного квиза
 quizSchema.pre('save', function (next) {
     if (!this.isPublic && !this.accessToken) {
-        this.accessToken = require('crypto').randomBytes(8).toString('hex');
+        this.accessToken = crypto.randomBytes(8).toString('hex');
     }
     next();
 });

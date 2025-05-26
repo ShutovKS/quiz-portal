@@ -43,6 +43,11 @@
     <% } %>
 
     <!-- Квизы -->
+    <div class="col-12 mb-2 d-flex justify-content-end">
+        <a href="/quizzes/new" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>Создать квиз
+        </a>
+    </div>
     <% if (typeof quizzes !== 'undefined' && quizzes.length) { %>
         <div class="col-12">
             <div class="card text-bg">
@@ -51,11 +56,21 @@
                 </div>
                 <ul class="list-group list-group-flush list-group">
                     <% quizzes.forEach(q => { %>
-                        <li class="list-group-item list-group-item d-flex justify-content-between align-items-center">
-                            <a href="/quizzes/<%= q._id %>/edit" class="stretched-link text-reset text-decoration-none">
-                                <%= q.title %>
-                            </a>
-                            <i class="bi bi-chevron-right"></i>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold"><%= q.title %></span>
+                            <div class="btn-group" role="group">
+                                <a href="/quizzes/<%= q._id %>/edit" class="btn btn-outline-primary btn-sm" title="Редактировать">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-secondary btn-sm btn-copy-link" 
+                                        data-link="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>"
+                                        title="Скопировать ссылку">
+                                    <i class="bi bi-link-45deg"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm btn-delete-quiz" data-quiz-id="<%= q._id %>" title="Удалить">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </li>
                     <% }) %>
                 </ul>
@@ -64,6 +79,10 @@
     <% } %>
 </div>
 
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>
+
 <script>
     // генерим аватар-инициалы
     (function () {
@@ -71,4 +90,22 @@
         const initials = name.trim().split(/\s+/).map(w => w[0].toUpperCase()).slice(0, 2).join('');
         document.getElementById('avatar').textContent = initials;
     })();
+
+    // Копирование ссылки на квиз
+    document.querySelectorAll('.btn-copy-link').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const link = this.dataset.link;
+            const url = location.origin + link;
+            navigator.clipboard.writeText(url).then(() => {
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-success');
+                this.title = 'Ссылка скопирована!';
+                setTimeout(() => {
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-secondary');
+                    this.title = 'Скопировать ссылку';
+                }, 1200);
+            });
+        });
+    });
 </script>

@@ -21,8 +21,8 @@ const questionSchema = new Schema({
     },
     // для типов single/multiple:
     options: [{
+        _id: { type: Schema.Types.ObjectId, auto: true },
         text: {type: String, required: true},
-        // только для single/multiple:
         isCorrect: {type: Boolean, default: false},
     }],
 }, {
