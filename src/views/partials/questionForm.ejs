@@ -10,27 +10,11 @@
             <option value="single" <%= question?.type === 'single' ? 'selected' : '' %>>Один вариант</option>
             <option value="multiple" <%= question?.type === 'multiple' ? 'selected' : '' %>>Несколько вариантов</option>
             <option value="truefalse" <%= question?.type === 'truefalse' ? 'selected' : '' %>>Верно/Неверно</option>
-            <option value="text" <%= question?.type === 'text' ? 'selected' : '' %>>Свободный ответ</option>
         </select>
     </div>
-    <div class="mb-3" id="textAnswerContainer" style="display: <%= question?.type === 'text' ? 'block' : 'none' %>;">
-        <label for="textCorrectAnswer" class="form-label">Правильный ответ</label>
-        <input type="text" class="form-control" id="textCorrectAnswer" name="textCorrectAnswer" value="<%= (question?.type === 'text' && question?.options?.[0]?.text) ? question.options[0].text : '' %>">
-        <div class="form-text">Ответ будет сравниваться без учёта регистра и пробелов.</div>
-    </div>
-    <!-- Здесь можно добавить динамическое добавление вариантов ответа через JS -->
     <div id="optionsContainer"></div>
-</form>
-
-<script>
-// Показывать/скрывать поле правильного ответа для text-вопроса
-const typeSelect = document.getElementById('questionType');
-const textAnswerContainer = document.getElementById('textAnswerContainer');
-typeSelect?.addEventListener('change', function() {
-    if (this.value === 'text') {
-        textAnswerContainer.style.display = 'block';
-    } else {
-        textAnswerContainer.style.display = 'none';
-    }
-});
-</script> 
+    <div class="d-flex justify-content-between gap-2 mt-4">
+        <button type="submit" class="btn btn-primary flex-grow-1">Сохранить</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+    </div>
+</form> 

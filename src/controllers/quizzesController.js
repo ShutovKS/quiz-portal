@@ -225,15 +225,6 @@ export const submitQuizAnswers = async (req, res) => {
             const got = Array.isArray(given) ? given : [given];
             if (corr.length === got.length && corr.every(id => got.includes(id))) score++;
         }
-        if (q.type === 'text') {
-            // Берём правильный ответ (isCorrect: true)
-            const correctOption = q.options.find(o => o.isCorrect);
-            if (correctOption && typeof given === 'string') {
-                const userAns = given.trim().toLowerCase();
-                const correctAns = correctOption.text.trim().toLowerCase();
-                if (userAns === correctAns) score++;
-            }
-        }
     });
     // сохранить попытку
     // answers приводим к обычному объекту (если вдруг Map)
@@ -261,7 +252,7 @@ export const submitQuizAnswers = async (req, res) => {
 export const showQuizResult = async (req, res) => {
     const attempt = await Attempt.findById(req.query.attempt).populate('quiz');
     const questions = await Question.find({quiz: attempt.quiz._id});
-    const total = questions.filter(q => q.type !== 'text').length;
+    const total = questions.length;
     res.render('pages/quizzes/result', {
         title: `Результат: ${attempt.quiz.title}`,
         attempt, questions, total

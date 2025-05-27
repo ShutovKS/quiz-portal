@@ -54,7 +54,12 @@ const passed = pct >= 70;          // или твой own threshold
         const corr = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
         let ok;
         if(q.type === 'text') {
-            ok = ua?.trim().toLowerCase() === q.options.find(o => o.isCorrect)?.text.trim().toLowerCase();
+            // Приводим ua к строке, если это массив
+            let userText = Array.isArray(ua) ? (ua[0] || '') : (ua || '');
+            userText = userText.trim().toLowerCase();
+            const correctOption = q.options.find(o => o.isCorrect);
+            const correctText = correctOption ? correctOption.text.trim().toLowerCase() : '';
+            ok = !!userText && !!correctText && userText === correctText;
         } else if(q.type === 'multiple') {
             ok = corr.length === ua.length && corr.every(id => ua.includes(id));
         } else {
@@ -105,8 +110,8 @@ const passed = pct >= 70;          // или твой own threshold
 
                 <% } else { /* text */ %>
                 <p class="mb-1">Ваш ответ: <span
-                            class="<%= ok ? 'text-success' : 'text-danger' %>"><%= ua || '—' %></span></p>
-                <p class="text-success mb-0">Правильный: <%= q.options.find(o => o.isCorrect)?.text %></p>
+                            class="<%= ok ? 'text-success' : 'text-danger' %>"><%= (Array.isArray(ua) ? (ua[0] || '') : ua) || '—' %></span></p>
+                <p class="text-success mb-0">Правильный: <%= q.options.find(o => o.isCorrect)?.text || '—' %></p>
                 <% } %>
 
             </div>

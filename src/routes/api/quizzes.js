@@ -16,5 +16,6 @@ router.post('/:quizId/questions/:questionId/options', questionsC.addOption);
 router.put('/:quizId/questions/:questionId/options/:optionId', questionsC.editOption);
 router.delete('/:quizId/questions/:questionId/options/:optionId', questionsC.deleteOption);
 router.post('/:quizId/questions', C.addQuestion);
+router.delete('/:quizId/questions/:questionId', questionsC.deleteQuestion);
 
 export default router;

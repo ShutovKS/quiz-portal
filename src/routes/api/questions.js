@@ -12,4 +12,6 @@ router.post('/:questionId/options', ensureAuthenticated, questionsC.addOption);
 router.put('/:questionId/options/:optionId', ensureAuthenticated, questionsC.editOption);
 router.delete('/:questionId/options/:optionId', ensureAuthenticated, questionsC.deleteOption);
 
+router.delete('/:questionId', ensureAuthenticated, questionsC.deleteQuestion);
+
 export default router; 

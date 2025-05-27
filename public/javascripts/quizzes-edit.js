@@ -36,8 +36,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     body: JSON.stringify(data)
                 });
                 if (!res.ok) throw new Error('Ошибка при сохранении вопроса');
-                // Можно обновить список вопросов на странице через fetch или location.reload()
-                location.reload();
+                const newQuestion = await res.json();
+                // Закрыть модалку (Bootstrap 5)
+                const modal = bootstrap.Modal.getInstance(document.getElementById('questionModal'));
+                if (modal) modal.hide();
+                // Добавить вопрос в DOM
+                addQuestionToDOM(newQuestion);
+                showToast({ message: 'Вопрос добавлен!', type: 'success', icon: 'bi-check-circle-fill' });
             } catch (err) {
                 questionFormMsg.textContent = err.message;
                 questionFormMsg.className = 'alert alert-danger';
@@ -72,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
         form.dataset.questionId = question?._id || '';
         form.querySelector('[name="text"]').value = question?.text || '';
-        form.querySelector('[name="type"]').value = question?.type || 'single';
+        form.querySelector('[name="type"]').value = (question?.type === 'single' || question?.type === 'multiple' || question?.type === 'truefalse') ? question?.type : 'single';
         // TODO: динамика для вариантов ответа
     }
 
@@ -85,12 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const quizId = btn.dataset.quizId;
             const questionId = btn.dataset.questionId;
             const optionId = btn.dataset.optionId;
-            const optionTextSpan = btn.parentElement.querySelector('.option-text');
+            const optionTextSpan = btn.closest('li').querySelector('.option-text');
             const oldText = optionTextSpan.textContent;
             // Получаем тип вопроса
             const container = btn.closest('.options-list');
             const qType = container?.closest('.accordion-body')?.querySelector('[data-question-id]')?.getAttribute('data-question-type');
-            if (qType === 'truefalse' || qType === 'text') return; // запрещаем
+            if (qType === 'truefalse') return; // запрещаем
             // Показываем инпут для редактирования
             const input = document.createElement('input');
             input.type = 'text';
@@ -135,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Получаем тип вопроса
             const container = btn.closest('.options-list');
             const qType = container?.closest('.accordion-body')?.querySelector('[data-question-id]')?.getAttribute('data-question-type');
-            if (qType === 'truefalse' || qType === 'text') return; // запрещаем
+            if (qType === 'truefalse') return; // запрещаем
             if (!confirm('Удалить этот вариант?')) return;
             try {
                 const res = await fetch(`/api/quizzes/${quizId}/questions/${questionId}/options/${optionId}`, {
@@ -158,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Получаем тип вопроса
             const container = btn.closest('.options-list');
             const qType = container?.closest('.accordion-body')?.querySelector('[data-question-id]')?.getAttribute('data-question-type');
-            if (qType === 'truefalse' || qType === 'text') return; // запрещаем
+            if (qType === 'truefalse') return; // запрещаем
             // Показываем инпут для нового варианта
             const li = document.createElement('li');
             li.className = 'd-flex align-items-center mb-1';
@@ -352,5 +357,127 @@ document.addEventListener('DOMContentLoaded', function () {
         if (container) {
             container.innerHTML = renderOptionsList(question, quizId);
         }
+    }
+
+    // === УДАЛЕНИЕ ВОПРОСА ===
+    document.querySelectorAll('.modal form[action*="/questions/"], .modal form[action*="/questions/"][method="POST"]').forEach(form => {
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            // Получаем quizId и questionId из action
+            const match = form.action.match(/quizzes\/([a-f0-9]+)\/questions\/([a-f0-9]+)/);
+            const quizId = match ? match[1] : null;
+            const questionId = match ? match[2] : null;
+            if (!quizId || !questionId) return alert('Ошибка: не удалось определить вопрос');
+            const url = `/api/quizzes/${quizId}/questions/${questionId}`;
+            const res = await fetch(url, { method: 'DELETE' });
+            if (res.ok) {
+                // Удаляем вопрос из DOM
+                const accItem = document.getElementById('c-' + questionId)?.closest('.accordion-item');
+                if (accItem) accItem.remove();
+                // Закрываем модалку
+                const modal = bootstrap.Modal.getInstance(form.closest('.modal'));
+                if (modal) modal.hide();
+            } else {
+                alert('Ошибка при удалении вопроса');
+            }
+        });
+    });
+
+    // === Добавить вопрос в DOM ===
+    function addQuestionToDOM(question) {
+        const quizQuestions = document.getElementById('quizQuestions');
+        if (!quizQuestions) return;
+        // Определяем новый номер вопроса
+        const currentCount = quizQuestions.querySelectorAll('.accordion-item').length;
+        const html = renderQuestionAccordionItem(question, currentCount + 1);
+        quizQuestions.insertAdjacentHTML('beforeend', html);
+        // Обновить счётчик
+        const header = document.querySelector('h2.h5.mb-3');
+        if (header) header.innerHTML = `Вопросы (${currentCount + 1})`;
+    }
+
+    // === Рендер одного вопроса (accordion-item) ===
+    function renderQuestionAccordionItem(q, number) {
+        let optionsHtml = '';
+        if (q.type === 'single' || q.type === 'multiple') {
+            optionsHtml += `<div class="options-list" data-question-id="${q._id}" data-question-type="${q.type}">`;
+            if (q.options && q.options.length) {
+                optionsHtml += '<ul class="list-unstyled mb-0 small">';
+                q.options.forEach(o => {
+                    optionsHtml += `<li class="d-flex align-items-center mb-1">
+                        <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="${q.quiz}" data-question-id="${q._id}" data-option-id="${o._id}" title="Сделать правильным/неправильным">`;
+                    if (o.isCorrect) {
+                        optionsHtml += '<i class="bi bi-check-circle-fill text-success"></i>';
+                    } else {
+                        optionsHtml += '<i class="bi bi-circle"></i>';
+                    }
+                    optionsHtml += `</button>
+                        <span class="option-text flex-grow-1">${o.text}</span>
+                        <button type="button" class="btn btn-sm btn-link edit-option-btn" data-quiz-id="${q.quiz}" data-question-id="${q._id}" data-option-id="${o._id}" title="Редактировать вариант">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-link text-danger delete-option-btn" data-quiz-id="${q.quiz}" data-question-id="${q._id}" data-option-id="${o._id}" title="Удалить вариант">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </li>`;
+                });
+                optionsHtml += '</ul>';
+            }
+            optionsHtml += `<button type="button" class="btn btn-sm btn-outline-primary mt-2 add-option-btn" data-quiz-id="${q.quiz}" data-question-id="${q._id}">
+                <i class="bi bi-plus"></i> Добавить вариант
+            </button></div>`;
+        } else if (q.type === 'truefalse') {
+            optionsHtml += `<div class="options-list" data-question-id="${q._id}" data-question-type="${q.type}"><ul class="list-unstyled mb-0 small">`;
+            ['Верно', 'Неверно'].forEach((text, idx) => {
+                const o = q.options?.[idx] || {};
+                optionsHtml += `<li class="d-flex align-items-center mb-1">
+                    <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="${q.quiz}" data-question-id="${q._id}" data-option-id="${o._id || ''}" title="Сделать правильным/неправильным">${o.isCorrect ? '<i class=\"bi bi-check-circle-fill text-success\"></i>' : '<i class=\"bi bi-circle\"></i>'}</button>
+                    <span class="option-text flex-grow-1">${text}</span>
+                </li>`;
+            });
+            optionsHtml += '</ul></div>';
+        }
+        return `<div class="accordion-item text-bg border-secondary">
+            <h2 class="accordion-header" id="h-${q._id}">
+                <button class="accordion-button collapsed text-bg" type="button" data-bs-toggle="collapse" data-bs-target="#c-${q._id}" aria-expanded="false">
+                    <span class="me-2 text-muted">#${number}</span>
+                    <span class="question-title-text" style="max-width: 70%; display: inline-block; margin-right: 1rem;">${q.text}</span>
+                    <small class="ms-2 text-secondary">(${q.type})</small>
+                </button>
+            </h2>
+            <div id="c-${q._id}" class="accordion-collapse collapse" data-bs-parent="#quizQuestions">
+                <div class="accordion-body d-flex justify-content-between align-items-start">
+                    <div>${optionsHtml}</div>
+                    <div class="d-flex gap-2 ms-3">
+                        <button class="btn btn-sm btn-outline-danger d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delQ-${q._id}" type="button">
+                            <i class="bi bi-trash me-1"></i> Удалить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- delete modal -->
+            <div class="modal fade modal-custom-mint" id="delQ-${q._id}" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                Удалить вопрос?
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                        </div>
+                        <div class="modal-body">
+                            ${q.text} <br> <small class="text-secondary">(${q.type})</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal" type="button">Отмена</button>
+                            <form action="/quizzes/${q.quiz}/questions/${q._id}?_method=DELETE" method="POST" class="d-inline">
+                                <button class="btn btn-danger">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
     }
 }); 

@@ -16,7 +16,7 @@ const questionSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ['single', 'multiple', 'text', 'truefalse'],
+        enum: ['single', 'multiple', 'truefalse'],
         default: 'single',
     },
     // для типов single/multiple:

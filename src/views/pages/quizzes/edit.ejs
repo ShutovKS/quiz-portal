@@ -22,7 +22,7 @@
                             <% } %>
 
                                 <!-- === quiz meta === -->
-                                <form action="/quizzes/<%= quiz._id %>?_method=PUT" method="POST"
+                                <form action="/quizzes/<%= quiz._id %>?_method=PUT" method="POST" id="questionForm"
                                     class="needs-validation" novalidate>
 
                                     <div class="form-floating mb-3">
@@ -59,10 +59,7 @@
                                                         data-bs-toggle="collapse" data-bs-target="#c-<%= q._id %>"
                                                         aria-expanded="false">
                                                         <span class="me-2 text-muted">#<%= i + 1 %></span>
-                                                        <input type="text"
-                                                            class="form-control d-inline-block w-auto question-title-input"
-                                                            name="questionTitles[<%= q._id %>]" value="<%= q.text %>"
-                                                            style="max-width: 70%; display: inline-block; margin-right: 1rem;">
+                                                        <span class="question-title-text" style="max-width: 70%; display: inline-block; margin-right: 1rem;"><%= q.text %></span>
                                                         <small class="ms-2 text-secondary">(<%= q.type %>)</small>
                                                     </button>
                                                 </h2>
@@ -167,13 +164,14 @@
                                                                             </li>
                                                                         </ul>
                                                                     </div>
-                                                                    <% } %>
+                                                                <% } %>
                                                         </div>
                                                         <div class="d-flex gap-2 ms-3">
                                                             <button
                                                                 class="btn btn-sm btn-outline-danger d-flex align-items-center"
                                                                 data-bs-toggle="modal"
-                                                                data-bs-target="#delQ-<%= q._id %>">
+                                                                data-bs-target="#delQ-<%= q._id %>"
+                                                                type="button">
                                                                 <i class="bi bi-trash me-1"></i> Удалить
                                                             </button>
                                                         </div>
@@ -201,7 +199,8 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn btn-outline-secondary"
-                                                                data-bs-dismiss="modal">Отмена</button>
+                                                                data-bs-dismiss="modal"
+                                                                type="button">Отмена</button>
                                                             <form
                                                                 action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE"
                                                                 method="POST" class="d-inline">
@@ -214,59 +213,56 @@
                                             <% }) %>
                                     </div>
 
-                                    <a href="#" id="addQuestionBtn" class="btn btn-outline-primary w-100">
+                                    <a href="#" id="addQuestionBtn" class="btn btn-outline-primary w-100" type="button">
                                         <i class="bi bi-plus-lg me-1"></i> Добавить вопрос
                                     </a>
 
-                                    <button type="submit"
+                                    <button type="submit" form="questionForm"
                                         class="btn btn-primary w-100 mb-2 mt-4">Сохранить&nbsp;изменения</button>
                                 </form>
+
+                                <!-- Модалка для создания/редактирования вопроса -->
+                                <div class="modal fade modal-custom-mint" id="questionModal" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="questionModalTitle">
+                                                    <i class="bi bi-question-circle text-primary"></i>
+                                                    Вопрос
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div id="questionFormContainer">
+                                                    <%- include('../../partials/questionForm', {quizId: quiz._id, question: null}) %>
+                                                </div>
+                                                <div id="questionFormMsg" class="mt-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Toast container -->
+                                <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+                                <script src="/javascripts/main.js"></script>
+
+                                <script src="/javascripts/quizzes-edit.js"></script>
+
+                                <script>
+                                    (() => {
+                                        'use strict';
+                                        // валидация BS (как всегда)
+                                        document.querySelectorAll('.needs-validation').forEach(f => {
+                                            f.addEventListener('submit', e => {
+                                                if (!f.checkValidity()) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                }
+                                                f.classList.add('was-validated');
+                                            }, false);
+                                        });
+                                    })();
+                                </script>
         </div>
     </div>
-
-    <!-- Модалка для создания/редактирования вопроса -->
-    <div class="modal fade modal-custom-mint" id="questionModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="questionModalTitle">
-                        <i class="bi bi-question-circle text-primary"></i>
-                        Вопрос
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="questionFormContainer">
-                        <%- include('../../partials/questionForm', {quizId: quiz._id, question: null}) %>
-                    </div>
-                    <div id="questionFormMsg" class="mt-2"></div>
-                </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary" form="questionForm">Сохранить</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast container -->
-    <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
-    <script src="/javascripts/main.js"></script>
-
-    <script src="/javascripts/quizzes-edit.js"></script>
-
-    <script>
-        (() => {
-            'use strict';
-            // валидация BS (как всегда)
-            document.querySelectorAll('.needs-validation').forEach(f => {
-                f.addEventListener('submit', e => {
-                    if (!f.checkValidity()) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                    f.classList.add('was-validated');
-                }, false);
-            });
-        })();
-    </script>
+</div>

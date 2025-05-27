@@ -430,3 +430,9 @@ button, .btn, a, input, select, textarea {
 .admin-action-btns i.bi {
     font-size: 1.15em;
 }
+
+.btn-check:checked + .btn-outline-primary {
+    background: var(--brand-mint-700) !important;
+    color: #fff !important;
+    border-color: var(--brand-mint-700) !important;
+}

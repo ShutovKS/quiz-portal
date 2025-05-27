@@ -52,13 +52,11 @@ async function seed() {
     for (const quiz of quizzes) {
         const cnt = faker.number.int({min: 1, max: 10});
         for (let i = 0; i < cnt; i++) {
-            const types = ['single', 'multiple', 'text', 'truefalse'];
+            const types = ['single', 'multiple', 'truefalse'];
             const type = faker.helpers.arrayElement(types);
             const base = {text: faker.lorem.sentence(), type, quiz: quiz._id};
 
-            if (type === 'text') {
-                await Question.create(base);
-            } else if (type === 'truefalse') {
+            if (type === 'truefalse') {
                 await Question.create({
                     ...base,
                     options: [

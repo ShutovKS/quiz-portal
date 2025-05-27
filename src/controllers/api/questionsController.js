@@ -157,4 +157,12 @@ export const updateQuestion = async (req, res) => {
         console.error(err);
         res.status(500).json({error: 'Error updating question'});
     }
+};
+
+// Удалить вопрос
+export const deleteQuestion = async (req, res) => {
+    const {questionId} = req.params;
+    const question = await Question.findByIdAndDelete(questionId);
+    if (!question) return res.status(404).json({error: 'Question not found'});
+    res.status(204).end();
 }; 
