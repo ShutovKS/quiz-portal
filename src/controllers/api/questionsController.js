@@ -65,7 +65,7 @@ export const getQuestion = async (req, res) => {
 // Добавить вопрос
 export const addQuestion = async (req, res) => {
     const {quizId} = req.params;
-    const {text, type} = req.body;
+    const {text, type, textCorrectAnswer} = req.body;
 
     // Проверка на truefalse: если тип truefalse, создаем стандартные варианты
     let options = req.body.options || [];
@@ -75,6 +75,13 @@ export const addQuestion = async (req, res) => {
             {text: 'Верно', isCorrect: false},
             {text: 'Неверно', isCorrect: false},
         ];
+    }
+    // Для text — правильный ответ обязателен
+    if (type === 'text') {
+        if (!textCorrectAnswer || !textCorrectAnswer.trim()) {
+            return res.status(400).json({error: 'Validation failed', details: 'Для текстового вопроса требуется правильный ответ.'});
+        }
+        options = [{ text: textCorrectAnswer.trim(), isCorrect: true }];
     }
 
     // Валидация: для single/multiple должны быть минимум 2 варианта, для truefalse - ровно 2
@@ -102,7 +109,7 @@ export const addQuestion = async (req, res) => {
 // Обновить вопрос (новый контроллер)
 export const updateQuestion = async (req, res) => {
     const {questionId} = req.params;
-    const {text, type} = req.body;
+    const {text, type, textCorrectAnswer} = req.body;
 
     try {
         const question = await Question.findById(questionId);
@@ -124,8 +131,11 @@ export const updateQuestion = async (req, res) => {
                  question.options.push({text: 'Неверно', isCorrect: false});
             }
         } else if (question.type === 'text') {
-             // Если тип изменился на text, удаляем все варианты
-             question.options = [];
+             // Если тип text, сохраняем правильный ответ
+             if (!textCorrectAnswer || !textCorrectAnswer.trim()) {
+                 return res.status(400).json({error: 'Validation failed', details: 'Для текстового вопроса требуется правильный ответ.'});
+             }
+             question.options = [{ text: textCorrectAnswer.trim(), isCorrect: true }];
         } else if (question.type !== oldType && (question.type === 'single' || question.type === 'multiple') ) {
              // Если тип изменился на single или multiple с text, добавляем пустой массив options если его нет
              if (!question.options || !Array.isArray(question.options)) {

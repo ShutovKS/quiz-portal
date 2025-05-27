@@ -90,6 +90,7 @@ export const showQuizEditForm = async (req, res) => {
 };
 
 export const updateQuiz = async (req, res) => {
+    console.log('updateQuiz req.body:', req.body);
     const quizId = req.params.id;
     try {
         const {title, description, isPublic} = req.body;
@@ -102,7 +103,13 @@ export const updateQuiz = async (req, res) => {
 
         // --- Предварительная очистка и валидация вопросов перед сохранением квиза ---
         const questions = await Question.find({quiz: quizId});
+        const questionTitles = req.body.questionTitles || {};
         for (const q of questions) {
+            // Обновление названия вопроса, если оно изменено
+            if (questionTitles[q._id] && questionTitles[q._id] !== q.text) {
+                q.text = questionTitles[q._id];
+                await q.save();
+            }
             // Очистка вариантов для truefalse вопросов (если есть некорректные старые)
             if (q.type === 'truefalse') {
                  let changed = false;
@@ -206,9 +213,8 @@ export const submitQuizAnswers = async (req, res) => {
     }
     const questions = await Question.find({quiz: quizId});
     // отфильтруем только те, что можно автоматически проверить
-    const autoQ = questions.filter(q => q.type !== 'text');
     let score = 0;
-    autoQ.forEach(q => {
+    questions.forEach(q => {
         const given = raw[q._id] || (q.type === 'multiple' ? [] : '');
         if (q.type === 'single' || q.type === 'truefalse') {
             const correct = q.options.find(o => o.isCorrect)?._id.toString();
@@ -218,6 +224,15 @@ export const submitQuizAnswers = async (req, res) => {
             const corr = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
             const got = Array.isArray(given) ? given : [given];
             if (corr.length === got.length && corr.every(id => got.includes(id))) score++;
+        }
+        if (q.type === 'text') {
+            // Берём правильный ответ (isCorrect: true)
+            const correctOption = q.options.find(o => o.isCorrect);
+            if (correctOption && typeof given === 'string') {
+                const userAns = given.trim().toLowerCase();
+                const correctAns = correctOption.text.trim().toLowerCase();
+                if (userAns === correctAns) score++;
+            }
         }
     });
     // сохранить попытку

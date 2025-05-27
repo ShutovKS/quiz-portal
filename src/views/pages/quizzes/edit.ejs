@@ -5,243 +5,268 @@
             <h1 class="h4 text-center mb-4">Редактировать квиз</h1>
             <%- include('../../partials/flash') %>
 
-            <% if (typeof success !== 'undefined' && success) { %>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    showToast({message: '<%= success %>', type: 'success', icon: 'bi-check-circle-fill'});
-                });
-            </script>
-            <% } %>
+                <% if (typeof success !=='undefined' && success) { %>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            showToast({ message: '<%= success %>', type: 'success', icon: 'bi-check-circle-fill' });
+                        });
+                    </script>
+                    <% } %>
 
-            <% if (typeof error !== 'undefined' && error) { %>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    showToast({message: '<%= error %>', type: 'error', icon: 'bi-x-circle-fill'});
-                });
-            </script>
-            <% } %>
-
-            <!-- === quiz meta === -->
-            <form action="/quizzes/<%= quiz._id %>?_method=PUT"
-                  method="POST"
-                  class="needs-validation"
-                  novalidate>
-
-                <div class="form-floating mb-3">
-                    <input id="title"
-                           type="text"
-                           name="title"
-                           class="form-control"
-                           placeholder="Название"
-                           value="<%= quiz.title %>"
-                           required>
-                    <label for="title"><i class="bi bi-fonts me-1"></i>Название</label>
-                    <div class="invalid-feedback">Нужно название.</div>
-                </div>
-
-                <div class="form-floating mb-4">
-          <textarea id="description"
-                    name="description"
-                    class="form-control"
-                    style="height: 120px"
-                    placeholder="Описание"><%= quiz.description %></textarea>
-                    <label for="description"><i class="bi bi-card-text me-1"></i>Описание</label>
-                </div>
-
-                <!-- switch -->
-                <div class="form-check form-switch mb-4">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           role="switch"
-                           id="isPublic"
-                           name="isPublic"
-                            <%= quiz.isPublic ? 'checked' : '' %>>
-                    <label class="form-check-label" for="isPublic">
-                        Сделать публичным
-                    </label>
-                </div>
-
-                <button class="btn btn-primary w-100 mb-2">Сохранить&nbsp;изменения</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- === questions === -->
-    <h2 class="h5 mb-3">Вопросы (<%= questions.length %>)</h2>
-
-    <div class="accordion mb-4" id="quizQuestions">
-        <% questions.forEach((q, i) => { %>
-            <div class="accordion-item text-bg border-secondary">
-                <h2 class="accordion-header" id="h-<%= q._id %>">
-                    <button class="accordion-button collapsed text-bg"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#c-<%= q._id %>"
-                            aria-expanded="false">
-                        <span class="me-2 text-muted">#<%= i + 1 %></span>
-                        <%= q.text %> <small class="ms-2 text-secondary">(<%= q.type %>)</small>
-                    </button>
-                </h2>
-                <div id="c-<%= q._id %>"
-                     class="accordion-collapse collapse"
-                     data-bs-parent="#quizQuestions">
-                    <div class="accordion-body d-flex justify-content-between align-items-start">
-                        <div>
-                            <% if (q.type === 'single' || q.type === 'multiple') { %>
-                                <div class="options-list" data-question-id="<%= q._id %>" data-question-type="<%= q.type %>">
-                                    <% if (q.options?.length) { %>
-                                        <ul class="list-unstyled mb-0 small">
-                                            <% q.options.forEach(o => { %>
-                                                <li class="d-flex align-items-center mb-1">
-                                                    <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= o._id %>" title="Сделать правильным/неправильным">
-                                                        <% if (o.isCorrect) { %>
-                                                            <i class="bi bi-check-circle-fill text-success"></i>
-                                                        <% } else { %>
-                                                            <i class="bi bi-circle"></i>
-                                                        <% } %>
-                                                    </button>
-                                                    <span class="option-text flex-grow-1"><%= o.text %></span>
-                                                    <button type="button" class="btn btn-sm btn-link edit-option-btn" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= o._id %>" title="Редактировать вариант">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm btn-link text-danger delete-option-btn" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= o._id %>" title="Удалить вариант">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </li>
-                                            <% }) %>
-                                        </ul>
-                                    <% } %>
-                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2 add-option-btn" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>">
-                                        <i class="bi bi-plus"></i> Добавить вариант
-                                    </button>
-                                </div>
-                            <% } else if (q.type === 'truefalse') { %>
-                                <div class="options-list" data-question-id="<%= q._id %>" data-question-type="<%= q.type %>">
-                                    <ul class="list-unstyled mb-0 small">
-                                        <li class="d-flex align-items-center mb-1">
-                                            <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= q.options[0]?._id %>" title="Сделать правильным/неправильным">
-                                                <% if (q.options[0]?.isCorrect) { %>
-                                                    <i class="bi bi-check-circle-fill text-success"></i>
-                                                <% } else { %>
-                                                    <i class="bi bi-circle"></i>
-                                                <% } %>
-                                            </button>
-                                            <span class="option-text flex-grow-1">Верно</span>
-                                        </li>
-                                        <li class="d-flex align-items-center mb-1">
-                                            <button type="button" class="btn btn-sm toggle-correct-btn me-1" data-quiz-id="<%= quiz._id %>" data-question-id="<%= q._id %>" data-option-id="<%= q.options[1]?._id %>" title="Сделать правильным/неправильным">
-                                                <% if (q.options[1]?.isCorrect) { %>
-                                                    <i class="bi bi-check-circle-fill text-success"></i>
-                                                <% } else { %>
-                                                    <i class="bi bi-circle"></i>
-                                                <% } %>
-                                            </button>
-                                            <span class="option-text flex-grow-1">Неверно</span>
-                                        </li>
-                                    </ul>
-                                </div>
+                        <% if (typeof error !=='undefined' && error) { %>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    showToast({ message: '<%= error %>', type: 'error', icon: 'bi-x-circle-fill' });
+                                });
+                            </script>
                             <% } %>
-                        </div>
 
-                        <!-- dropdown -->
-                        <div class="dropdown ms-3">
-                            <button class="btn btn-sm btn-outline-primary dropdown-toggle"
-                                    data-bs-toggle="dropdown"></button>
-                            <ul class="dropdown-menu dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item d-flex gap-2 align-items-center edit-question-btn"
-                                       href="#"
-                                       data-quiz-id="<%= quiz._id %>"
-                                       data-question-id="<%= q._id %>">
-                                        <i class="bi bi-pencil-square"></i>Редактировать
+                                <!-- === quiz meta === -->
+                                <form action="/quizzes/<%= quiz._id %>?_method=PUT" method="POST"
+                                    class="needs-validation" novalidate>
+
+                                    <div class="form-floating mb-3">
+                                        <input id="title" type="text" name="title" class="form-control"
+                                            placeholder="Название" value="<%= quiz.title %>" required>
+                                        <label for="title"><i class="bi bi-fonts me-1"></i>Название</label>
+                                        <div class="invalid-feedback">Нужно название.</div>
+                                    </div>
+
+                                    <div class="form-floating mb-4">
+                                        <textarea id="description" name="description" class="form-control"
+                                            style="height: 120px"
+                                            placeholder="Описание"><%= quiz.description %></textarea>
+                                        <label for="description"><i class="bi bi-card-text me-1"></i>Описание</label>
+                                    </div>
+
+                                    <!-- switch -->
+                                    <div class="form-check form-switch mb-4">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="isPublic"
+                                            name="isPublic" <%=quiz.isPublic ? 'checked' : '' %>>
+                                        <label class="form-check-label" for="isPublic">
+                                            Сделать публичным
+                                        </label>
+                                    </div>
+
+                                    <!-- === questions === -->
+                                    <h2 class="h5 mb-3">Вопросы (<%= questions.length %>)</h2>
+
+                                    <div class="accordion mb-4" id="quizQuestions">
+                                        <% questions.forEach((q, i)=> { %>
+                                            <div class="accordion-item text-bg border-secondary">
+                                                <h2 class="accordion-header" id="h-<%= q._id %>">
+                                                    <button class="accordion-button collapsed text-bg" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#c-<%= q._id %>"
+                                                        aria-expanded="false">
+                                                        <span class="me-2 text-muted">#<%= i + 1 %></span>
+                                                        <input type="text"
+                                                            class="form-control d-inline-block w-auto question-title-input"
+                                                            name="questionTitles[<%= q._id %>]" value="<%= q.text %>"
+                                                            style="max-width: 70%; display: inline-block; margin-right: 1rem;">
+                                                        <small class="ms-2 text-secondary">(<%= q.type %>)</small>
+                                                    </button>
+                                                </h2>
+                                                <div id="c-<%= q._id %>" class="accordion-collapse collapse"
+                                                    data-bs-parent="#quizQuestions">
+                                                    <div
+                                                        class="accordion-body d-flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <% if (q.type==='single' || q.type==='multiple' ) { %>
+                                                                <div class="options-list"
+                                                                    data-question-id="<%= q._id %>"
+                                                                    data-question-type="<%= q.type %>">
+                                                                    <% if (q.options?.length) { %>
+                                                                        <ul class="list-unstyled mb-0 small">
+                                                                            <% q.options.forEach(o=> { %>
+                                                                                <li
+                                                                                    class="d-flex align-items-center mb-1">
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm toggle-correct-btn me-1"
+                                                                                        data-quiz-id="<%= quiz._id %>"
+                                                                                        data-question-id="<%= q._id %>"
+                                                                                        data-option-id="<%= o._id %>"
+                                                                                        title="Сделать правильным/неправильным">
+                                                                                        <% if (o.isCorrect) { %>
+                                                                                            <i
+                                                                                                class="bi bi-check-circle-fill text-success"></i>
+                                                                                            <% } else { %>
+                                                                                                <i
+                                                                                                    class="bi bi-circle"></i>
+                                                                                                <% } %>
+                                                                                    </button>
+                                                                                    <span
+                                                                                        class="option-text flex-grow-1">
+                                                                                        <%= o.text %>
+                                                                                    </span>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm btn-link edit-option-btn"
+                                                                                        data-quiz-id="<%= quiz._id %>"
+                                                                                        data-question-id="<%= q._id %>"
+                                                                                        data-option-id="<%= o._id %>"
+                                                                                        title="Редактировать вариант">
+                                                                                        <i class="bi bi-pencil"></i>
+                                                                                    </button>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm btn-link text-danger delete-option-btn"
+                                                                                        data-quiz-id="<%= quiz._id %>"
+                                                                                        data-question-id="<%= q._id %>"
+                                                                                        data-option-id="<%= o._id %>"
+                                                                                        title="Удалить вариант">
+                                                                                        <i class="bi bi-trash"></i>
+                                                                                    </button>
+                                                                                </li>
+                                                                                <% }) %>
+                                                                        </ul>
+                                                                        <% } %>
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-outline-primary mt-2 add-option-btn"
+                                                                                data-quiz-id="<%= quiz._id %>"
+                                                                                data-question-id="<%= q._id %>">
+                                                                                <i class="bi bi-plus"></i> Добавить
+                                                                                вариант
+                                                                            </button>
+                                                                </div>
+                                                                <% } else if (q.type==='truefalse' ) { %>
+                                                                    <div class="options-list"
+                                                                        data-question-id="<%= q._id %>"
+                                                                        data-question-type="<%= q.type %>">
+                                                                        <ul class="list-unstyled mb-0 small">
+                                                                            <li class="d-flex align-items-center mb-1">
+                                                                                <button type="button"
+                                                                                    class="btn btn-sm toggle-correct-btn me-1"
+                                                                                    data-quiz-id="<%= quiz._id %>"
+                                                                                    data-question-id="<%= q._id %>"
+                                                                                    data-option-id="<%= q.options[0]?._id %>"
+                                                                                    title="Сделать правильным/неправильным">
+                                                                                    <% if (q.options[0]?.isCorrect) { %>
+                                                                                        <i
+                                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                                        <% } else { %>
+                                                                                            <i class="bi bi-circle"></i>
+                                                                                            <% } %>
+                                                                                </button>
+                                                                                <span
+                                                                                    class="option-text flex-grow-1">Верно</span>
+                                                                            </li>
+                                                                            <li class="d-flex align-items-center mb-1">
+                                                                                <button type="button"
+                                                                                    class="btn btn-sm toggle-correct-btn me-1"
+                                                                                    data-quiz-id="<%= quiz._id %>"
+                                                                                    data-question-id="<%= q._id %>"
+                                                                                    data-option-id="<%= q.options[1]?._id %>"
+                                                                                    title="Сделать правильным/неправильным">
+                                                                                    <% if (q.options[1]?.isCorrect) { %>
+                                                                                        <i
+                                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                                        <% } else { %>
+                                                                                            <i class="bi bi-circle"></i>
+                                                                                            <% } %>
+                                                                                </button>
+                                                                                <span
+                                                                                    class="option-text flex-grow-1">Неверно</span>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                    <% } %>
+                                                        </div>
+                                                        <div class="d-flex gap-2 ms-3">
+                                                            <button
+                                                                class="btn btn-sm btn-outline-danger d-flex align-items-center"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#delQ-<%= q._id %>">
+                                                                <i class="bi bi-trash me-1"></i> Удалить
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- delete modal -->
+                                            <div class="modal fade modal-custom-mint" id="delQ-<%= q._id %>"
+                                                tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                                <i
+                                                                    class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                                                Удалить вопрос?
+                                                            </h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <%= q.text %> <br> <small class="text-secondary">(<%= q.type
+                                                                        %>)</small>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-outline-secondary"
+                                                                data-bs-dismiss="modal">Отмена</button>
+                                                            <form
+                                                                action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE"
+                                                                method="POST" class="d-inline">
+                                                                <button class="btn btn-danger">Удалить</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+
+                                    <a href="#" id="addQuestionBtn" class="btn btn-outline-primary w-100">
+                                        <i class="bi bi-plus-lg me-1"></i> Добавить вопрос
                                     </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <button class="dropdown-item d-flex gap-2 align-items-center text-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#delQ-<%= q._id %>">
-                                        <i class="bi bi-trash"></i>Удалить
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- delete modal -->
-            <div class="modal fade modal-custom-mint" id="delQ-<%= q._id %>" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-                                Удалить вопрос?
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                        </div>
-                        <div class="modal-body">
-                            <%= q.text %> <br> <small class="text-secondary">(<%= q.type %>)</small>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                            <form action="/quizzes/<%= quiz._id %>/questions/<%= q._id %>?_method=DELETE" method="POST" class="d-inline">
-                                <button class="btn btn-danger">Удалить</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <% }) %>
+                                    <button type="submit"
+                                        class="btn btn-primary w-100 mb-2 mt-4">Сохранить&nbsp;изменения</button>
+                                </form>
+        </div>
     </div>
 
-    <a href="#" id="addQuestionBtn" class="btn btn-outline-primary w-100">
-        <i class="bi bi-plus-lg me-1"></i> Добавить вопрос
-    </a>
-</div>
-
-<!-- Модалка для создания/редактирования вопроса -->
-<div class="modal fade modal-custom-mint" id="questionModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="questionModalTitle">
-                    <i class="bi bi-question-circle text-primary"></i>
-                    Вопрос
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-            </div>
-            <div class="modal-body">
-                <div id="questionFormContainer">
-                    <%- include('../../partials/questionForm', {quizId: quiz._id, question: null}) %>
+    <!-- Модалка для создания/редактирования вопроса -->
+    <div class="modal fade modal-custom-mint" id="questionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="questionModalTitle">
+                        <i class="bi bi-question-circle text-primary"></i>
+                        Вопрос
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
-                <div id="questionFormMsg" class="mt-2"></div>
+                <div class="modal-body">
+                    <div id="questionFormContainer">
+                        <%- include('../../partials/questionForm', {quizId: quiz._id, question: null}) %>
+                    </div>
+                    <div id="questionFormMsg" class="mt-2"></div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary" form="questionForm">Сохранить</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Toast container -->
-<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
-<script src="/javascripts/main.js"></script>
+    <!-- Toast container -->
+    <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+    <script src="/javascripts/main.js"></script>
 
-<script src="/javascripts/quizzes-edit.js"></script>
+    <script src="/javascripts/quizzes-edit.js"></script>
 
-<script>
-    (() => {
-        'use strict';
-        // валидация BS (как всегда)
-        document.querySelectorAll('.needs-validation').forEach(f => {
-            f.addEventListener('submit', e => {
-                if (!f.checkValidity()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-                f.classList.add('was-validated');
-            }, false);
-        });
-    })();
-</script>
+    <script>
+        (() => {
+            'use strict';
+            // валидация BS (как всегда)
+            document.querySelectorAll('.needs-validation').forEach(f => {
+                f.addEventListener('submit', e => {
+                    if (!f.checkValidity()) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    f.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>

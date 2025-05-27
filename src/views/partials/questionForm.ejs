@@ -13,9 +13,24 @@
             <option value="text" <%= question?.type === 'text' ? 'selected' : '' %>>Свободный ответ</option>
         </select>
     </div>
+    <div class="mb-3" id="textAnswerContainer" style="display: <%= question?.type === 'text' ? 'block' : 'none' %>;">
+        <label for="textCorrectAnswer" class="form-label">Правильный ответ</label>
+        <input type="text" class="form-control" id="textCorrectAnswer" name="textCorrectAnswer" value="<%= (question?.type === 'text' && question?.options?.[0]?.text) ? question.options[0].text : '' %>">
+        <div class="form-text">Ответ будет сравниваться без учёта регистра и пробелов.</div>
+    </div>
     <!-- Здесь можно добавить динамическое добавление вариантов ответа через JS -->
     <div id="optionsContainer"></div>
-    <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-    </div>
-</form> 
+</form>
+
+<script>
+// Показывать/скрывать поле правильного ответа для text-вопроса
+const typeSelect = document.getElementById('questionType');
+const textAnswerContainer = document.getElementById('textAnswerContainer');
+typeSelect?.addEventListener('change', function() {
+    if (this.value === 'text') {
+        textAnswerContainer.style.display = 'block';
+    } else {
+        textAnswerContainer.style.display = 'none';
+    }
+});
+</script> 
