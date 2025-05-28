@@ -18,6 +18,7 @@ import {
     getQuizzesWithoutAttempts,
     getAvgAttemptsPerUser
 } from './api/adminController.js';
+import Ajv from 'ajv';
 
 export const showDashboard = async (req, res) => {
     const [
@@ -126,5 +127,89 @@ export const deleteQuiz = async (req, res) => {
         Quiz.findByIdAndDelete(quizId)
     ]);
     req.flash('success', 'Квиз и всё связанное удалены');
+    res.redirect('/admin/quizzes');
+};
+
+// Форма импорта квиза через JSON
+export const showImportQuizForm = (req, res) => {
+    res.render('pages/admin/importQuiz', { title: 'Импорт квиза' });
+};
+
+// Импорт квиза из JSON
+export const importQuizFromJson = async (req, res) => {
+    const ajv = new Ajv({ allErrors: true });
+    const quizSchema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Quiz",
+        "type": "object",
+        "required": ["title", "description", "userEmail", "questions"],
+        "properties": {
+            "title": { "type": "string", "minLength": 1 },
+            "description": { "type": "string", "minLength": 1 },
+            "userEmail": { "type": "string", "format": "email" },
+            "isPublic": { "type": "boolean", "default": true },
+            "questions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "type": "object",
+                    "required": ["text", "type", "options"],
+                    "properties": {
+                        "text": { "type": "string", "minLength": 1 },
+                        "type": { "type": "string", "enum": ["single", "multiple", "truefalse"] },
+                        "options": {
+                            "type": "array",
+                            "minItems": 2,
+                            "items": {
+                                "type": "object",
+                                "required": ["text", "isCorrect"],
+                                "properties": {
+                                    "text": { "type": "string", "minLength": 1 },
+                                    "isCorrect": { "type": "boolean" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+    
+    let quizData;
+    try {
+        quizData = JSON.parse(req.body.quizJson);
+    } catch (e) {
+        req.flash('error', 'Некорректный JSON');
+        return res.redirect('/admin/import-quiz');
+    }
+    
+    const validate = ajv.compile(quizSchema);
+    if (!validate(quizData)) {
+        req.flash('error', 'Ошибка валидации: ' + ajv.errorsText(validate.errors));
+        return res.redirect('/admin/import-quiz');
+    }
+    // Найти пользователя по email
+    const user = await User.findOne({ email: quizData.userEmail });
+    if (!user) {
+        req.flash('error', 'Пользователь с таким email не найден');
+        return res.redirect('/admin/import-quiz');
+    }
+    // Создать квиз
+    const quiz = await Quiz.create({
+        title: quizData.title,
+        description: quizData.description,
+        user: user._id,
+        isPublic: quizData.isPublic !== undefined ? quizData.isPublic : true
+    });
+    // Добавить вопросы
+    for (const q of quizData.questions) {
+        await Question.create({
+            quiz: quiz._id,
+            text: q.text,
+            type: q.type,
+            options: q.options
+        });
+    }
+    req.flash('success', 'Квиз успешно импортирован!');
     res.redirect('/admin/quizzes');
 };

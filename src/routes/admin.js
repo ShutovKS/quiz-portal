@@ -18,4 +18,8 @@ router.post('/users/:id/toggle-admin', C.toggleAdmin);
 router.get('/quizzes', C.listQuizzes);
 router.delete('/quizzes/:id', C.deleteQuiz);
 
+// Импорт квизов через JSON
+router.get('/import-quiz', C.showImportQuizForm);
+router.post('/import-quiz', C.importQuizFromJson);
+
 export default router;

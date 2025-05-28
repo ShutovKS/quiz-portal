@@ -1,0 +1,63 @@
+<h1 class="h4 mb-4 fw-semibold d-flex align-items-center gap-2">
+    <i class="bi bi-upload"></i> Импорт квиза из JSON
+</h1>
+<%- include('../../partials/flash') %>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="/admin/import-quiz" method="POST">
+            <div class="mb-3">
+                <label for="quizJson" class="form-label">Вставьте JSON-квиз по схеме ниже:</label>
+                <textarea class="form-control" id="quizJson" name="quizJson" rows="12" required placeholder='{"title": "...", ...}'></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-upload"></i> Импортировать
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-light">
+        <i class="bi bi-info-circle"></i> Пример структуры JSON
+    </div>
+    <div class="card-body">
+        <pre style="font-size: 0.95em; background: #f8f9fa; border-radius: 6px; padding: 1em;">
+{
+  "title": "Основы программирования",
+  "description": "Проверь, насколько хорошо ты знаешь базовые концепции.",
+  "userEmail": "schutow.kir@yandex.ru",
+  "isPublic": true,
+  "questions": [
+    {
+      "text": "Какой тип данных в Python используется для хранения текста?",
+      "type": "single",
+      "options": [
+        { "text": "str", "isCorrect": true },
+        { "text": "int", "isCorrect": false },
+        { "text": "list", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "Какие из перечисленных являются языками программирования?",
+      "type": "multiple",
+      "options": [
+        { "text": "Python", "isCorrect": true },
+        { "text": "HTML", "isCorrect": false },
+        { "text": "JavaScript", "isCorrect": true },
+        { "text": "CSS", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "Алгоритмы — это последовательность шагов для решения задачи.",
+      "type": "truefalse",
+      "options": [
+        { "text": "Верно", "isCorrect": true },
+        { "text": "Неверно", "isCorrect": false }
+      ]
+    }
+  ]
+}
+        </pre>
+    </div>
+</div> 

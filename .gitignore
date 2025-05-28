@@ -90,3 +90,5 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 .env
+
+tools/generate_quizzes/quizzes/
