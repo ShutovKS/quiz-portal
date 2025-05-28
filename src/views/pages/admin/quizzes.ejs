@@ -5,7 +5,6 @@
 
 <!-- Toast container -->
 <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
-<script src="/javascripts/main.js"></script>
 
 <div class="table-responsive">
     <table class="table table-hover align-middle">
@@ -13,6 +12,7 @@
         <tr>
             <th>Название</th>
             <th>Автор</th>
+            <th>Категории</th>
             <th class="text-center">Статус</th>
             <th class="text-end">Действия</th>
         </tr>
@@ -26,12 +26,23 @@
                         <%= q.title %>
                     </a>
                     <span class="text-muted small d-block">
-            <i class="bi bi-question-circle"></i> <%= q.questionsCount %> вопр.
-          </span>
+                        <i class="bi bi-question-circle"></i> <%= q.questionsCount %> вопр.
+                    </span>
                 </td>
 
                 <!-- author -->
                 <td><%= q.user?.name || '—' %></td>
+
+                <!-- categories -->
+                <td>
+                    <div class="d-flex flex-wrap gap-1 align-items-center">
+                        <% (q.categories || []).forEach(cat => { %>
+                            <span class="badge bg-info text-dark">
+                                <%= cat.name %>
+                            </span>
+                        <% }) %>
+                    </div>
+                </td>
 
                 <!-- status -->
                 <td class="text-center">
@@ -86,3 +97,7 @@
         </tbody>
     </table>
 </div>
+
+<script>
+// ... удаляем весь JS для добавления/удаления категорий ...
+</script>

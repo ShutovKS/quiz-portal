@@ -22,4 +22,10 @@ router.delete('/quizzes/:id', C.deleteQuiz);
 router.get('/import-quiz', C.showImportQuizForm);
 router.post('/import-quiz', C.importQuizFromJson);
 
+// Категории
+router.get('/categories', C.listCategories);
+router.post('/categories', C.addCategory);
+router.post('/categories/:id', C.updateCategory);
+router.post('/categories/:id/delete', C.deleteCategory);
+
 export default router;

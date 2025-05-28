@@ -48,6 +48,19 @@
                                         </label>
                                     </div>
 
+                                    <!-- categories -->
+                                    <div class="mb-4">
+                                        <label for="categories" class="form-label"><i class="bi bi-tags me-1"></i>Категории (необязательно)</label>
+                                        <select id="categories" name="categories" class="form-select" multiple>
+                                            <% if (categories && categories.length) { %>
+                                                <% categories.forEach(cat => { %>
+                                                    <option value="<%= cat._id %>" <%= quiz.categories && quiz.categories.map(String).includes(String(cat._id)) ? 'selected' : '' %>><%= cat.name %></option>
+                                                <% }) %>
+                                            <% } %>
+                                        </select>
+                                        <div class="form-text">Можно выбрать одну или несколько категорий</div>
+                                    </div>
+
                                     <!-- === questions === -->
                                     <h2 class="h5 mb-3">Вопросы (<%= questions.length %>)</h2>
 
@@ -244,9 +257,21 @@
 
                                 <!-- Toast container -->
                                 <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
-                                <script src="/javascripts/main.js"></script>
 
                                 <script src="/javascripts/quizzes-edit.js"></script>
+
+                                <!-- select2 -->
+                                <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+                                <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        $('#categories').select2({
+                                            placeholder: 'Выберите категории',
+                                            allowClear: true,
+                                            width: '100%'
+                                        });
+                                    });
+                                </script>
 
                                 <script>
                                     (() => {

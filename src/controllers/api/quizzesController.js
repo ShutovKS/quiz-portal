@@ -19,7 +19,19 @@ export const create = async (req, res) => {
 };
 
 export const update = async (req, res) => {
-    const quiz = await Quiz.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    const quizId = req.params.id;
+    let update = req.body;
+    // Support $addToSet and $pull for categories
+    if (update.$addToSet && update.$addToSet.categories) {
+        await Quiz.findByIdAndUpdate(quizId, { $addToSet: { categories: update.$addToSet.categories } });
+        return res.json({ success: true });
+    }
+    if (update.$pull && update.$pull.categories) {
+        await Quiz.findByIdAndUpdate(quizId, { $pull: { categories: update.$pull.categories } });
+        return res.json({ success: true });
+    }
+    // Fallback: regular update
+    const quiz = await Quiz.findByIdAndUpdate(quizId, update, {new: true});
     res.json(quiz);
 };
 

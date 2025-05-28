@@ -19,6 +19,37 @@
     <% } %>
 </div>
 
+<!-- фильтр по категориям -->
+<% if ((categories || []).length) { %>
+    <form class="mb-3" action="/quizzes" method="GET" id="categoryFilterForm">
+        <div class="row g-2 align-items-center">
+            <div class="col-auto">
+                <select id="categorySelect" name="cat" class="form-select">
+                    <option value="">Все категории</option>
+                    <% categories.forEach(c => { %>
+                        <option value="<%= c.slug %>" <%= cat === c.slug ? 'selected' : '' %>><%= c.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary btn-sm">Фильтровать</button>
+            </div>
+        </div>
+    </form>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#categorySelect').select2({
+                placeholder: 'Категория',
+                allowClear: true,
+                width: '200px',
+                minimumResultsForSearch: 5
+            });
+        });
+    </script>
+<% } %>
+
 <!-- чипы-категории -->
 <% if ((categories || []).length) { %>
     <div class="mb-4 d-flex flex-wrap gap-2">

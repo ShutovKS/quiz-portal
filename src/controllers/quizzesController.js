@@ -19,7 +19,7 @@ export const listQuizzes = async (req, res, next) => {
 
         if (cat) {
             const category = await Category.findOne({slug: cat}).select('_id');
-            if (category) filter.categories = category._id;
+            if (category) filter.categories = { $in: [category._id] };
         }
 
         /* --- данные --- */
@@ -59,19 +59,28 @@ export const listQuizzes = async (req, res, next) => {
     }
 };
 
-export const showQuizCreateForm = (req, res) => {
-    res.render('pages/quizzes/new', {title: 'Новый квиз'});
+export const showQuizCreateForm = async (req, res) => {
+    const categories = await Category.find().sort({name: 1});
+    res.render('pages/quizzes/new', {title: 'Новый квиз', categories});
 };
 
 export const createQuiz = async (req, res) => {
-    const {title, description, isPublic} = req.body;
+    const {title, description, isPublic, categories} = req.body;
+    let categoriesArr = [];
+    if (categories) {
+        if (Array.isArray(categories)) {
+            categoriesArr = categories;
+        } else {
+            categoriesArr = [categories];
+        }
+    }
     const quiz = await Quiz.create({
         title,
         description,
         isPublic: !!isPublic,
-        user: req.user._id
+        user: req.user._id,
+        categories: categoriesArr
     });
-    // Если вопросы передаются сразу — тут можно их сохранить
     res.redirect(`/quizzes/${quiz._id}/edit`);
 };
 
@@ -86,14 +95,15 @@ export const showQuiz = async (req, res) => {
 export const showQuizEditForm = async (req, res) => {
     const quiz = await Quiz.findById(req.params.id);
     const questions = await Question.find({quiz: quiz._id});
-    res.render('pages/quizzes/edit', {title: 'Редактировать квиз', quiz, questions});
+    const categories = await Category.find().sort({name: 1});
+    res.render('pages/quizzes/edit', {title: 'Редактировать квиз', quiz, questions, categories});
 };
 
 export const updateQuiz = async (req, res) => {
     console.log('updateQuiz req.body:', req.body);
     const quizId = req.params.id;
     try {
-        const {title, description, isPublic} = req.body;
+        const {title, description, isPublic, categories} = req.body;
         // Найти квиз
         const quiz = await Quiz.findById(quizId);
         if (!quiz) {
@@ -158,6 +168,16 @@ export const updateQuiz = async (req, res) => {
         quiz.title = title;
         quiz.description = description;
         quiz.isPublic = !!isPublic;
+        // Обновить категории
+        let categoriesArr = [];
+        if (categories) {
+            if (Array.isArray(categories)) {
+                categoriesArr = categories;
+            } else {
+                categoriesArr = [categories];
+            }
+        }
+        quiz.categories = categoriesArr;
         await quiz.save();
 
         req.flash('success', 'Квиз сохранён');

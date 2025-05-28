@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import Quiz from '../models/Quiz.js';
 import Attempt from "../models/Attempt.js";
 import Question from "../models/Question.js";
+import Category from '../models/Category.js';
 import {
     getUserCount,
     getQuizCount,
@@ -53,6 +54,8 @@ export const showDashboard = async (req, res) => {
         getAvgAttemptsPerUser()
     ]);
 
+    const categories = await Category.find().sort({createdAt: -1});
+
     res.render('pages/admin/dashboard', {
         title: 'Admin',
         uCount,
@@ -69,7 +72,8 @@ export const showDashboard = async (req, res) => {
         newUsersMonth,
         publicQuizPercent,
         topAvgQuizzes,
-        quizzesWithoutAttempts
+        quizzesWithoutAttempts,
+        categories
     });
 };
 
@@ -113,8 +117,19 @@ export const toggleAdmin = async (req, res) => {
 };
 
 export const listQuizzes = async (req, res) => {
-    const quizzes = await Quiz.find().populate('user');
-    res.render('pages/admin/quizzes', {title: 'Квизы', quizzes});
+    const quizzes = await Quiz.find().populate('user').populate('categories');
+    const categories = await Category.find().sort({ name: 1 });
+    // Получить количество вопросов для каждого квиза
+    const quizIds = quizzes.map(q => q._id);
+    const questionsCounts = await Question.aggregate([
+        { $match: { quiz: { $in: quizIds } } },
+        { $group: { _id: '$quiz', count: { $sum: 1 } } }
+    ]);
+    const questionsCountMap = Object.fromEntries(questionsCounts.map(q => [q._id.toString(), q.count]));
+    quizzes.forEach(q => {
+        q.questionsCount = questionsCountMap[q._id.toString()] || 0;
+    });
+    res.render('pages/admin/quizzes', {title: 'Квизы', quizzes, categories});
 };
 
 // listQuizzes, deleteQuiz — можно оставить или добавить flash-сообщения
@@ -212,4 +227,44 @@ export const importQuizFromJson = async (req, res) => {
     }
     req.flash('success', 'Квиз успешно импортирован!');
     res.redirect('/admin/quizzes');
+};
+
+// Категории CRUD
+export const listCategories = async (req, res) => {
+    const categories = await Category.find().sort({createdAt: -1});
+    res.render('pages/admin/categories', { title: 'Категории', categories });
+};
+
+export const addCategory = async (req, res) => {
+    try {
+        const { name } = req.body;
+        await Category.create({ name });
+        req.flash('success', 'Категория добавлена');
+    } catch (e) {
+        req.flash('error', 'Ошибка при добавлении категории: ' + e.message);
+    }
+    res.redirect('/admin/categories');
+};
+
+export const updateCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        await Category.findByIdAndUpdate(id, { name });
+        req.flash('success', 'Категория обновлена');
+    } catch (e) {
+        req.flash('error', 'Ошибка при обновлении категории: ' + e.message);
+    }
+    res.redirect('/admin/categories');
+};
+
+export const deleteCategory = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Category.findByIdAndDelete(id);
+        req.flash('success', 'Категория удалена');
+    } catch (e) {
+        req.flash('error', 'Ошибка при удалении категории: ' + e.message);
+    }
+    res.redirect('/admin/categories');
 };
