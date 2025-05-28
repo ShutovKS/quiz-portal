@@ -8,12 +8,11 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import { fileURLToPath } from 'url';
 
-import {connectDB} from './src/config/db.js';
+import { connectDB } from './src/config/db.js';
 import indexRouter from './src/routes/index.js';
 import passport from './src/config/passport.js';
-import apiRouter from './src/routes/api/index.js';
 
 // эмуляция __dirname/__filename
 const __filename = fileURLToPath(import.meta.url);
@@ -50,7 +49,7 @@ app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // — Парсинг тела запросов
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // — Method-override для PUT/DELETE из форм
@@ -61,7 +60,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,   // 1 день
         httpOnly: true, // secure: true, // на продакшене, если HTTPS
@@ -83,20 +82,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// — Роуты
 app.use('/', indexRouter);
-app.use('/api', apiRouter);
-
-// — 404
-app.use((req, res) => {
-    res.status(404).render('pages/404', {title: '404', layout: false});
-});
-
-// — Ошибки
-app.use((req, res) => {
-    console.error(req.error);
-    res.status(500).render('pages/500', {title: 'Ошибка сервера', layout: false});
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`⚡️ Server up: http://localhost:${PORT}`));
