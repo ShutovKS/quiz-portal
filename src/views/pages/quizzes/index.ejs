@@ -50,3 +50,40 @@
 <!-- Toast container -->
 <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
 <script src="/javascripts/main.js"></script>
+
+<%
+    var quizImpressions = quizzes.map(function(q) {
+        return {
+            id: q._id,
+            name: q.title.replace(/'/g, "\'"),
+            category: 'quiz',
+            list: 'Quiz List'
+        };
+    });
+%>
+<script>
+window.dataLayer = window.dataLayer || [];
+var quizImpressions = <%- JSON.stringify(quizImpressions) %>;
+quizImpressions.forEach(function(item) {
+    window.dataLayer.push({ ecommerce: { impressions: [item] } });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-quiz-id][data-quiz-list]').forEach(function(card) {
+        card.addEventListener('click', function() {
+            window.dataLayer.push({
+                event: 'productClick',
+                ecommerce: {
+                    click: {
+                        actionField: { list: card.getAttribute('data-quiz-list') },
+                        products: [{
+                            id: card.getAttribute('data-quiz-id'),
+                            name: card.getAttribute('data-quiz-title'),
+                            category: card.getAttribute('data-quiz-category')
+                        }]
+                    }
+                }
+            });
+        });
+    });
+});
+</script>

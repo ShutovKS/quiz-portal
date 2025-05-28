@@ -99,12 +99,29 @@
 
 <!-- Новые квизы -->
 <% if (hasNewQuizzes) { %>
+    <script type="application/ld+json">
+    [
+    <% newQuizzes.forEach(function(q, idx) { %>{
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": "<%= q.title.replace(/"/g, '\\"') %>",
+        "description": "<%= (q.description || '').replace(/"/g, '\\"').substring(0, 200) %>",
+        "url": "<%= '/quizzes/' + q._id %>",
+        "inLanguage": "ru"
+    }<%= idx < newQuizzes.length - 1 ? ',' : '' %>
+    <% }); %>
+    ]
+    </script>
 <section class="mb-5">
     <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-primary"><i class="bi bi-stars"></i> Новые квизы</h2>
     <div class="row g-3">
         <% newQuizzes.forEach(q => { %>
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card quiz-highlight-card h-100 shadow-sm border-0">
+                <div class="card quiz-highlight-card h-100 shadow-sm border-0"
+                     data-quiz-id="<%= q._id %>"
+                     data-quiz-title="<%= q.title.replace(/"/g, '&quot;') %>"
+                     data-quiz-category="new"
+                     data-quiz-list="New Quizzes">
                     <% if (q.cover) { %>
                         <img src="<%= q.cover %>" class="card-img-top" alt="cover" style="object-fit:cover;max-height:160px;">
                     <% } %>
@@ -125,12 +142,29 @@
 
 <!-- Популярные квизы -->
 <% if (hasPopularQuizzes) { %>
+    <script type="application/ld+json">
+    [
+    <% popularQuizzes.forEach(function(q, idx) { %>{
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": "<%= q.title.replace(/"/g, '\\"') %>",
+        "description": "<%= (q.description || '').replace(/"/g, '\\"').substring(0, 200) %>",
+        "url": "<%= '/quizzes/' + q._id %>",
+        "inLanguage": "ru"
+    }<%= idx < popularQuizzes.length - 1 ? ',' : '' %>
+    <% }); %>
+    ]
+    </script>
 <section class="mb-5">
     <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-success"><i class="bi bi-fire"></i> Популярные квизы</h2>
     <div class="row g-3">
         <% popularQuizzes.forEach(q => { %>
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card quiz-highlight-card h-100 shadow-sm border-0">
+                <div class="card quiz-highlight-card h-100 shadow-sm border-0"
+                     data-quiz-id="<%= q._id %>"
+                     data-quiz-title="<%= q.title.replace(/"/g, '&quot;') %>"
+                     data-quiz-category="popular"
+                     data-quiz-list="Popular Quizzes">
                     <% if (q.cover) { %>
                         <img src="<%= q.cover %>" class="card-img-top" alt="cover" style="object-fit:cover;max-height:160px;">
                     <% } %>
@@ -151,12 +185,29 @@
 
 <!-- Самые сложные квизы -->
 <% if (hasHardQuizzes) { %>
+    <script type="application/ld+json">
+    [
+    <% hardQuizzes.forEach(function(q, idx) { %>{
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": "<%= q.title.replace(/"/g, '\\"') %>",
+        "description": "<%= (q.description || '').replace(/"/g, '\\"').substring(0, 200) %>",
+        "url": "<%= '/quizzes/' + q._id %>",
+        "inLanguage": "ru"
+    }<%= idx < hardQuizzes.length - 1 ? ',' : '' %>
+    <% }); %>
+    ]
+    </script>
 <section class="mb-5">
     <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-danger"><i class="bi bi-emoji-frown"></i> Самые сложные квизы</h2>
     <div class="row g-3">
         <% hardQuizzes.forEach(q => { %>
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card quiz-highlight-card h-100 shadow-sm border-0">
+                <div class="card quiz-highlight-card h-100 shadow-sm border-0"
+                     data-quiz-id="<%= q._id %>"
+                     data-quiz-title="<%= q.title.replace(/"/g, '&quot;') %>"
+                     data-quiz-category="hard"
+                     data-quiz-list="Hard Quizzes">
                     <% if (q.cover) { %>
                         <img src="<%= q.cover %>" class="card-img-top" alt="cover" style="object-fit:cover;max-height:160px;">
                     <% } %>
@@ -177,9 +228,23 @@
 
 <!-- Квиз дня -->
 <% if (quizOfTheDay) { %>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": "<%= quizOfTheDay.title.replace(/"/g, '\\"') %>",
+        "description": "<%= (quizOfTheDay.description || '').replace(/"/g, '\\"').substring(0, 200) %>",
+        "url": "<%= '/quizzes/' + quizOfTheDay._id %>",
+        "inLanguage": "ru"
+    }
+    </script>
 <section class="mb-5">
     <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-warning"><i class="bi bi-star-fill"></i> Квиз дня</h2>
-    <div class="card quiz-highlight-card h-100 shadow-sm border-0 mb-3">
+    <div class="card quiz-highlight-card h-100 shadow-sm border-0 mb-3"
+         data-quiz-id="<%= quizOfTheDay._id %>"
+         data-quiz-title="<%= quizOfTheDay.title.replace(/"/g, '&quot;') %>"
+         data-quiz-category="quizOfTheDay"
+         data-quiz-list="Quiz Of The Day">
         <% if (quizOfTheDay.cover) { %>
             <img src="<%= quizOfTheDay.cover %>" class="card-img-top" alt="cover" style="object-fit:cover;max-height:160px;">
         <% } %>
@@ -300,3 +365,106 @@
         transform: translateY(-4px) scale(1.02);
     }
 </style>
+
+<%
+    var newQuizImpressions = hasNewQuizzes ? newQuizzes.map(function(q) {
+        return {
+            id: q._id,
+            name: q.title.replace(/'/g, "\'"),
+            category: 'new',
+            list: 'New Quizzes',
+            position: 1
+        };
+    }) : [];
+    var popularQuizImpressions = hasPopularQuizzes ? popularQuizzes.map(function(q) {
+        return {
+            id: q._id,
+            name: q.title.replace(/'/g, "\'"),
+            category: 'popular',
+            list: 'Popular Quizzes',
+            position: 1
+        };
+    }) : [];
+    var hardQuizImpressions = hasHardQuizzes ? hardQuizzes.map(function(q) {
+        return {
+            id: q._id,
+            name: q.title.replace(/'/g, "\'"),
+            category: 'hard',
+            list: 'Hard Quizzes',
+            position: 1
+        };
+    }) : [];
+    var quizOfTheDayImpression = quizOfTheDay ? [{
+        id: quizOfTheDay._id,
+        name: quizOfTheDay.title.replace(/'/g, "\'"),
+        category: 'quizOfTheDay',
+        list: 'Quiz Of The Day',
+        position: 1
+    }] : [];
+%>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    var newQuizImpressions = <%- JSON.stringify(newQuizImpressions) %>;
+    var popularQuizImpressions = <%- JSON.stringify(popularQuizImpressions) %>;
+    var hardQuizImpressions = <%- JSON.stringify(hardQuizImpressions) %>;
+    var quizOfTheDayImpression = <%- JSON.stringify(quizOfTheDayImpression) %>;
+    newQuizImpressions.forEach(function(item) {
+        window.dataLayer.push({ ecommerce: { impressions: [item] } });
+    });
+    popularQuizImpressions.forEach(function(item) {
+        window.dataLayer.push({ ecommerce: { impressions: [item] } });
+    });
+    hardQuizImpressions.forEach(function(item) {
+        window.dataLayer.push({ ecommerce: { impressions: [item] } });
+    });
+    quizOfTheDayImpression.forEach(function(item) {
+        window.dataLayer.push({ ecommerce: { impressions: [item] } });
+    });
+</script>
+
+<script>
+// Отправка события productClick при клике на карточку квиза
+function sendQuizProductClick(quizId, quizName, category, list) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        event: 'productClick',
+        ecommerce: {
+            click: {
+                actionField: { list: list },
+                products: [{
+                    id: quizId,
+                    name: quizName,
+                    category: category
+                }]
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Карточки новых квизов
+    document.querySelectorAll('[data-quiz-id][data-quiz-list]').forEach(function(card) {
+        card.addEventListener('click', function() {
+            sendQuizProductClick(
+                card.getAttribute('data-quiz-id'),
+                card.getAttribute('data-quiz-title'),
+                card.getAttribute('data-quiz-category'),
+                card.getAttribute('data-quiz-list')
+            );
+        });
+    });
+    // Кнопка "Создать квиз"
+    var createBtn = document.querySelector('a[href="/quizzes/new"]');
+    if (createBtn) {
+        createBtn.addEventListener('click', function() {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'beginQuizCreate',
+                ecommerce: {
+                    action: 'begin_create_quiz'
+                }
+            });
+        });
+    }
+});
+</script>

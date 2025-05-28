@@ -131,4 +131,18 @@
             });
         });
     });
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        event: 'view_user_profile',
+        user: {
+            id: '<%= currentUser._id %>',
+            name: '<%= currentUser.name.replace(/'/g, "\'") %>',
+            email: '<%= currentUser.email %>'
+        },
+        stats: {
+            attemptsCount: <%= typeof stats !== 'undefined' ? stats.attemptsCount : 0 %>,
+            averageScore: <%= typeof stats !== 'undefined' ? stats.averageScore.toFixed(2) : 0 %>
+        }
+    });
 </script>

@@ -133,3 +133,26 @@ const passed = pct >= 70;          // или твой own threshold
 <!-- Toast container -->
 <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
 <script src="/javascripts/main.js"></script>
+
+<%
+    var quizResultItem = {
+        id: attempt.quiz._id,
+        name: attempt.quiz.title.replace(/'/g, "\'"),
+        category: 'quiz',
+        list: 'Quiz Result',
+        quantity: 1,
+        score: attempt.score,
+        total: total
+    };
+%>
+<script>
+window.dataLayer = window.dataLayer || [];
+window.dataLayer.push({
+    event: 'purchase',
+    ecommerce: {
+        transaction_id: '<%= attempt._id %>',
+        value: <%= attempt.score %>,
+        items: [<%- JSON.stringify(quizResultItem) %>]
+    }
+});
+</script>

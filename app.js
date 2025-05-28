@@ -27,11 +27,37 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+            scriptSrc: [
+                "'self'",
+                "https://cdn.jsdelivr.net",
+                "https://mc.yandex.ru",
+                "'unsafe-inline'"
+            ],
             styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:"],
+            imgSrc: [
+                "'self'",
+                "data:",
+                "https://mc.yandex.ru",
+                "https://mc.yandex.net",
+                "https://yandex.ru",
+                "https://avatars.mds.yandex.net",
+                "https://ymetrica1.com"
+            ],
             fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
-            connectSrc: ["'self'"],
+            connectSrc: [
+                "'self'",
+                "https://mc.yandex.ru",
+                "https://mc.yandex.net",
+                "https://ymetrica1.com",
+                "https://yandexmetrica.com"
+            ],
+            frameSrc: [
+                "'self'",
+                "https://mc.yandex.ru",
+                "https://mc.yandex.net",
+                "https://ymetrica1.com",
+                "https://yandexmetrica.com"
+            ],
         }
     }
 }));

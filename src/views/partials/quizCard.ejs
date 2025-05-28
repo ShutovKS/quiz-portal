@@ -11,7 +11,11 @@
 
 <div class="col">
     <% /* TODO: Add CSS for .quiz-card-hover to a stylesheet to enable hover effects */ %>
-    <div class="card quiz-card quiz-card-hover h-100 border-0 shadow-sm">
+    <div class="card quiz-card quiz-card-hover h-100 border-0 shadow-sm"
+         data-quiz-id="<%= quiz._id %>"
+         data-quiz-title="<%= quiz.title.replace(/\"/g, '&quot;') %>"
+         data-quiz-category="quiz"
+         data-quiz-list="Quiz List">
         <!-- cover -->
         <img src="<%= quiz.cover || '/images/quiz-placeholder.svg' %>"
              class="card-img-top" alt="cover">

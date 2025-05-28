@@ -91,3 +91,21 @@
         });
     })();
 </script>
+
+<%
+    var quizViewItem = {
+        id: quiz._id,
+        name: quiz.title.replace(/'/g, "\'"),
+        category: 'quiz',
+        list: 'Quiz View'
+    };
+%>
+<script>
+window.dataLayer = window.dataLayer || [];
+window.dataLayer.push({
+    event: 'view_item',
+    ecommerce: {
+        items: [<%- JSON.stringify(quizViewItem) %>]
+    }
+});
+</script>
