@@ -9,11 +9,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Навигация -->
+        <!-- Навигация и действия -->
         <div class="collapse navbar-collapse" id="navbarMain">
-            
-            <!-- Центр: Навигационные ссылки -->
-            <ul class="navbar-nav mx-auto text-white">
+            <!-- Мобильное меню -->
+            <ul class="navbar-nav w-100 d-lg-none">
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/">Главная</a>
                 </li>
@@ -24,14 +23,58 @@
                     <a class="nav-link text-white" href="/about">О нас</a>
                 </li>
                 <% if (currentUser) { %>
-                    <li class="nav-item d-lg-none">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/quizzes/new">Создать квиз</a>
+                    </li>
+                <% } %>
+                <li><hr class="dropdown-divider"></li>
+                <% if (!currentUser) { %>
+                    <li class="nav-item text-center">
+                        <a class="btn btn-light fw-bold w-75 my-2" href="/login">
+                            <i class="bi bi-box-arrow-in-right fs-5 me-1"></i> Войти
+                        </a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/profile">
+                            <i class="bi bi-person-circle fs-5"></i> Профиль
+                        </a>
+                    </li>
+                    <% if (currentUser.role === 'admin') { %>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/admin">
+                                <i class="bi bi-speedometer2 fs-5"></i> Админ-панель
+                            </a>
+                        </li>
+                    <% } %>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/logout">
+                            <i class="bi bi-box-arrow-right fs-5"></i> Выход
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+
+            <!-- Десктопное меню: навигация по центру -->
+            <ul class="navbar-nav mx-auto d-none d-lg-flex">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/quizzes">Тесты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/about">О нас</a>
+                </li>
+                <% if (currentUser) { %>
+                    <li class="nav-item">
                         <a class="nav-link text-white" href="/quizzes/new">Создать квиз</a>
                     </li>
                 <% } %>
             </ul>
 
-            <!-- Справа: авторизация и профиль -->
-            <ul class="navbar-nav d-flex align-items-center text-white">
+            <!-- Десктопное меню: профиль/вход/выход справа -->
+            <ul class="navbar-nav d-none d-lg-flex align-items-center">
                 <% if (!currentUser) { %>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="/login">
