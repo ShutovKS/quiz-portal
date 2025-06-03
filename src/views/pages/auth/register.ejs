@@ -45,7 +45,8 @@
                                required>
                         <label for="password"><i class="bi bi-lock me-1"></i>Пароль</label>
                         <button type="button"
-                                class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
+                                class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass"
+                                data-target="password">
                             <i class="bi bi-eye"></i>
                         </button>
                         <div class="invalid-feedback">Мин. 6 символов.</div>
@@ -61,7 +62,8 @@
                                required>
                         <label for="password2"><i class="bi bi-check2-square me-1"></i>Повторите пароль</label>
                         <button type="button"
-                                class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
+                                class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass"
+                                data-target="password2">
                             <i class="bi bi-eye"></i>
                         </button>
                         <div class="invalid-feedback">Пароли должны совпадать.</div>
@@ -122,10 +124,12 @@
             }, false);
         });
 
-        // общий show/hide для всех .toggle-pass
+        // show/hide password для всех .toggle-pass через data-target
         document.querySelectorAll('.toggle-pass').forEach(btn => {
             btn.addEventListener('click', () => {
-                const input = btn.previousElementSibling;          // input перед кнопкой
+                const inputId = btn.getAttribute('data-target');
+                const input = document.getElementById(inputId);
+                if (!input) return;
                 input.type = input.type === 'password' ? 'text' : 'password';
                 const icon = btn.querySelector('i');
                 icon.classList.toggle('bi-eye');
