@@ -100,6 +100,9 @@ export const showQuizEditForm = async (req, res) => {
 };
 
 export const updateQuiz = async (req, res) => {
+    console.log('=== [updateQuiz] called ===');
+    console.log('updateQuiz req.method:', req.method);
+    console.log('updateQuiz req.originalUrl:', req.originalUrl);
     console.log('updateQuiz req.body:', req.body);
     const quizId = req.params.id;
     try {
@@ -181,7 +184,8 @@ export const updateQuiz = async (req, res) => {
         await quiz.save();
 
         req.flash('success', 'Квиз сохранён');
-        res.redirect(`/quizzes/${quizId}`);
+        console.log('=== [updateQuiz] redirecting to /profile ===');
+        res.redirect('/profile');
     } catch (err) {
         console.error(err);
         req.flash('error', 'Ошибка при обновлении квиза');

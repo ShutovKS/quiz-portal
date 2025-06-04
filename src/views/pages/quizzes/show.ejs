@@ -1,5 +1,5 @@
 ﻿<!-- progress ------------------------------------------------------- -->
-<div class="sticky-top mb-4" style="top:72px; z-index:2;">
+<div class="mb-4">
     <div class="progress" style="height:.5rem;">
         <div id="q-progress" class="progress-bar bg-success" style="width:0%"></div>
     </div>
@@ -8,7 +8,7 @@
 <h1 class="h4 mb-2 fw-semibold"><%= quiz.title %></h1>
 <p class="text-muted mb-4"><%= quiz.description %></p>
 
-<form action="/quizzes/<%= quiz._id %>" method="POST" id="quizForm">
+<form action="/quizzes/<%= quiz._id %>/submit" method="POST" id="quizForm">
 
     <% questions.forEach((q, i) => { %>
         <div class="card mb-4 border-2" style="border-color:var(--brand-mint-300);">

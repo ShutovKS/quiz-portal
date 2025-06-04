@@ -100,6 +100,9 @@
                                 <a href="/quizzes/<%= q._id %>/edit" class="btn btn-outline-primary btn-sm" title="Редактировать">
                                     <i class="bi bi-pencil"></i>
                                 </a>
+                                <a href="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>" class="btn btn-outline-success btn-sm" title="Открыть" target="_blank">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
                                 <button type="button" class="btn btn-outline-secondary btn-sm btn-copy-link" 
                                         data-link="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>"
                                         title="Скопировать ссылку">

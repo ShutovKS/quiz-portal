@@ -150,8 +150,8 @@ export const showImportQuizForm = (req, res) => {
     res.render('pages/admin/importQuiz', { title: 'Импорт квиза' });
 };
 
-// Импорт квиза из JSON
-export const importQuizFromJson = async (req, res) => {
+// Импорт квиза через API (возвращает JSON)
+export const importQuizFromJsonApi = async (req, res) => {
     const ajv = new Ajv({ allErrors: true });
     const quizSchema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -189,44 +189,45 @@ export const importQuizFromJson = async (req, res) => {
             }
         }
     };
-    
+
     let quizData;
     try {
-        quizData = JSON.parse(req.body.quizJson);
+        quizData = typeof req.body.quizJson === 'string' ? JSON.parse(req.body.quizJson) : req.body.quizJson;
     } catch (e) {
-        req.flash('error', 'Некорректный JSON');
-        return res.redirect('/admin/import-quiz');
+        return res.status(400).json({ success: false, error: 'Некорректный JSON' });
     }
-    
+
     const validate = ajv.compile(quizSchema);
     if (!validate(quizData)) {
-        req.flash('error', 'Ошибка валидации: ' + ajv.errorsText(validate.errors));
-        return res.redirect('/admin/import-quiz');
+        return res.status(400).json({ success: false, error: 'Ошибка валидации', details: ajv.errorsText(validate.errors) });
     }
     // Найти пользователя по email
     const user = await User.findOne({ email: quizData.userEmail });
     if (!user) {
-        req.flash('error', 'Пользователь с таким email не найден');
-        return res.redirect('/admin/import-quiz');
+        return res.status(404).json({ success: false, error: 'Пользователь с таким email не найден' });
     }
     // Создать квиз
-    const quiz = await Quiz.create({
-        title: quizData.title,
-        description: quizData.description,
-        user: user._id,
-        isPublic: quizData.isPublic !== undefined ? quizData.isPublic : true
-    });
-    // Добавить вопросы
-    for (const q of quizData.questions) {
-        await Question.create({
-            quiz: quiz._id,
-            text: q.text,
-            type: q.type,
-            options: q.options
+    let quiz;
+    try {
+        quiz = await Quiz.create({
+            title: quizData.title,
+            description: quizData.description,
+            user: user._id,
+            isPublic: quizData.isPublic !== undefined ? quizData.isPublic : true
         });
+        // Добавить вопросы
+        for (const q of quizData.questions) {
+            await Question.create({
+                quiz: quiz._id,
+                text: q.text,
+                type: q.type,
+                options: q.options
+            });
+        }
+    } catch (e) {
+        return res.status(500).json({ success: false, error: 'Ошибка при создании квиза', details: e.message });
     }
-    req.flash('success', 'Квиз успешно импортирован!');
-    res.redirect('/admin/quizzes');
+    return res.json({ success: true, message: 'Квиз успешно импортирован!', quizId: quiz._id });
 };
 
 // Категории CRUD
@@ -267,4 +268,83 @@ export const deleteCategory = async (req, res) => {
         req.flash('error', 'Ошибка при удалении категории: ' + e.message);
     }
     res.redirect('/admin/categories');
+};
+
+// Импорт квиза из JSON через форму (для сайта)
+export const importQuizFromJson = async (req, res) => {
+    const ajv = new Ajv({ allErrors: true });
+    const quizSchema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Quiz",
+        "type": "object",
+        "required": ["title", "description", "userEmail", "questions"],
+        "properties": {
+            "title": { "type": "string", "minLength": 1 },
+            "description": { "type": "string", "minLength": 1 },
+            "userEmail": { "type": "string", "format": "email" },
+            "isPublic": { "type": "boolean", "default": true },
+            "questions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "type": "object",
+                    "required": ["text", "type", "options"],
+                    "properties": {
+                        "text": { "type": "string", "minLength": 1 },
+                        "type": { "type": "string", "enum": ["single", "multiple", "truefalse"] },
+                        "options": {
+                            "type": "array",
+                            "minItems": 2,
+                            "items": {
+                                "type": "object",
+                                "required": ["text", "isCorrect"],
+                                "properties": {
+                                    "text": { "type": "string", "minLength": 1 },
+                                    "isCorrect": { "type": "boolean" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    let quizData;
+    try {
+        quizData = JSON.parse(req.body.quizJson);
+    } catch (e) {
+        req.flash('error', 'Некорректный JSON');
+        return res.redirect('/admin/import-quiz');
+    }
+
+    const validate = ajv.compile(quizSchema);
+    if (!validate(quizData)) {
+        req.flash('error', 'Ошибка валидации: ' + ajv.errorsText(validate.errors));
+        return res.redirect('/admin/import-quiz');
+    }
+    // Найти пользователя по email
+    const user = await User.findOne({ email: quizData.userEmail });
+    if (!user) {
+        req.flash('error', 'Пользователь с таким email не найден');
+        return res.redirect('/admin/import-quiz');
+    }
+    // Создать квиз
+    const quiz = await Quiz.create({
+        title: quizData.title,
+        description: quizData.description,
+        user: user._id,
+        isPublic: quizData.isPublic !== undefined ? quizData.isPublic : true
+    });
+    // Добавить вопросы
+    for (const q of quizData.questions) {
+        await Question.create({
+            quiz: quiz._id,
+            text: q.text,
+            type: q.type,
+            options: q.options
+        });
+    }
+    req.flash('success', 'Квиз успешно импортирован!');
+    res.redirect('/admin/quizzes');
 };

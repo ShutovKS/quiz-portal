@@ -9,12 +9,21 @@
         <select class="form-select" id="questionType" name="type" required>
             <option value="single" <%= question?.type === 'single' ? 'selected' : '' %>>Один вариант</option>
             <option value="multiple" <%= question?.type === 'multiple' ? 'selected' : '' %>>Несколько вариантов</option>
-            <option value="truefalse" <%= question?.type === 'truefalse' ? 'selected' : '' %>>Верно/Неверно</option>
         </select>
     </div>
-    <div id="optionsContainer"></div>
+    <div id="optionsBlock" class="mb-3">
+        <label class="form-label">Варианты ответа</label>
+        <div id="optionsContainer"></div>
+        <button type="button" class="btn btn-link btn-sm px-0 mt-2" id="addOptionBtn"><i class="bi bi-plus"></i>Добавить вариант</button>
+    </div>
     <div class="d-flex justify-content-between gap-2 mt-4">
         <button type="submit" class="btn btn-primary flex-grow-1">Сохранить</button>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
     </div>
-</form> 
+</form>
+<script>
+// Динамическое отображение вариантов
+(function() {
+    // Тип вопроса всегда single/multiple, optionsBlock всегда видим
+})();
+</script> 
