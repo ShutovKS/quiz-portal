@@ -6,7 +6,6 @@ import MongoStore from 'connect-mongo';
 import flash from 'connect-flash';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
-import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -21,64 +20,6 @@ const __dirname = path.dirname(__filename);
 await connectDB();
 
 const app = express();
-
-// — Безопасность HTTP-заголовков
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: [
-                "'self'",
-                "https://cdn.jsdelivr.net",
-                "https://mc.yandex.ru",
-                "https://mc.yandex.com",
-                "https://ymetrica1.com",
-                "https://yandexmetrica.com",
-                "'unsafe-inline'",
-                "'unsafe-eval'"
-            ],
-            styleSrc: [
-                "'self'",
-                "https://cdn.jsdelivr.net",
-                "'unsafe-inline'",
-                "'unsafe-eval'"
-            ],
-            imgSrc: [
-                "'self'",
-                "data:",
-                "https://mc.yandex.ru",
-                "https://mc.yandex.net",
-                "https://mc.yandex.com",
-                "https://yandex.ru",
-                "https://avatars.mds.yandex.net",
-                "https://ymetrica1.com",
-                "https://yandexmetrica.com"
-            ],
-            fontSrc: [
-                "'self'",
-                "https://cdn.jsdelivr.net",
-                "https://fonts.googleapis.com",
-                "https://fonts.gstatic.com"
-            ],
-            connectSrc: [
-                "'self'",
-                "https://mc.yandex.ru",
-                "https://mc.yandex.net",
-                "https://mc.yandex.com",
-                "https://ymetrica1.com",
-                "https://yandexmetrica.com"
-            ],
-            frameSrc: [
-                "'self'",
-                "https://mc.yandex.ru",
-                "https://mc.yandex.net",
-                "https://mc.yandex.com",
-                "https://ymetrica1.com",
-                "https://yandexmetrica.com"
-            ],
-        }
-    }
-}));
 
 // — Логирование запросов
 app.use(morgan('dev'));
@@ -107,7 +48,8 @@ app.use(session({
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,   // 1 день
-        httpOnly: true, // secure: true, // на продакшене, если HTTPS
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production'
     }
 }));
 
