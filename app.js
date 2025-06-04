@@ -31,23 +31,40 @@ app.use(helmet({
                 "'self'",
                 "https://cdn.jsdelivr.net",
                 "https://mc.yandex.ru",
-                "'unsafe-inline'"
+                "https://mc.yandex.com",
+                "https://ymetrica1.com",
+                "https://yandexmetrica.com",
+                "'unsafe-inline'",
+                "'unsafe-eval'"
             ],
-            styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+            styleSrc: [
+                "'self'",
+                "https://cdn.jsdelivr.net",
+                "'unsafe-inline'",
+                "'unsafe-eval'"
+            ],
             imgSrc: [
                 "'self'",
                 "data:",
                 "https://mc.yandex.ru",
                 "https://mc.yandex.net",
+                "https://mc.yandex.com",
                 "https://yandex.ru",
                 "https://avatars.mds.yandex.net",
-                "https://ymetrica1.com"
+                "https://ymetrica1.com",
+                "https://yandexmetrica.com"
             ],
-            fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
+            fontSrc: [
+                "'self'",
+                "https://cdn.jsdelivr.net",
+                "https://fonts.googleapis.com",
+                "https://fonts.gstatic.com"
+            ],
             connectSrc: [
                 "'self'",
                 "https://mc.yandex.ru",
                 "https://mc.yandex.net",
+                "https://mc.yandex.com",
                 "https://ymetrica1.com",
                 "https://yandexmetrica.com"
             ],
@@ -55,6 +72,7 @@ app.use(helmet({
                 "'self'",
                 "https://mc.yandex.ru",
                 "https://mc.yandex.net",
+                "https://mc.yandex.com",
                 "https://ymetrica1.com",
                 "https://yandexmetrica.com"
             ],
