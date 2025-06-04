@@ -129,4 +129,5 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`⚡️ Server up: http://localhost:${PORT}`));
+const HOST = process.env.HOST || 'localhost'
+app.listen(PORT, () => console.log(`⚡️ Server up: ${HOST}:${PORT}`));

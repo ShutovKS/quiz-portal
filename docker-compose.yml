@@ -1,0 +1,64 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
+    env_file:
+      - ./.env
+    networks:
+      - quiz_portal_network
+    container_name: p2p_hub_frontend
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:latest
+    container_name: ${NGINX_PROXY_CONTAINER:-nginx-proxy}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - proxy_certs:/etc/nginx/certs:ro
+      - proxy_vhost:/etc/nginx/vhost.d
+      - proxy_html:/usr/share/nginx/html
+      - acme_sh:/etc/acme.sh
+    restart: always
+    env_file:
+      - ./.env
+    networks:
+      - quiz_portal_network
+
+  letsencrypt-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    container_name: letsencrypt-companion
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - proxy_certs:/etc/nginx/certs:rw
+      - proxy_vhost:/etc/nginx/vhost.d
+      - proxy_html:/usr/share/nginx/html
+      - acme_sh:/etc/acme.sh
+    restart: always
+    env_file:
+      - ./.env
+    networks:
+      - quiz_portal_network
+
+volumes:
+  proxy_certs:
+  proxy_vhost:
+  proxy_html:
+  acme_sh:
+
+
+networks:
+  quiz_portal_network:
+    driver: bridge
