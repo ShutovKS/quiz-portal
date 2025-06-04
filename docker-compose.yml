@@ -10,7 +10,7 @@ services:
       - ./.env
     networks:
       - quiz_portal_network
-    container_name: p2p_hub_frontend
+    container_name: quiz_portal_web
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3000" ]
       interval: 30s
