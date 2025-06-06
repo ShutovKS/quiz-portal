@@ -1,157 +1,135 @@
-﻿<%
-const pct = Math.round(attempt.score / total * 100);
-const passed = pct >= 70;          // или твой own threshold
-%>
+﻿<% const pct=Math.round(attempt.score / total * 100); const passed=pct>= 70; // или твой own threshold
+    %>
 
-<!-- ===== header / score ========================================== -->
-<div class="card shadow-sm border-0 mb-5 text-center">
-    <div class="card-body py-4">
+    <!-- ===== header / score ========================================== -->
+    <div class="card shadow-sm border-0 mb-5 text-center">
+        <div class="card-body py-4">
 
-        <h1 class="h5 mb-3 fw-semibold"><%= attempt.quiz.title %></h1>
+            <h1 class="h5 mb-3 fw-semibold">
+                <%= attempt.quiz.title %>
+            </h1>
 
-        <!-- ring -->
-        <div class="position-relative d-inline-block my-3">
-            <svg width="120" height="120">
-                <circle cx="60" cy="60" r="54" fill="none" stroke="#e9ecef" stroke-width="12"/>
-                <circle cx="60" cy="60" r="54"
-                        fill="none"
-                        stroke="<%= passed ? '--bs-success' : '--bs-danger' %>"
-                        stroke-width="12"
-                        stroke-dasharray="<%= pct * 339 / 100 %>,339"
-                        stroke-linecap="round"
-                        transform="rotate(-90 60 60)"/>
-            </svg>
-            <div class="position-absolute top-50 start-50 translate-middle">
-                <span class="fs-4 fw-semibold"><%= pct %>%</span>
+            <!-- ring -->
+            <div class="position-relative d-inline-block my-3">
+                <svg width="120" height="120">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="#e9ecef" stroke-width="12" />
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="<%= passed ? '--bs-success' : '--bs-danger' %>"
+                        stroke-width="12" stroke-dasharray="<%= pct * 339 / 100 %>,339" stroke-linecap="round"
+                        transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="position-absolute top-50 start-50 translate-middle">
+                    <span class="fs-4 fw-semibold">
+                        <%= pct %>%
+                    </span>
+                </div>
+            </div>
+
+            <p class="mb-1">Правильных: <strong>
+                    <%= attempt.score %>
+                </strong> из <%= total %>
+            </p>
+            <p class="small text-muted mb-4">
+                <%= passed ? 'Отличный результат!' : 'Нужно ещё практики.' %>
+            </p>
+
+            <div class="d-flex justify-content-center gap-2">
+                <a href="/quizzes/<%= attempt.quiz._id %>" class="btn btn-outline-primary">
+                    Попробовать ещё раз
+                </a>
+                <a href="/quizzes" class="btn btn-primary">К списку квизов</a>
             </div>
         </div>
-
-        <p class="mb-1">Правильных: <strong><%= attempt.score %></strong> из <%= total %></p>
-        <p class="small text-muted mb-4">
-            <%= passed ? 'Отличный результат!' : 'Нужно ещё практики.' %>
-        </p>
-
-        <div class="d-flex justify-content-center gap-2">
-            <a href="/quizzes/<%= attempt.quiz._id %>" class="btn btn-outline-primary">
-                Попробовать ещё раз
-            </a>
-            <a href="/quizzes" class="btn btn-primary">К списку квизов</a>
-        </div>
     </div>
-</div>
 
-<!-- ===== details ================================================== -->
-<div class="accordion mb-5" id="resultDetails">
-    <% questions.forEach((q, i) => {
-        // Получаем ответ пользователя для текущего вопроса
-        let ua = attempt.answers instanceof Map
+    <!-- ===== details ================================================== -->
+    <div class="accordion mb-5" id="resultDetails">
+        <% questions.forEach((q, i)=> {
+            // Получаем ответ пользователя для текущего вопроса
+            let ua = attempt.answers instanceof Map
             ? attempt.answers.get(q._id.toString())
             : attempt.answers[q._id.toString()];
-        // Для multiple всегда массив
-        if(q.type === 'multiple' && !Array.isArray(ua)) ua = ua ? [ua] : [];
-        // Для single/truefalse всегда строка
-        if((q.type === 'single' || q.type === 'truefalse') && Array.isArray(ua)) ua = ua[0] || '';
-        const corr = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
-        let ok;
-        if(q.type === 'text') {
+            // Для multiple всегда массив
+            if(q.type === 'multiple' && !Array.isArray(ua)) ua = ua ? [ua] : [];
+            // Для single/truefalse всегда строка
+            if((q.type === 'single' || q.type === 'truefalse') && Array.isArray(ua)) ua = ua[0] || '';
+            const corr = q.options.filter(o => o.isCorrect).map(o => o._id.toString());
+            let ok;
+            if(q.type === 'text') {
             // Приводим ua к строке, если это массив
             let userText = Array.isArray(ua) ? (ua[0] || '') : (ua || '');
             userText = userText.trim().toLowerCase();
             const correctOption = q.options.find(o => o.isCorrect);
             const correctText = correctOption ? correctOption.text.trim().toLowerCase() : '';
             ok = !!userText && !!correctText && userText === correctText;
-        } else if(q.type === 'multiple') {
+            } else if(q.type === 'multiple') {
             ok = corr.length === ua.length && corr.every(id => ua.includes(id));
-        } else {
+            } else {
             ok = corr.includes(ua);
-        }
-    %>
-    <div class="accordion-item border-2
+            }
+            %>
+            <div class="accordion-item border-2
               <%= ok ? 'border-success' : 'border-danger' %>">
-        <h2 class="accordion-header" id="h-<%= q._id %>">
-            <button class="accordion-button collapsed
-                     <%= ok ? 'text-success' : 'text-danger' %>"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#c-<%= q._id %>">
-                <%= i + 1 %>. <%= q.text %>
-            </button>
-        </h2>
-        <div id="c-<%= q._id %>" class="accordion-collapse collapse"
-             data-bs-parent="#resultDetails">
-            <div class="accordion-body">
+                <h2 class="accordion-header" id="h-<%= q._id %>">
+                    <button class="accordion-button collapsed
+                     <%= ok ? 'text-success' : 'text-danger' %>" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#c-<%= q._id %>">
+                        <%= i + 1 %>. <%= q.text %>
+                    </button>
+                </h2>
+                <div id="c-<%= q._id %>" class="accordion-collapse collapse" data-bs-parent="#resultDetails">
+                    <div class="accordion-body">
 
-                <% if(q.type === 'single' || q.type === 'truefalse'){ %>
-                    <% q.options.forEach(o=>{
-                        const sel = ua === o._id.toString();
-                    %>
-                    <div>
-                        <i class="
+                        <% if(q.type==='single' || q.type==='truefalse' ){ %>
+                            <% q.options.forEach(o=>{
+                                const sel = ua === o._id.toString();
+                                %>
+                                <div>
+                                    <i class="
                  <%= o.isCorrect ? 'bi bi-check-circle-fill text-success' :
                                 sel ? 'bi bi-x-circle-fill text-danger' :
                                         'bi bi-circle text-muted' %> me-1"></i>
-                        <%= o.text %>
-                    </div>
-                    <% }) %>
+                                    <%= o.text %>
+                                </div>
+                                <% }) %>
 
-                <% } else if(q.type === 'multiple'){ %>
-                    <% q.options.forEach(o=>{
-                        const sel = (ua || []).includes(o._id.toString());
-                    %>
-                    <div>
-                        <i class="
+                                    <% } else if(q.type==='multiple' ){ %>
+                                        <% q.options.forEach(o=>{
+                                            const sel = (ua || []).includes(o._id.toString());
+                                            %>
+                                            <div>
+                                                <i class="
                  <%= o.isCorrect && sel ? 'bi bi-check-circle-fill text-success' :
                                 o.isCorrect ? 'bi bi-check-circle text-success' :
                                         sel ? 'bi bi-x-circle-fill text-danger' :
                                                 'bi bi-circle text-muted' %> me-1"></i>
-                        <%= o.text %>
+                                                <%= o.text %>
+                                            </div>
+                                            <% }) %>
+
+                                                <% } else { /* text */ %>
+                                                    <p class="mb-1">Ваш ответ: <span
+                                                            class="<%= ok ? 'text-success' : 'text-danger' %>">
+                                                            <%= (Array.isArray(ua) ? (ua[0] || '' ) : ua) || '—' %>
+                                                        </span></p>
+                                                    <p class="text-success mb-0">Правильный: <%= q.options.find(o=>
+                                                            o.isCorrect)?.text || '—' %></p>
+                                                    <% } %>
+
                     </div>
-                    <% }) %>
-
-                <% } else { /* text */ %>
-                <p class="mb-1">Ваш ответ: <span
-                            class="<%= ok ? 'text-success' : 'text-danger' %>"><%= (Array.isArray(ua) ? (ua[0] || '') : ua) || '—' %></span></p>
-                <p class="text-success mb-0">Правильный: <%= q.options.find(o => o.isCorrect)?.text || '—' %></p>
-                <% } %>
-
+                </div>
             </div>
-        </div>
+            <% }) %>
     </div>
-    <% }) %>
-</div>
 
-<!-- === small JS: рисуем кольцо равномерно ========================= -->
-<script>
-    /* CSS var stroke-color динамично: ищем circle with dasharray set */
-    document.querySelectorAll('circle[stroke^="--bs"]').forEach(c => {
-        const varName = getComputedStyle(document.documentElement)
-            .getPropertyValue(c.getAttribute('stroke').replace('var(', '').replace(')', '')).trim();
-        c.setAttribute('stroke', varName);
-    });
-</script>
+    <!-- === small JS: рисуем кольцо равномерно ========================= -->
+    <script>
+        /* CSS var stroke-color динамично: ищем circle with dasharray set */
+        document.querySelectorAll('circle[stroke^="--bs"]').forEach(c => {
+            const varName = getComputedStyle(document.documentElement)
+                .getPropertyValue(c.getAttribute('stroke').replace('var(', '').replace(')', '')).trim();
+            c.setAttribute('stroke', varName);
+        });
+    </script>
 
-<!-- Toast container -->
-<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
-
-<%
-    var quizResultItem = {
-        id: attempt.quiz._id,
-        name: attempt.quiz.title.replace(/'/g, "\'"),
-        category: 'quiz',
-        list: 'Quiz Result',
-        quantity: 1,
-        score: attempt.score,
-        total: total
-    };
-%>
-<script>
-window.dataLayer = window.dataLayer || [];
-window.dataLayer.push({
-    event: 'purchase',
-    ecommerce: {
-        transaction_id: '<%= attempt._id %>',
-        value: <%= attempt.score %>,
-        items: [<%- JSON.stringify(quizResultItem) %>]
-    }
-});
-</script>
+    <!-- Toast container -->
+    <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>

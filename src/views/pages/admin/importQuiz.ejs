@@ -1,28 +1,29 @@
 <h1 class="h4 mb-4 fw-semibold d-flex align-items-center gap-2">
-    <i class="bi bi-upload"></i> Импорт квиза из JSON
+  <i class="bi bi-upload"></i> Импорт квиза из JSON
 </h1>
 <%- include('../../partials/flash') %>
 
-<div class="card mb-4">
+  <div class="card mb-4">
     <div class="card-body">
-        <form action="/admin/import-quiz" method="POST">
-            <div class="mb-3">
-                <label for="quizJson" class="form-label">Вставьте JSON-квиз по схеме ниже:</label>
-                <textarea class="form-control" id="quizJson" name="quizJson" rows="12" required placeholder='{"title": "...", ...}'></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-upload"></i> Импортировать
-            </button>
-        </form>
+      <form action="/admin/import-quiz" method="POST">
+        <div class="mb-3">
+          <label for="quizJson" class="form-label">Вставьте JSON-квиз по схеме ниже:</label>
+          <textarea class="form-control" id="quizJson" name="quizJson" rows="12" required
+            placeholder='{"title": "...", ...}'></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-upload"></i> Импортировать
+        </button>
+      </form>
     </div>
-</div>
+  </div>
 
-<div class="card">
+  <div class="card">
     <div class="card-header bg-light">
-        <i class="bi bi-info-circle"></i> Пример структуры JSON
+      <i class="bi bi-info-circle"></i> Пример структуры JSON
     </div>
     <div class="card-body">
-        <pre style="font-size: 0.95em; background: #f8f9fa; border-radius: 6px; padding: 1em;">
+      <pre style="font-size: 0.95em; background: #f8f9fa; border-radius: 6px; padding: 1em;">
 {
   "title": "Основы программирования",
   "description": "Проверь, насколько хорошо ты знаешь базовые концепции.",
@@ -52,4 +53,4 @@
 }
         </pre>
     </div>
-</div> 
+  </div>

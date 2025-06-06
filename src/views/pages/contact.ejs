@@ -10,31 +10,34 @@
                 <li><i class="bi bi-telegram me-2"></i> @shutovks</li>
                 <li><i class="bi bi-geo-alt me-2"></i> Москва, Россия</li>
             </ul>
-            <% if (typeof success !== 'undefined') { %>
+            <% if (typeof success !=='undefined' ) { %>
                 <div class="alert alert-success" role="alert">
                     <%= success %>
                 </div>
-            <% } %>
-            <% if (typeof error !== 'undefined') { %>
-                <div class="alert alert-danger" role="alert">
-                    <%= error %>
-                </div>
-            <% } %>
-            <form action="/contact" method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Ваше имя" required>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Ваш email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="message" class="form-label">Сообщение</label>
-                    <textarea class="form-control" id="message" name="message" rows="4" placeholder="Ваше сообщение..." required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Отправить</button>
-            </form>
+                <% } %>
+                    <% if (typeof error !=='undefined' ) { %>
+                        <div class="alert alert-danger" role="alert">
+                            <%= error %>
+                        </div>
+                        <% } %>
+                            <form action="/contact" method="POST">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Имя</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Ваше имя"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="Ваш email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="message" class="form-label">Сообщение</label>
+                                    <textarea class="form-control" id="message" name="message" rows="4"
+                                        placeholder="Ваше сообщение..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Отправить</button>
+                            </form>
         </div>
     </div>
 </div>

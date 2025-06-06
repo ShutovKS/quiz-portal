@@ -3,32 +3,35 @@
     <div class="avatar mx-auto mb-3" id="avatar"></div>
 
     <!-- инфо -->
-    <h1 class="h4 mb-1"><%= user.name %></h1>
+    <h1 class="h4 mb-1">
+        <%= user.name %>
+    </h1>
     <p class="small mb-0">
-        <i class="bi bi-envelope me-1"></i><%= user.email %>
+        <i class="bi bi-envelope me-1"></i>
+        <%= user.email %>
     </p>
     <p class="small text-opacity-75">
         Зарегистрирован:
-        <%= new Date(user.registeredAt).toLocaleDateString('ru-RU', {
-            day: '2-digit', month: 'long', year: 'numeric'
-        }) %>
+        <%= new Date(user.registeredAt).toLocaleDateString('ru-RU', { day: '2-digit' , month: 'long' , year: 'numeric'
+            }) %>
     </p>
 
     <!-- кнопка -->
-    <a href="/user/<%= user._id %>/edit"
-       class="btn btn-outline-light btn-sm btn-edit">
+    <a href="/user/<%= user._id %>/edit" class="btn btn-outline-light btn-sm btn-edit">
         <i class="bi bi-pencil-square me-1"></i>Редактировать
     </a>
 </div>
 
 <div class="row g-4 justify-content-center">
     <!-- Статистика -->
-    <% if (typeof stats !== 'undefined') { %>
+    <% if (typeof stats !=='undefined' ) { %>
         <div class="col-12 col-md-2">
             <div class="card text-bg h-100">
                 <div class="card-body d-flex flex-column justify-content-center text-center">
                     <h6 class="card-title text-uppercase small mb-2">Квизов пройдено</h6>
-                    <span class="display-6 fw-semibold"><%= stats.attemptsCount %></span>
+                    <span class="display-6 fw-semibold">
+                        <%= stats.attemptsCount %>
+                    </span>
                 </div>
             </div>
         </div>
@@ -36,111 +39,146 @@
             <div class="card text-bg h-100">
                 <div class="card-body d-flex flex-column justify-content-center text-center">
                     <h6 class="card-title text-uppercase small mb-2">Средний балл</h6>
-                    <span class="display-6 fw-semibold"><%= stats.averageScore.toFixed(2) %></span>
+                    <span class="display-6 fw-semibold">
+                        <%= stats.averageScore.toFixed(2) %>
+                    </span>
                 </div>
             </div>
         </div>
-        <% if (typeof createdQuizzesCount !== 'undefined') { %>
-        <div class="col-12 col-md-2">
-            <div class="card text-bg h-100">
-                <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h6 class="card-title text-uppercase small mb-2">Создано квизов</h6>
-                    <span class="display-6 fw-semibold"><%= createdQuizzesCount %></span>
+        <% if (typeof createdQuizzesCount !=='undefined' ) { %>
+            <div class="col-12 col-md-2">
+                <div class="card text-bg h-100">
+                    <div class="card-body d-flex flex-column justify-content-center text-center">
+                        <h6 class="card-title text-uppercase small mb-2">Создано квизов</h6>
+                        <span class="display-6 fw-semibold">
+                            <%= createdQuizzesCount %>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <% } %>
-        <% if (typeof bestScore !== 'undefined') { %>
-        <div class="col-12 col-md-2">
-            <div class="card text-bg h-100">
-                <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h6 class="card-title text-uppercase small mb-2">Лучший результат</h6>
-                    <span class="display-6 fw-semibold"><%= bestScore %></span>
-                </div>
-            </div>
-        </div>
-        <% } %>
-        <% if (typeof attemptsLastMonth !== 'undefined') { %>
-        <div class="col-12 col-md-2">
-            <div class="card text-bg h-100">
-                <div class="card-body d-flex flex-column justify-content-center text-center">
-                    <h6 class="card-title text-uppercase small mb-2">Попыток за 30 дней</h6>
-                    <span class="display-6 fw-semibold"><%= attemptsLastMonth %></span>
-                </div>
-            </div>
-        </div>
-        <% } %>
-        <% if (lastAttempt && lastAttempt.quiz) { %>
-        <div class="col-12">
-            <div class="alert alert-info text-center">
-                Последний пройденный квиз: <strong><%= lastAttempt.quiz.title %></strong>
-                <span class="text-muted"> ( <%= new Date(lastAttempt.createdAt).toLocaleDateString('ru-RU') %> )</span>
-            </div>
-        </div>
-        <% } %>
-    <% } %>
-
-    <!-- Квизы -->
-    <div class="col-12 mb-2 d-flex justify-content-end">
-        <a href="/quizzes/new" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-1"></i>Создать квиз
-        </a>
-    </div>
-    <% if (typeof quizzes !== 'undefined' && quizzes.length) { %>
-        <div class="col-12">
-            <div class="card text-bg">
-                <div class="card-header border-secondary">
-                    <i class="bi bi-puzzle me-2"></i>Мои квизы
-                </div>
-                <ul class="list-group list-group-flush list-group">
-                    <% quizzes.forEach(q => { %>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="fw-semibold"><%= q.title %></span>
-                            <div class="btn-group" role="group">
-                                <a href="/quizzes/<%= q._id %>/edit" class="btn btn-outline-primary btn-sm" title="Редактировать">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>" class="btn btn-outline-success btn-sm" title="Открыть" target="_blank">
-                                    <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                                <button type="button" class="btn btn-outline-secondary btn-sm btn-copy-link" 
-                                        data-link="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>"
-                                        title="Скопировать ссылку">
-                                    <i class="bi bi-link-45deg"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#del-<%= q._id %>" title="Удалить">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+            <% } %>
+                <% if (typeof bestScore !=='undefined' ) { %>
+                    <div class="col-12 col-md-2">
+                        <div class="card text-bg h-100">
+                            <div class="card-body d-flex flex-column justify-content-center text-center">
+                                <h6 class="card-title text-uppercase small mb-2">Лучший результат</h6>
+                                <span class="display-6 fw-semibold">
+                                    <%= bestScore %>
+                                </span>
                             </div>
-                        </li>
-                        <!-- Модалка удаления -->
-                        <div class="modal fade modal-custom-mint" id="del-<%= q._id %>" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-                                            Удалить квиз?
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-2">«<strong><%= q.title %></strong>» исчезнет навсегда.<br>Вы уверены?</div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-                                        <form action="/quizzes/<%= q._id %>?_method=DELETE" method="POST" class="d-inline">
-                                            <button class="btn btn-danger">Удалить</button>
-                                        </form>
+                        </div>
+                    </div>
+                    <% } %>
+                        <% if (typeof attemptsLastMonth !=='undefined' ) { %>
+                            <div class="col-12 col-md-2">
+                                <div class="card text-bg h-100">
+                                    <div class="card-body d-flex flex-column justify-content-center text-center">
+                                        <h6 class="card-title text-uppercase small mb-2">Попыток за 30 дней</h6>
+                                        <span class="display-6 fw-semibold">
+                                            <%= attemptsLastMonth %>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <% }) %>
-                </ul>
-            </div>
-        </div>
-    <% } %>
+                            <% } %>
+                                <% if (lastAttempt && lastAttempt.quiz) { %>
+                                    <div class="col-12">
+                                        <div class="alert alert-info text-center">
+                                            Последний пройденный квиз: <strong>
+                                                <%= lastAttempt.quiz.title %>
+                                            </strong>
+                                            <span class="text-muted"> ( <%= new
+                                                    Date(lastAttempt.createdAt).toLocaleDateString('ru-RU') %> )</span>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% } %>
+
+                                            <!-- Квизы -->
+                                            <div class="col-12 mb-2 d-flex justify-content-end">
+                                                <a href="/quizzes/new" class="btn btn-primary">
+                                                    <i class="bi bi-plus-circle me-1"></i>Создать квиз
+                                                </a>
+                                            </div>
+                                            <% if (typeof quizzes !=='undefined' && quizzes.length) { %>
+                                                <div class="col-12">
+                                                    <div class="card text-bg">
+                                                        <div class="card-header border-secondary">
+                                                            <i class="bi bi-puzzle me-2"></i>Мои квизы
+                                                        </div>
+                                                        <ul class="list-group list-group-flush list-group">
+                                                            <% quizzes.forEach(q=> { %>
+                                                                <li
+                                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                                    <span class="fw-semibold">
+                                                                        <%= q.title %>
+                                                                    </span>
+                                                                    <div class="btn-group" role="group">
+                                                                        <a href="/quizzes/<%= q._id %>/edit"
+                                                                            class="btn btn-outline-primary btn-sm"
+                                                                            title="Редактировать">
+                                                                            <i class="bi bi-pencil"></i>
+                                                                        </a>
+                                                                        <a href="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>"
+                                                                            class="btn btn-outline-success btn-sm"
+                                                                            title="Открыть" target="_blank">
+                                                                            <i class="bi bi-box-arrow-up-right"></i>
+                                                                        </a>
+                                                                        <button type="button"
+                                                                            class="btn btn-outline-secondary btn-sm btn-copy-link"
+                                                                            data-link="<%= q.isPublic ? `/quizzes/${q._id}` : (q.accessToken ? `/quizzes/private/${q.accessToken}` : `/quizzes/${q._id}`) %>"
+                                                                            title="Скопировать ссылку">
+                                                                            <i class="bi bi-link-45deg"></i>
+                                                                        </button>
+                                                                        <button type="button"
+                                                                            class="btn btn-outline-danger btn-sm"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#del-<%= q._id %>"
+                                                                            title="Удалить">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </li>
+                                                                <!-- Модалка удаления -->
+                                                                <div class="modal fade modal-custom-mint"
+                                                                    id="del-<%= q._id %>" tabindex="-1">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">
+                                                                                    <i
+                                                                                        class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                                                                    Удалить квиз?
+                                                                                </h5>
+                                                                                <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Закрыть"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-2">«<strong>
+                                                                                        <%= q.title %>
+                                                                                    </strong>» исчезнет навсегда.<br>Вы
+                                                                                    уверены?</div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    class="btn btn-outline-secondary"
+                                                                                    data-bs-dismiss="modal">Отмена</button>
+                                                                                <form
+                                                                                    action="/quizzes/<%= q._id %>?_method=DELETE"
+                                                                                    method="POST" class="d-inline">
+                                                                                    <button
+                                                                                        class="btn btn-danger">Удалить</button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <% }) %>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <% } %>
 </div>
 
 <!-- Toast container -->
@@ -156,7 +194,7 @@
 
     // Копирование ссылки на квиз
     document.querySelectorAll('.btn-copy-link').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const link = this.dataset.link;
             const url = location.origin + link;
             navigator.clipboard.writeText(url).then(() => {
@@ -170,19 +208,5 @@
                 }, 1200);
             });
         });
-    });
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        event: 'view_user_profile',
-        user: {
-            id: '<%= user._id %>',
-            name: '<%= user.name.replace(/'/g, "\'") %>',
-            email: '<%= user.email %>'
-        },
-        stats: {
-            attemptsCount: <%= typeof stats !== 'undefined' ? stats.attemptsCount : 0 %>,
-            averageScore: <%= typeof stats !== 'undefined' ? stats.averageScore.toFixed(2) : 0 %>
-        }
     });
 </script>

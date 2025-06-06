@@ -5,57 +5,58 @@
     </div>
 </div>
 
-<h1 class="h4 mb-2 fw-semibold"><%= quiz.title %></h1>
-<p class="text-muted mb-4"><%= quiz.description %></p>
+<h1 class="h4 mb-2 fw-semibold">
+    <%= quiz.title %>
+</h1>
+<p class="text-muted mb-4">
+    <%= quiz.description %>
+</p>
 
 <form action="/quizzes/<%= quiz._id %>/submit" method="POST" id="quizForm">
 
-    <% questions.forEach((q, i) => { %>
+    <% questions.forEach((q, i)=> { %>
         <div class="card mb-4 border-2" style="border-color:var(--brand-mint-300);">
             <div class="card-body">
-                <p class="fw-bold"><%= i + 1 %>. <%= q.text %></p>
+                <p class="fw-bold">
+                    <%= i + 1 %>. <%= q.text %>
+                </p>
 
                 <% /* SINGLE / TRUEFALSE ----------------------------------- */ %>
-                <% if (q.type === 'single' || q.type === 'truefalse') { %>
-                    <div class="btn-group-vertical w-100" role="group">
-                        <% q.options.forEach(o => { %>
-                            <input type="radio"
-                                   class="btn-check"
-                                   name="answers[<%= q._id %>]"
-                                   id="opt-<%= q._id %>-<%= o._id %>"
-                                   value="<%= o._id %>" required>
-                            <label class="btn btn-outline-primary text-start"
-                                   for="opt-<%= q._id %>-<%= o._id %>"><%= o.text %></label>
-                        <% }) %>
-                    </div>
+                    <% if (q.type==='single' || q.type==='truefalse' ) { %>
+                        <div class="btn-group-vertical w-100" role="group">
+                            <% q.options.forEach(o=> { %>
+                                <input type="radio" class="btn-check" name="answers[<%= q._id %>]"
+                                    id="opt-<%= q._id %>-<%= o._id %>" value="<%= o._id %>" required>
+                                <label class="btn btn-outline-primary text-start" for="opt-<%= q._id %>-<%= o._id %>">
+                                    <%= o.text %>
+                                </label>
+                                <% }) %>
+                        </div>
 
-                    <% /* MULTIPLE ------------------------------------------- */ %>
-                <% } else if (q.type === 'multiple') { %>
-                    <div class="btn-group-vertical w-100" role="group">
-                        <% q.options.forEach(o => { %>
-                            <input type="checkbox"
-                                   class="btn-check"
-                                   name="answers[<%= q._id %>][]"
-                                   id="opt-<%= q._id %>-<%= o._id %>"
-                                   value="<%= o._id %>">
-                            <label class="btn btn-outline-primary text-start"
-                                   for="opt-<%= q._id %>-<%= o._id %>"><%= o.text %></label>
-                        <% }) %>
-                    </div>
+                        <% /* MULTIPLE ------------------------------------------- */ %>
+                            <% } else if (q.type==='multiple' ) { %>
+                                <div class="btn-group-vertical w-100" role="group">
+                                    <% q.options.forEach(o=> { %>
+                                        <input type="checkbox" class="btn-check" name="answers[<%= q._id %>][]"
+                                            id="opt-<%= q._id %>-<%= o._id %>" value="<%= o._id %>">
+                                        <label class="btn btn-outline-primary text-start"
+                                            for="opt-<%= q._id %>-<%= o._id %>">
+                                            <%= o.text %>
+                                        </label>
+                                        <% }) %>
+                                </div>
 
-                    <% /* TEXT ------------------------------------------------ */ %>
-                <% } else { %>
-                    <textarea name="answers[<%= q._id %>]"
-                              class="form-control"
-                              rows="2"
-                              placeholder="Ваш ответ…" required></textarea>
-                <% } %>
+                                <% /* TEXT ------------------------------------------------ */ %>
+                                    <% } else { %>
+                                        <textarea name="answers[<%= q._id %>]" class="form-control" rows="2"
+                                            placeholder="Ваш ответ…" required></textarea>
+                                        <% } %>
 
             </div>
         </div>
-    <% }) %>
+        <% }) %>
 
-    <button class="btn btn-primary w-100 py-2">Отправить ответы</button>
+            <button class="btn btn-primary w-100 py-2">Отправить ответы</button>
 </form>
 
 <script>
@@ -90,22 +91,4 @@
             bar.style.width = (answered / qCount * 100) + '%';
         });
     })();
-</script>
-
-<%
-    var quizViewItem = {
-        id: quiz._id,
-        name: quiz.title.replace(/'/g, "\'"),
-        category: 'quiz',
-        list: 'Quiz View'
-    };
-%>
-<script>
-window.dataLayer = window.dataLayer || [];
-window.dataLayer.push({
-    event: 'view_item',
-    ecommerce: {
-        items: [<%- JSON.stringify(quizViewItem) %>]
-    }
-});
 </script>

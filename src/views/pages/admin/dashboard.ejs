@@ -3,242 +3,271 @@
 </h1>
 <%- include('../../partials/flash') %>
 
-<!-- KPI-cards ------------------------------------------------------- -->
-<div class="row g-4 mb-4">
-    <div class="col-12 col-sm-3">
-        <a href="/admin/users" class="text-reset text-decoration-none">
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-sm-3">
+            <a href="/admin/users" class="text-reset text-decoration-none">
+                <div class="card shadow-sm border-0 kpi-card h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <span class="kpi-icon bg-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </span>
+                        <div>
+                            <h6 class="mb-0 text-uppercase small text-muted">Пользователи</h6>
+                            <span class="fs-4 fw-semibold">
+                                <%= uCount %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <a href="/admin/quizzes" class="text-reset text-decoration-none">
+                <div class="card shadow-sm border-0 kpi-card h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <span class="kpi-icon bg-success">
+                            <i class="bi bi-puzzle-fill"></i>
+                        </span>
+                        <div>
+                            <h6 class="mb-0 text-uppercase small text-muted">Квизы</h6>
+                            <span class="fs-4 fw-semibold">
+                                <%= qCount %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-3">
             <div class="card shadow-sm border-0 kpi-card h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-primary">
-            <i class="bi bi-people-fill"></i>
-          </span>
+                    <span class="kpi-icon bg-info">
+                        <i class="bi bi-bar-chart"></i>
+                    </span>
                     <div>
-                        <h6 class="mb-0 text-uppercase small text-muted">Пользователи</h6>
-                        <span class="fs-4 fw-semibold"><%= uCount %></span>
+                        <h6 class="mb-0 text-uppercase small text-muted">Попытки</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= aCount %>
+                        </span>
                     </div>
                 </div>
             </div>
-        </a>
-    </div>
+        </div>
 
-    <div class="col-12 col-sm-3">
-        <a href="/admin/quizzes" class="text-reset text-decoration-none">
+        <div class="col-12 col-sm-3">
             <div class="card shadow-sm border-0 kpi-card h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-success">
-            <i class="bi bi-puzzle-fill"></i>
-          </span>
+                    <span class="kpi-icon bg-secondary">
+                        <i class="bi bi-graph-up"></i>
+                    </span>
                     <div>
-                        <h6 class="mb-0 text-uppercase small text-muted">Квизы</h6>
-                        <span class="fs-4 fw-semibold"><%= qCount %></span>
+                        <h6 class="mb-0 text-uppercase small text-muted">Средний балл</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= avgScore %>
+                        </span>
                     </div>
                 </div>
             </div>
-        </a>
-    </div>
+        </div>
 
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-info">
-            <i class="bi bi-bar-chart"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Попытки</h6>
-                    <span class="fs-4 fw-semibold"><%= aCount %></span>
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-warning">
+                        <i class="bi bi-lightning-charge"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Активные за 7 дней</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= activeUsersCount %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-dark">
+                        <i class="bi bi-person-check"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Уникальных участников</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= uniqueParticipantsCount %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-info">
+                        <i class="bi bi-star"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Популярный квиз</h6>
+                        <span class="fs-6 fw-semibold">
+                            <%= mostPopularQuiz %>
+                        </span>
+                        <span class="d-block small text-muted">Попыток: <%= mostPopularQuizAttempts %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-success">
+                        <i class="bi bi-bar-chart-steps"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Среднее попыток/польз.</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= avgAttemptsPerUser %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-secondary">
+                        <i class="bi bi-question-circle"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Вопросов всего</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= questionCount %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-primary">
+                        <i class="bi bi-person-plus"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Новых за 7 дней</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= newUsersWeek %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-primary">
+                        <i class="bi bi-person-plus"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Новых за 30 дней</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= newUsersMonth %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-3">
+            <div class="card shadow-sm border-0 kpi-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="kpi-icon bg-success">
+                        <i class="bi bi-unlock"></i>
+                    </span>
+                    <div>
+                        <h6 class="mb-0 text-uppercase small text-muted">Публичных квизов</h6>
+                        <span class="fs-4 fw-semibold">
+                            <%= publicQuizPercent %>%
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-secondary">
-            <i class="bi bi-graph-up"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Средний балл</h6>
-                    <span class="fs-4 fw-semibold"><%= avgScore %></span>
-                </div>
-            </div>
+    <!-- Топ-3 квиза по среднему баллу -->
+    <div class="card mt-4">
+        <div class="card-header bg-dark text-white">
+            <i class="bi bi-trophy"></i> Топ-3 квиза по среднему баллу
         </div>
+        <ul class="list-group list-group-flush">
+            <% topAvgQuizzes.forEach(q=> { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <%= q.title %>
+                    </span>
+                    <span class="badge bg-success rounded-pill">
+                        <%= q.avgScore?.toFixed(1) %>
+                    </span>
+                </li>
+                <% }) %>
+        </ul>
     </div>
 
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-warning">
-            <i class="bi bi-lightning-charge"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Активные за 7 дней</h6>
-                    <span class="fs-4 fw-semibold"><%= activeUsersCount %></span>
-                </div>
-            </div>
+    <!-- Квизы без попыток -->
+    <div class="card mt-4">
+        <div class="card-header bg-dark text-white">
+            <i class="bi bi-emoji-frown"></i> Квизы без попыток
         </div>
+        <ul class="list-group list-group-flush">
+            <% quizzesWithoutAttempts.forEach(q=> { %>
+                <li class="list-group-item">
+                    <%= q.title %>
+                </li>
+                <% }) %>
+                    <% if (!quizzesWithoutAttempts.length) { %>
+                        <li class="list-group-item text-muted">Все квизы имеют попытки</li>
+                        <% } %>
+        </ul>
     </div>
 
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-dark">
-            <i class="bi bi-person-check"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Уникальных участников</h6>
-                    <span class="fs-4 fw-semibold"><%= uniqueParticipantsCount %></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-info">
-            <i class="bi bi-star"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Популярный квиз</h6>
-                    <span class="fs-6 fw-semibold"><%= mostPopularQuiz %></span>
-                    <span class="d-block small text-muted">Попыток: <%= mostPopularQuizAttempts %></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-success">
-            <i class="bi bi-bar-chart-steps"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Среднее попыток/польз.</h6>
-                    <span class="fs-4 fw-semibold"><%= avgAttemptsPerUser %></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-secondary">
-            <i class="bi bi-question-circle"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Вопросов всего</h6>
-                    <span class="fs-4 fw-semibold"><%= questionCount %></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-primary">
-            <i class="bi bi-person-plus"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Новых за 7 дней</h6>
-                    <span class="fs-4 fw-semibold"><%= newUsersWeek %></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-primary">
-            <i class="bi bi-person-plus"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Новых за 30 дней</h6>
-                    <span class="fs-4 fw-semibold"><%= newUsersMonth %></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-sm-3">
-        <div class="card shadow-sm border-0 kpi-card h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-          <span class="kpi-icon bg-success">
-            <i class="bi bi-unlock"></i>
-          </span>
-                <div>
-                    <h6 class="mb-0 text-uppercase small text-muted">Публичных квизов</h6>
-                    <span class="fs-4 fw-semibold"><%= publicQuizPercent %>%</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Топ-3 квиза по среднему баллу -->
-<div class="card mt-4">
-    <div class="card-header bg-dark text-white">
-        <i class="bi bi-trophy"></i> Топ-3 квиза по среднему баллу
-    </div>
-    <ul class="list-group list-group-flush">
-        <% topAvgQuizzes.forEach(q => { %>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span><%= q.title %></span>
-                <span class="badge bg-success rounded-pill"><%= q.avgScore?.toFixed(1) %></span>
-            </li>
-        <% }) %>
+    <!-- nav-pills ------------------------------------------------------- -->
+    <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/users"><i class="bi bi-people"></i> Пользователи</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/quizzes"><i class="bi bi-puzzle"></i> Квизы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/import-quiz"><i class="bi bi-upload"></i> Импорт квиза</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/categories"><i class="bi bi-tags"></i> Категории</a>
+        </li>
     </ul>
-</div>
 
-<!-- Квизы без попыток -->
-<div class="card mt-4">
-    <div class="card-header bg-dark text-white">
-        <i class="bi bi-emoji-frown"></i> Квизы без попыток
-    </div>
-    <ul class="list-group list-group-flush">
-        <% quizzesWithoutAttempts.forEach(q => { %>
-            <li class="list-group-item"><%= q.title %></li>
-        <% }) %>
-        <% if (!quizzesWithoutAttempts.length) { %>
-            <li class="list-group-item text-muted">Все квизы имеют попытки</li>
-        <% } %>
-    </ul>
-</div>
+    <style>
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            transition: .15s;
+        }
 
-<!-- nav-pills ------------------------------------------------------- -->
-<ul class="nav nav-pills mb-3">
-    <li class="nav-item">
-        <a class="nav-link" href="/admin/users"><i class="bi bi-people"></i> Пользователи</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/admin/quizzes"><i class="bi bi-puzzle"></i> Квизы</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/admin/import-quiz"><i class="bi bi-upload"></i> Импорт квиза</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/admin/categories"><i class="bi bi-tags"></i> Категории</a>
-    </li>
-</ul>
-
-<style>
-    .kpi-card:hover {
-        transform: translateY(-2px);
-        transition: .15s;
-    }
-
-    .kpi-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 1.35rem;
-    }
-</style>
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.35rem;
+        }
+    </style>

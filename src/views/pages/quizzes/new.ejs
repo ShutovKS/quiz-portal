@@ -5,62 +5,51 @@
             <h1 class="h4 text-center mb-4">Новый&nbsp;квиз</h1>
             <%- include('../../partials/flash') %>
 
-            <form action="/quizzes"
-                  method="POST"
-                  class="needs-validation"
-                  novalidate>
+                <form action="/quizzes" method="POST" class="needs-validation" novalidate>
 
-                <!-- title -->
-                <div class="form-floating mb-3">
-                    <input id="title"
-                           name="title"
-                           type="text"
-                           class="form-control"
-                           placeholder="Название" required>
-                    <label for="title"><i class="bi bi-fonts me-1"></i>Название</label>
-                    <div class="invalid-feedback">Нужно название.</div>
-                </div>
+                    <!-- title -->
+                    <div class="form-floating mb-3">
+                        <input id="title" name="title" type="text" class="form-control" placeholder="Название" required>
+                        <label for="title"><i class="bi bi-fonts me-1"></i>Название</label>
+                        <div class="invalid-feedback">Нужно название.</div>
+                    </div>
 
-                <!-- description -->
-                <div class="form-floating mb-4">
-          <textarea id="description"
-                    name="description"
-                    class="form-control"
-                    style="height: 120px"
-                    placeholder="Описание"></textarea>
-                    <label for="description"><i class="bi bi-card-text me-1"></i>Описание</label>
-                </div>
+                    <!-- description -->
+                    <div class="form-floating mb-4">
+                        <textarea id="description" name="description" class="form-control" style="height: 120px"
+                            placeholder="Описание"></textarea>
+                        <label for="description"><i class="bi bi-card-text me-1"></i>Описание</label>
+                    </div>
 
-                <!-- public switch -->
-                <div class="form-check form-switch mb-4">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           role="switch"
-                           id="isPublic"
-                           name="isPublic"
-                           checked>
-                    <label class="form-check-label" for="isPublic">
-                        Сделать публичным
-                    </label>
-                </div>
+                    <!-- public switch -->
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="isPublic" name="isPublic"
+                            checked>
+                        <label class="form-check-label" for="isPublic">
+                            Сделать публичным
+                        </label>
+                    </div>
 
-                <!-- categories -->
-                <div class="mb-4">
-                    <label for="categories" class="form-label"><i class="bi bi-tags me-1"></i>Категории (необязательно)</label>
-                    <select id="categories" name="categories" class="form-select" multiple>
-                        <% if (categories && categories.length) { %>
-                            <% categories.forEach(cat => { %>
-                                <option value="<%= cat._id %>"><%= cat.name %></option>
-                            <% }) %>
-                        <% } %>
-                    </select>
-                    <div class="form-text">Можно выбрать одну или несколько категорий</div>
-                </div>
+                    <!-- categories -->
+                    <div class="mb-4">
+                        <label for="categories" class="form-label"><i class="bi bi-tags me-1"></i>Категории
+                            (необязательно)</label>
+                        <select id="categories" name="categories" class="form-select" multiple>
+                            <% if (categories && categories.length) { %>
+                                <% categories.forEach(cat=> { %>
+                                    <option value="<%= cat._id %>">
+                                        <%= cat.name %>
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
+                        <div class="form-text">Можно выбрать одну или несколько категорий</div>
+                    </div>
 
-                <button class="btn btn-primary w-100 py-2">
-                    <i class="bi bi-plus-circle me-1"></i>Создать квиз
-                </button>
-            </form>
+                    <button class="btn btn-primary w-100 py-2">
+                        <i class="bi bi-plus-circle me-1"></i>Создать квиз
+                    </button>
+                </form>
 
         </div>
     </div>
@@ -85,21 +74,12 @@
 </script>
 
 <script>
-window.dataLayer = window.dataLayer || [];
-window.dataLayer.push({
-    event: 'begin_quiz_create'
-});
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        event: 'begin_quiz_create'
+    });
 </script>
 
 <!-- select2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        $('#categories').select2({
-            placeholder: 'Выберите категории',
-            allowClear: true,
-            width: '100%'
-        });
-    });
-</script>
