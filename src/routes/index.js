@@ -27,7 +27,13 @@ router.use('/500', (req, res) => { res.status(500).render('pages/500', { title: 
 
 // — 404
 router.use((req, res) => {
-    res.status(404).render('pages/404', { title: '404', layout: false });
+    res.status(404);
+    // Если запрашивается статика — отдать обычный 404
+    if (req.url.startsWith('/images') || req.url.startsWith('/stylesheets') || req.url.startsWith('/javascripts')) {
+        return res.send('Not found');
+    }
+    // Для остальных — можно отрендерить красивую страницу 404
+    res.render('pages/404', { title: 'Страница не найдена', layout: false });
 });
 
 // — Ошибки

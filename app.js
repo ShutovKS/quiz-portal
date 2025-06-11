@@ -32,6 +32,12 @@ app.use(expressLayouts);
 
 // — Статика
 app.use(express.static(path.join(__dirname, 'public')));
+app.use((req, res, next) => {
+    if (req.url.startsWith('/stylesheets') || req.url.startsWith('/javascripts') || req.url.startsWith('/images')) {
+        res.setHeader('Cache-Control', 'public, max-age=2592000, immutable'); // 30 дней
+    }
+    next();
+});
 
 // — Парсинг тела запросов
 app.use(express.urlencoded({ extended: true }));
@@ -44,11 +50,12 @@ app.use(methodOverride('_method'));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
+    async: true,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,   // 1 день
-        httpOnly: true, 
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production'
     }
 }));

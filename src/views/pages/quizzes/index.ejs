@@ -67,8 +67,7 @@
                 <% if (quizzes.length) { %>
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-md-4 g-4">
                         <% quizzes.forEach(q=> { %>
-                            <%- include('../../partials/quizCard', { quiz: q, currentUser, showDesc: false, // описание
-                                не нужно showActions: true // оставить меню }) %>
+                            <%- include('../../partials/quizCard', { quiz: q, currentUser, showDesc: false, showActions: true }) %>
                                 <% }) %>
                     </div>
                     <% } else { %>
