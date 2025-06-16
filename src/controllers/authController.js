@@ -2,7 +2,6 @@
 import {validationResult} from 'express-validator';
 import User from '../models/User.js';
 
-/** ===== helpers ===== */
 const renderAuth = (res, view, title, req) =>
     res.render(`pages/auth/${view}`, {
         title,

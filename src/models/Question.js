@@ -19,9 +19,8 @@ const questionSchema = new Schema({
         enum: ['single', 'multiple', 'truefalse'],
         default: 'single',
     },
-    // для типов single/multiple:
     options: [{
-        _id: { type: Schema.Types.ObjectId, auto: true },
+        _id: {type: Schema.Types.ObjectId, auto: true},
         text: {type: String, required: true},
         isCorrect: {type: Boolean, default: false},
     }],

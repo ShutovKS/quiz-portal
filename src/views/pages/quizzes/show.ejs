@@ -22,41 +22,41 @@
                 </p>
 
                 <% /* SINGLE / TRUEFALSE ----------------------------------- */ %>
-                    <% if (q.type==='single' || q.type==='truefalse' ) { %>
-                        <div class="btn-group-vertical w-100" role="group">
-                            <% q.options.forEach(o=> { %>
-                                <input type="radio" class="btn-check" name="answers[<%= q._id %>]"
-                                    id="opt-<%= q._id %>-<%= o._id %>" value="<%= o._id %>" required>
-                                <label class="btn btn-outline-primary text-start" for="opt-<%= q._id %>-<%= o._id %>">
-                                    <%= o.text %>
-                                </label>
-                                <% }) %>
-                        </div>
+                <% if (q.type === 'single' || q.type === 'truefalse' ) { %>
+                    <div class="btn-group-vertical w-100" role="group">
+                        <% q.options.forEach(o=> { %>
+                            <input type="radio" class="btn-check" name="answers[<%= q._id %>]"
+                                   id="opt-<%= q._id %>-<%= o._id %>" value="<%= o._id %>" required>
+                            <label class="btn btn-outline-primary text-start" for="opt-<%= q._id %>-<%= o._id %>">
+                                <%= o.text %>
+                            </label>
+                        <% }) %>
+                    </div>
 
-                        <% /* MULTIPLE ------------------------------------------- */ %>
-                            <% } else if (q.type==='multiple' ) { %>
-                                <div class="btn-group-vertical w-100" role="group">
-                                    <% q.options.forEach(o=> { %>
-                                        <input type="checkbox" class="btn-check" name="answers[<%= q._id %>][]"
-                                            id="opt-<%= q._id %>-<%= o._id %>" value="<%= o._id %>">
-                                        <label class="btn btn-outline-primary text-start"
-                                            for="opt-<%= q._id %>-<%= o._id %>">
-                                            <%= o.text %>
-                                        </label>
-                                        <% }) %>
-                                </div>
+                    <% /* MULTIPLE ------------------------------------------- */ %>
+                <% } else if (q.type === 'multiple' ) { %>
+                    <div class="btn-group-vertical w-100" role="group">
+                        <% q.options.forEach(o=> { %>
+                            <input type="checkbox" class="btn-check" name="answers[<%= q._id %>][]"
+                                   id="opt-<%= q._id %>-<%= o._id %>" value="<%= o._id %>">
+                            <label class="btn btn-outline-primary text-start"
+                                   for="opt-<%= q._id %>-<%= o._id %>">
+                                <%= o.text %>
+                            </label>
+                        <% }) %>
+                    </div>
 
-                                <% /* TEXT ------------------------------------------------ */ %>
-                                    <% } else { %>
-                                        <textarea name="answers[<%= q._id %>]" class="form-control" rows="2"
-                                            placeholder="Ваш ответ…" required></textarea>
-                                        <% } %>
+                    <% /* TEXT ------------------------------------------------ */ %>
+                <% } else { %>
+                    <textarea name="answers[<%= q._id %>]" class="form-control" rows="2"
+                              placeholder="Ваш ответ…" required></textarea>
+                <% } %>
 
             </div>
         </div>
-        <% }) %>
+    <% }) %>
 
-            <button class="btn btn-primary w-100 py-2">Отправить ответы</button>
+    <button class="btn btn-primary w-100 py-2">Отправить ответы</button>
 </form>
 
 <script>
@@ -67,24 +67,17 @@
         const qCount = <%= questions.length %>;
         const bar = document.getElementById('q-progress');
 
-        /* авто-фокус на первом text-input */
         form.querySelector('textarea, input[type="text"]')?.focus();
 
-        /* прогресс-бар */
+        // прогресс-бар
         form.addEventListener('change', () => {
             let answered = 0;
-            // Для каждого блока вопроса ищем, есть ли ответ
             document.querySelectorAll('.card').forEach(card => {
-                // radio
                 if (card.querySelector('input[type="radio"]')) {
                     if (card.querySelector('input[type="radio"]:checked')) answered++;
-                }
-                // checkbox
-                else if (card.querySelector('input[type="checkbox"]')) {
+                } else if (card.querySelector('input[type="checkbox"]')) {
                     if (card.querySelectorAll('input[type="checkbox"]:checked').length > 0) answered++;
-                }
-                // textarea
-                else if (card.querySelector('textarea')) {
+                } else if (card.querySelector('textarea')) {
                     if (card.querySelector('textarea').value.trim()) answered++;
                 }
             });

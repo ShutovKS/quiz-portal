@@ -5,22 +5,23 @@ import Attempt from "../models/Attempt.js";
 import Question from "../models/Question.js";
 import Category from '../models/Category.js';
 import {
-    getUserCount,
-    getQuizCount,
+    getActiveUsersCount,
     getAttemptCount,
     getAverageScore,
-    getActiveUsersCount,
-    getUniqueParticipantsCount,
+    getAvgAttemptsPerUser,
     getMostPopularQuiz,
-    getQuestionCount,
     getNewUsersCount,
     getPublicQuizPercent,
-    getTopAvgQuizzes,
+    getQuestionCount,
+    getQuizCount,
     getQuizzesWithoutAttempts,
-    getAvgAttemptsPerUser
+    getTopAvgQuizzes,
+    getUniqueParticipantsCount,
+    getUserCount
 } from './api/adminController.js';
 import Ajv from 'ajv';
 
+/** ===== GET /admin/dashboard ===== */
 export const showDashboard = async (req, res) => {
     const [
         uCount,
@@ -77,12 +78,13 @@ export const showDashboard = async (req, res) => {
     });
 };
 
+/** ===== GET /admin/users ===== */
 export const listUsers = async (req, res) => {
     const users = await User.find();
     res.render('pages/admin/users', {title: 'Пользователи', users});
 };
 
-// Каскадное удаление юзера
+/** ===== DELETE /admin/users/:id ===== */
 export const deleteUser = async (req, res) => {
     const userId = req.params.id;
     // 1) удалить все квизы автора и связанные с ними сущности
@@ -103,7 +105,7 @@ export const deleteUser = async (req, res) => {
     res.redirect('/admin/users');
 };
 
-// Переключить роль
+/** ===== PATCH /admin/users/:id/toggle ===== */
 export const toggleAdmin = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -116,14 +118,14 @@ export const toggleAdmin = async (req, res) => {
     res.redirect('/admin/users');
 };
 
+/** ===== GET /admin/quizzes ===== */
 export const listQuizzes = async (req, res) => {
     const quizzes = await Quiz.find().populate('user').populate('categories');
-    const categories = await Category.find().sort({ name: 1 });
-    // Получить количество вопросов для каждого квиза
+    const categories = await Category.find().sort({name: 1});
     const quizIds = quizzes.map(q => q._id);
     const questionsCounts = await Question.aggregate([
-        { $match: { quiz: { $in: quizIds } } },
-        { $group: { _id: '$quiz', count: { $sum: 1 } } }
+        {$match: {quiz: {$in: quizIds}}},
+        {$group: {_id: '$quiz', count: {$sum: 1}}}
     ]);
     const questionsCountMap = Object.fromEntries(questionsCounts.map(q => [q._id.toString(), q.count]));
     quizzes.forEach(q => {
@@ -132,10 +134,9 @@ export const listQuizzes = async (req, res) => {
     res.render('pages/admin/quizzes', {title: 'Квизы', quizzes, categories});
 };
 
-// listQuizzes, deleteQuiz — можно оставить или добавить flash-сообщения
+/** ===== DELETE /admin/quizzes/:id ===== */
 export const deleteQuiz = async (req, res) => {
     const quizId = req.params.id;
-    // каскадное удаление
     await Promise.all([
         Question.deleteMany({quiz: quizId}),
         Attempt.deleteMany({quiz: quizId}),
@@ -145,24 +146,24 @@ export const deleteQuiz = async (req, res) => {
     res.redirect('/admin/quizzes');
 };
 
-// Форма импорта квиза через JSON
+/** ===== GET /admin/import-quiz ===== */
 export const showImportQuizForm = (req, res) => {
-    res.render('pages/admin/importQuiz', { title: 'Импорт квиза' });
+    res.render('pages/admin/importQuiz', {title: 'Импорт квиза'});
 };
 
-// Импорт квиза через API (возвращает JSON)
+/** ===== POST /admin/import-quiz/api ===== */
 export const importQuizFromJsonApi = async (req, res) => {
-    const ajv = new Ajv({ allErrors: true });
+    const ajv = new Ajv({allErrors: true});
     const quizSchema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Quiz",
         "type": "object",
         "required": ["title", "description", "userEmail", "questions"],
         "properties": {
-            "title": { "type": "string", "minLength": 1 },
-            "description": { "type": "string", "minLength": 1 },
-            "userEmail": { "type": "string", "format": "email" },
-            "isPublic": { "type": "boolean", "default": true },
+            "title": {"type": "string", "minLength": 1},
+            "description": {"type": "string", "minLength": 1},
+            "userEmail": {"type": "string", "format": "email"},
+            "isPublic": {"type": "boolean", "default": true},
             "questions": {
                 "type": "array",
                 "minItems": 1,
@@ -170,8 +171,8 @@ export const importQuizFromJsonApi = async (req, res) => {
                     "type": "object",
                     "required": ["text", "type", "options"],
                     "properties": {
-                        "text": { "type": "string", "minLength": 1 },
-                        "type": { "type": "string", "enum": ["single", "multiple", "truefalse"] },
+                        "text": {"type": "string", "minLength": 1},
+                        "type": {"type": "string", "enum": ["single", "multiple", "truefalse"]},
                         "options": {
                             "type": "array",
                             "minItems": 2,
@@ -179,8 +180,8 @@ export const importQuizFromJsonApi = async (req, res) => {
                                 "type": "object",
                                 "required": ["text", "isCorrect"],
                                 "properties": {
-                                    "text": { "type": "string", "minLength": 1 },
-                                    "isCorrect": { "type": "boolean" }
+                                    "text": {"type": "string", "minLength": 1},
+                                    "isCorrect": {"type": "boolean"}
                                 }
                             }
                         }
@@ -194,17 +195,21 @@ export const importQuizFromJsonApi = async (req, res) => {
     try {
         quizData = typeof req.body.quizJson === 'string' ? JSON.parse(req.body.quizJson) : req.body.quizJson;
     } catch (e) {
-        return res.status(400).json({ success: false, error: 'Некорректный JSON' });
+        return res.status(400).json({success: false, error: 'Некорректный JSON'});
     }
 
     const validate = ajv.compile(quizSchema);
     if (!validate(quizData)) {
-        return res.status(400).json({ success: false, error: 'Ошибка валидации', details: ajv.errorsText(validate.errors) });
+        return res.status(400).json({
+            success: false,
+            error: 'Ошибка валидации',
+            details: ajv.errorsText(validate.errors)
+        });
     }
     // Найти пользователя по email
-    const user = await User.findOne({ email: quizData.userEmail });
+    const user = await User.findOne({email: quizData.userEmail});
     if (!user) {
-        return res.status(404).json({ success: false, error: 'Пользователь с таким email не найден' });
+        return res.status(404).json({success: false, error: 'Пользователь с таким email не найден'});
     }
     // Создать квиз
     let quiz;
@@ -225,21 +230,22 @@ export const importQuizFromJsonApi = async (req, res) => {
             });
         }
     } catch (e) {
-        return res.status(500).json({ success: false, error: 'Ошибка при создании квиза', details: e.message });
+        return res.status(500).json({success: false, error: 'Ошибка при создании квиза', details: e.message});
     }
-    return res.json({ success: true, message: 'Квиз успешно импортирован!', quizId: quiz._id });
+    return res.json({success: true, message: 'Квиз успешно импортирован!', quizId: quiz._id});
 };
 
-// Категории CRUD
+/** ===== GET /admin/categories ===== */
 export const listCategories = async (req, res) => {
     const categories = await Category.find().sort({createdAt: -1});
-    res.render('pages/admin/categories', { title: 'Категории', categories });
+    res.render('pages/admin/categories', {title: 'Категории', categories});
 };
 
+/** ===== POST /admin/categories ===== */
 export const addCategory = async (req, res) => {
     try {
-        const { name } = req.body;
-        await Category.create({ name });
+        const {name} = req.body;
+        await Category.create({name});
         req.flash('success', 'Категория добавлена');
     } catch (e) {
         req.flash('error', 'Ошибка при добавлении категории: ' + e.message);
@@ -247,11 +253,12 @@ export const addCategory = async (req, res) => {
     res.redirect('/admin/categories');
 };
 
+/** ===== PATCH /admin/categories/:id ===== */
 export const updateCategory = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name } = req.body;
-        await Category.findByIdAndUpdate(id, { name });
+        const {id} = req.params;
+        const {name} = req.body;
+        await Category.findByIdAndUpdate(id, {name});
         req.flash('success', 'Категория обновлена');
     } catch (e) {
         req.flash('error', 'Ошибка при обновлении категории: ' + e.message);
@@ -259,9 +266,10 @@ export const updateCategory = async (req, res) => {
     res.redirect('/admin/categories');
 };
 
+/** ===== DELETE /admin/categories/:id ===== */
 export const deleteCategory = async (req, res) => {
     try {
-        const { id } = req.params;
+        const {id} = req.params;
         await Category.findByIdAndDelete(id);
         req.flash('success', 'Категория удалена');
     } catch (e) {
@@ -270,19 +278,19 @@ export const deleteCategory = async (req, res) => {
     res.redirect('/admin/categories');
 };
 
-// Импорт квиза из JSON через форму (для сайта)
+/** ===== POST /admin/import-quiz ===== */
 export const importQuizFromJson = async (req, res) => {
-    const ajv = new Ajv({ allErrors: true });
+    const ajv = new Ajv({allErrors: true});
     const quizSchema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Quiz",
         "type": "object",
         "required": ["title", "description", "userEmail", "questions"],
         "properties": {
-            "title": { "type": "string", "minLength": 1 },
-            "description": { "type": "string", "minLength": 1 },
-            "userEmail": { "type": "string", "format": "email" },
-            "isPublic": { "type": "boolean", "default": true },
+            "title": {"type": "string", "minLength": 1},
+            "description": {"type": "string", "minLength": 1},
+            "userEmail": {"type": "string", "format": "email"},
+            "isPublic": {"type": "boolean", "default": true},
             "questions": {
                 "type": "array",
                 "minItems": 1,
@@ -290,8 +298,8 @@ export const importQuizFromJson = async (req, res) => {
                     "type": "object",
                     "required": ["text", "type", "options"],
                     "properties": {
-                        "text": { "type": "string", "minLength": 1 },
-                        "type": { "type": "string", "enum": ["single", "multiple", "truefalse"] },
+                        "text": {"type": "string", "minLength": 1},
+                        "type": {"type": "string", "enum": ["single", "multiple", "truefalse"]},
                         "options": {
                             "type": "array",
                             "minItems": 2,
@@ -299,8 +307,8 @@ export const importQuizFromJson = async (req, res) => {
                                 "type": "object",
                                 "required": ["text", "isCorrect"],
                                 "properties": {
-                                    "text": { "type": "string", "minLength": 1 },
-                                    "isCorrect": { "type": "boolean" }
+                                    "text": {"type": "string", "minLength": 1},
+                                    "isCorrect": {"type": "boolean"}
                                 }
                             }
                         }
@@ -324,7 +332,7 @@ export const importQuizFromJson = async (req, res) => {
         return res.redirect('/admin/import-quiz');
     }
     // Найти пользователя по email
-    const user = await User.findOne({ email: quizData.userEmail });
+    const user = await User.findOne({email: quizData.userEmail});
     if (!user) {
         req.flash('error', 'Пользователь с таким email не найден');
         return res.redirect('/admin/import-quiz');

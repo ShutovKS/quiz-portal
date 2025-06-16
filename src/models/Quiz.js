@@ -27,13 +27,11 @@ const quizSchema = new Schema({
         type: Boolean,
         default: true,
     },
-    // если приватный — сохраним токен для доступа
     accessToken: {
         type: String,
         unique: true,
         sparse: true,
     },
-    // агрегаты для быстрого рендера
     stats: {
         attemptsCount: {type: Number, default: 0},
         averageScore: {type: Number, default: 0},
@@ -60,8 +58,6 @@ quizSchema.virtual('uniqueUsersCount', {
     ]
 });
 
-
-// генерить токен при создании приватного квиза
 quizSchema.pre('save', function (next) {
     if (!this.isPublic && !this.accessToken) {
         this.accessToken = crypto.randomBytes(8).toString('hex');

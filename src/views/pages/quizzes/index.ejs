@@ -15,7 +15,7 @@
         <a href="/quizzes/new" class="btn btn-outline-light d-inline-flex align-items-center">
             <i class="bi bi-plus-lg me-1"></i> Новый
         </a>
-        <% } %>
+    <% } %>
 </div>
 
 <!-- фильтр по категориям -->
@@ -26,9 +26,9 @@
                 <select id="categorySelect" name="cat" class="form-select">
                     <option value="">Все категории</option>
                     <% categories.forEach(c=> { %>
-                        <option value="<%= c.slug %>" <%=cat===c.slug ? 'selected' : '' %>><%= c.name %>
+                        <option value="<%= c.slug %>" <%= cat===c.slug ? 'selected' : '' %>><%= c.name %>
                         </option>
-                        <% }) %>
+                    <% }) %>
                 </select>
             </div>
             <div class="col-auto">
@@ -36,7 +36,7 @@
             </div>
         </div>
     </form>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -48,32 +48,32 @@
             });
         });
     </script>
-    <% } %>
+<% } %>
 
-        <!-- чипы-категории -->
-        <% if ((categories || []).length) { %>
-            <div class="mb-4 d-flex flex-wrap gap-2">
-                <% categories.forEach(c=> { %>
-                    <a href="/quizzes?cat=<%= c.slug %>"
-                        class="badge rounded-pill category-chip <%= cat === c.slug ? 'active' : '' %>">
-                        <i class="bi bi-tag me-1"></i>
-                        <%= c.name %>
-                    </a>
-                    <% }) %>
-            </div>
-            <% } %>
+<!-- чипы-категории -->
+<% if ((categories || []).length) { %>
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <% categories.forEach(c=> { %>
+            <a href="/quizzes?cat=<%= c.slug %>"
+               class="badge rounded-pill category-chip <%= cat === c.slug ? 'active' : '' %>">
+                <i class="bi bi-tag me-1"></i>
+                <%= c.name %>
+            </a>
+        <% }) %>
+    </div>
+<% } %>
 
-                <!-- сетка карточек -->
-                <% if (quizzes.length) { %>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-md-4 g-4">
-                        <% quizzes.forEach(q=> { %>
-                            <%- include('../../partials/quizCard', { quiz: q, currentUser, showDesc: false, showActions: true }) %>
-                                <% }) %>
-                    </div>
-                    <% } else { %>
-                        <p class="text-center text-muted">Пока ничего не нашли 🙁</p>
-                        <% } %>
+<!-- сетка карточек -->
+<% if (quizzes.length) { %>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-md-4 g-4">
+        <% quizzes.forEach(q=> { %>
+            <%- include('../../partials/quizCard', { quiz: q, currentUser, showDesc: false, showActions: true }) %>
+        <% }) %>
+    </div>
+<% } else { %>
+    <p class="text-center text-muted">Пока ничего не нашли 🙁</p>
+<% } %>
 
-                            <!-- Toast container -->
-                            <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
-                            <script src="/javascripts/main.js"></script>
+<!-- Toast container -->
+<div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
+<script src="/javascripts/main.js"></script>

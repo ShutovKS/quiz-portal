@@ -32,47 +32,46 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!quizId) return;
             if (confirm('Вы уверены, что хотите удалить этот квиз? Это действие необратимо.')) {
                 fetch(`/quizzes/${quizId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/json',
+                    method: 'DELETE', headers: {
+                        'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/json',
                     },
                 })
-                .then(res => {
-                    if (res.ok) {
-                        btn.closest('li').remove();
-                        showAlert('Квиз успешно удалён!', 'success');
-                    } else {
-                        return res.text().then(text => { throw new Error(text || 'Ошибка при удалении'); });
-                    }
-                })
-                .catch(err => {
-                    showAlert('Ошибка при удалении квиза: ' + err.message, 'danger');
-                });
+                    .then(res => {
+                        if (res.ok) {
+                            btn.closest('li').remove();
+                            showAlert('Квиз успешно удалён!', 'success');
+                        } else {
+                            return res.text().then(text => {
+                                throw new Error(text || 'Ошибка при удалении');
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        showAlert('Ошибка при удалении квиза: ' + err.message, 'danger');
+                    });
             }
         });
     });
-
     // Запрет на контекстное меню
-    document.addEventListener('contextmenu', function(e) {
+    document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
     });
     // Запрет на выделение текста
-    document.addEventListener('selectstart', function(e) {
+    document.addEventListener('selectstart', function (e) {
         e.preventDefault();
     });
     // Запрет на drag
-    document.addEventListener('dragstart', function(e) {
+    document.addEventListener('dragstart', function (e) {
         e.preventDefault();
     });
     // Запрет на копирование, вырезание, вставку
-    ['copy', 'cut', 'paste'].forEach(function(evt) {
-        document.addEventListener(evt, function(e) {
+    ['copy', 'cut', 'paste'].forEach(function (evt) {
+        document.addEventListener(evt, function (e) {
             e.preventDefault();
         });
     });
     // Запрет на горячие клавиши Ctrl+C, Ctrl+X, Ctrl+V, PrintScreen, F12
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         // Ctrl+C, Ctrl+X, Ctrl+V
         if ((e.ctrlKey || e.metaKey) && ['c', 'x', 'v'].includes(e.key.toLowerCase())) {
             e.preventDefault();
@@ -85,11 +84,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'F12') {
             e.preventDefault();
         }
+        // Ctrl+Shift+I (инструменты разработчика)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+        }
+        // Ctrl+Shift+J (консоль)
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'J') {
+            e.preventDefault();
+        }
     });
 });
 
 // ===== TOASTS =====
-window.showToast = function({message, type = 'success', icon = 'bi-check-circle-fill', timeout = 3000}) {
+window.showToast = function ({message, type = 'success', icon = 'bi-check-circle-fill', timeout = 3000}) {
     const container = document.getElementById('toast-container');
     if (!container) return;
     const toast = document.createElement('div');
@@ -104,7 +111,7 @@ window.showToast = function({message, type = 'success', icon = 'bi-check-circle-
 };
 
 // ===== MINT SPINNER LOADER =====
-window.showMintLoader = function() {
+window.showMintLoader = function () {
     let loader = document.getElementById('mint-spinner');
     if (!loader) {
         loader = document.createElement('div');
@@ -114,7 +121,7 @@ window.showMintLoader = function() {
     }
     loader.style.display = 'block';
 };
-window.hideMintLoader = function() {
+window.hideMintLoader = function () {
     const loader = document.getElementById('mint-spinner');
     if (loader) loader.style.display = 'none';
 };

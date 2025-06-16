@@ -5,34 +5,34 @@
                 <h1 class="h3 text-center mb-4">Вход</h1>
                 <%- include('../../partials/flash') %>
 
-                    <form action="/login" method="POST" class="needs-validation" novalidate>
-                        <!-- email -->
-                        <div class="form-floating mb-3">
-                            <input id="email" name="email" type="email" class="form-control"
-                                placeholder="name@example.com" value="<%= oldData?.email || '' %>" required>
-                            <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
-                            <div class="invalid-feedback">Нужен валидный email.</div>
-                        </div>
+                <form action="/login" method="POST" class="needs-validation" novalidate>
+                    <!-- email -->
+                    <div class="form-floating mb-3">
+                        <input id="email" name="email" type="email" class="form-control"
+                               placeholder="name@example.com" value="<%= oldData?.email || '' %>" required>
+                        <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
+                        <div class="invalid-feedback">Нужен валидный email.</div>
+                    </div>
 
-                        <!-- password + toggle -->
-                        <div class="form-floating mb-4 position-relative">
-                            <input id="password" name="password" type="password" class="form-control"
-                                placeholder="Пароль" required>
-                            <label for="password"><i class="bi bi-lock me-1"></i>Пароль</label>
-                            <button type="button" id="togglePassword"
+                    <!-- password + toggle -->
+                    <div class="form-floating mb-4 position-relative">
+                        <input id="password" name="password" type="password" class="form-control"
+                               placeholder="Пароль" required>
+                        <label for="password"><i class="bi bi-lock me-1"></i>Пароль</label>
+                        <button type="button" id="togglePassword"
                                 class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <div class="invalid-feedback">Введите пароль.</div>
-                        </div>
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">Введите пароль.</div>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary w-100">Войти</button>
-                    </form>
+                    <button type="submit" class="btn btn-primary w-100">Войти</button>
+                </form>
 
-                    <p class="mt-3 text-center small">
-                        Нет аккаунта?
-                        <a href="/register" class="link-info text-decoration-underline">Регистрация</a>
-                    </p>
+                <p class="mt-3 text-center small">
+                    Нет аккаунта?
+                    <a href="/register" class="link-info text-decoration-underline">Регистрация</a>
+                </p>
             </div>
         </div>
     </div>
@@ -77,12 +77,11 @@
         });
     })();
 
-    // показать / скрыть пароль
+    // show/hide password
     document.getElementById('togglePassword')
         .addEventListener('click', () => {
             const pass = document.getElementById('password');
             pass.type = pass.type === 'password' ? 'text' : 'password';
-            // меняем иконку
             const icon = event.currentTarget.querySelector('i');
             icon.classList.toggle('bi-eye');
             icon.classList.toggle('bi-eye-slash');

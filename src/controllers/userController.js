@@ -4,12 +4,12 @@ import User from '../models/User.js';
 import Quiz from '../models/Quiz.js';
 import Attempt from '../models/Attempt.js';
 
-// GET /profile
+/** ===== GET /profile ===== */
 export const showOwnProfile = async (req, res, next) => {
     return showUserProfile({...req, params: {id: req.user.id}}, res, next);
 };
 
-// GET /user/:id
+/** ===== GET /user/:id ===== */
 export const showUserProfile = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id).select('-passwordHash');
@@ -18,23 +18,16 @@ export const showUserProfile = async (req, res, next) => {
         const myQuizzes = await Quiz.find({user: user._id});
         const myAttempts = await Attempt.find({user: user._id}).populate('quiz');
 
-        // Новые статистики:
-        // 1. Количество созданных квизов
         const createdQuizzesCount = myQuizzes.length;
-        // 2. Лучший результат
         const bestScore = myAttempts.length ? Math.max(...myAttempts.map(a => a.score)) : 0;
-        // 3. Попыток за 30 дней
         const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        const attemptsLastMonth = await Attempt.countDocuments({ user: user._id, createdAt: { $gte: monthAgo } });
-        // 4. Последний пройденный квиз
+        const attemptsLastMonth = await Attempt.countDocuments({user: user._id, createdAt: {$gte: monthAgo}});
         const lastAttempt = myAttempts.length ? myAttempts.reduce((a, b) => a.createdAt > b.createdAt ? a : b) : null;
 
-        // Формируем stats для карточек статистики
         const attemptsCount = myAttempts.length;
         const averageScore = attemptsCount > 0 ? (myAttempts.reduce((sum, a) => sum + a.score, 0) / attemptsCount) : 0;
-        const stats = { attemptsCount, averageScore };
+        const stats = {attemptsCount, averageScore};
 
-        // если не свой профиль, режем список (пример)
         const isOwner = req.user.id === user.id;
         res.render('pages/users/profile', {
             title: `Профиль ${user.name}`,
@@ -52,7 +45,7 @@ export const showUserProfile = async (req, res, next) => {
     }
 };
 
-// GET форма редактирования
+/** ===== GET /user/:id/edit ===== */
 export const showEditForm = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id).select('-passwordHash');
@@ -63,7 +56,7 @@ export const showEditForm = async (req, res, next) => {
     }
 };
 
-// PUT /user/:id
+/** ===== PUT /user/:id ===== */
 export const updateUserProfile = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

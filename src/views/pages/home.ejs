@@ -3,9 +3,9 @@
     <h1 class="display-6 fw-semibold text-white mb-3">
         <% if (currentUser) { %>
             Привет, <%= currentUser.name %>!
-                <% } else { %>
-                    Добро пожаловать в Quiz Portal!
-                    <% } %>
+        <% } else { %>
+            Добро пожаловать в Quiz Portal!
+        <% } %>
     </h1>
     <p class="lead text-white-50 mb-4">
         Тысячи вопросов, мгновенная обратная связь и рост навыков.
@@ -25,7 +25,7 @@
         <a href="/quizzes/new" class="btn btn-outline-light btn-lg position-absolute end-0 bottom-0 mb-4 me-4">
             <i class="bi bi-plus-lg me-1"></i> Создать квиз
         </a>
-        <% } %>
+    <% } %>
 </section>
 
 <!-- категории (чипы) -->
@@ -36,391 +36,391 @@
                 <i class="bi bi-tag me-1"></i>
                 <%= c.name %>
             </a>
-            <% }) %>
+        <% }) %>
     </div>
-    <% } %>
+<% } %>
 
-        <!-- Кнопка случайного квиза -->
-        <% if (randomQuiz) { %>
-            <div class="d-flex justify-content-center mb-4">
-                <a href="/quizzes/<%= randomQuiz._id %>"
-                    class="btn btn-lg btn-warning d-flex align-items-center gap-2 shadow-sm random-quiz-btn">
-                    <i class="bi bi-shuffle"></i> Случайный квиз
-                </a>
-            </div>
-            <% } %>
+<!-- Кнопка случайного квиза -->
+<% if (randomQuiz) { %>
+    <div class="d-flex justify-content-center mb-4">
+        <a href="/quizzes/<%= randomQuiz._id %>"
+           class="btn btn-lg btn-warning d-flex align-items-center gap-2 shadow-sm random-quiz-btn">
+            <i class="bi bi-shuffle"></i> Случайный квиз
+        </a>
+    </div>
+<% } %>
 
-                <!-- Статистика -->
-                <div class="row g-4 mb-5">
-                    <div class="col-6 col-md-3">
-                        <div class="card shadow-sm border-0 kpi-card h-100">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <span class="kpi-icon bg-primary"><i class="bi bi-people-fill"></i></span>
-                                <div>
-                                    <h6 class="mb-0 text-uppercase small text-muted">Пользователей</h6>
-                                    <span class="fs-4 fw-semibold">
+<!-- Статистика -->
+<div class="row g-4 mb-5">
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm border-0 kpi-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <span class="kpi-icon bg-primary"><i class="bi bi-people-fill"></i></span>
+                <div>
+                    <h6 class="mb-0 text-uppercase small text-muted">Пользователей</h6>
+                    <span class="fs-4 fw-semibold">
                                         <%= stats.usersCount %>
                                     </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="card shadow-sm border-0 kpi-card h-100">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <span class="kpi-icon bg-success"><i class="bi bi-puzzle-fill"></i></span>
-                                <div>
-                                    <h6 class="mb-0 text-uppercase small text-muted">Квизы</h6>
-                                    <span class="fs-4 fw-semibold">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm border-0 kpi-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <span class="kpi-icon bg-success"><i class="bi bi-puzzle-fill"></i></span>
+                <div>
+                    <h6 class="mb-0 text-uppercase small text-muted">Квизы</h6>
+                    <span class="fs-4 fw-semibold">
                                         <%= stats.quizzesCount %>
                                     </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="card shadow-sm border-0 kpi-card h-100">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <span class="kpi-icon bg-info"><i class="bi bi-bar-chart"></i></span>
-                                <div>
-                                    <h6 class="mb-0 text-uppercase small text-muted">Попыток</h6>
-                                    <span class="fs-4 fw-semibold">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm border-0 kpi-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <span class="kpi-icon bg-info"><i class="bi bi-bar-chart"></i></span>
+                <div>
+                    <h6 class="mb-0 text-uppercase small text-muted">Попыток</h6>
+                    <span class="fs-4 fw-semibold">
                                         <%= stats.attemptsCount %>
                                     </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="card shadow-sm border-0 kpi-card h-100">
-                            <div class="card-body d-flex align-items-center gap-3">
-                                <span class="kpi-icon bg-secondary"><i class="bi bi-graph-up"></i></span>
-                                <div>
-                                    <h6 class="mb-0 text-uppercase small text-muted">Средний балл</h6>
-                                    <span class="fs-4 fw-semibold">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm border-0 kpi-card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <span class="kpi-icon bg-secondary"><i class="bi bi-graph-up"></i></span>
+                <div>
+                    <h6 class="mb-0 text-uppercase small text-muted">Средний балл</h6>
+                    <span class="fs-4 fw-semibold">
                                         <%= stats.avgScore %>
                                     </span>
-                                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Новые квизы -->
+<% if (hasNewQuizzes) { %>
+    <section class="mb-5">
+        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-primary"><i class="bi bi-stars"></i>
+            Новые квизы</h2>
+        <div class="row g-3">
+            <% newQuizzes.forEach(q=> { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card quiz-highlight-card h-100 shadow-sm border-0">
+                        <% if (q.cover) { %>
+                            <img src="<%= q.cover %>" class="card-img-top" alt="cover"
+                                 style="object-fit:cover;max-height:160px;">
+                        <% } %>
+                        <div class="card-body">
+                            <h5 class="card-title mb-2"><a href="/quizzes/<%= q._id %>"
+                                                           class="stretched-link text-decoration-none text-dark">
+                                    <%= q.title %>
+                                </a></h5>
+                            <p class="card-text text-muted small mb-2">
+                                <%= q.description ? q.description.substring(0, 80) : '' %>
+                            </p>
+                            <div
+                                    class="d-flex justify-content-between align-items-center small">
+                                                        <span><i class="bi bi-question-circle"></i>
+                                                            <%= q.questionsCount || 0 %> вопросов
+                                                        </span>
+                                <span><i class="bi bi-calendar"></i>
+                                                            <%= q.createdAt.toLocaleDateString ?
+                                                                    q.createdAt.toLocaleDateString() :
+                                                                    q.createdAt.substring(0, 10) %>
+                                                        </span>
                             </div>
                         </div>
                     </div>
                 </div>
+            <% }) %>
+        </div>
+    </section>
+<% } %>
 
-                <!-- Новые квизы -->
-                <% if (hasNewQuizzes) { %>
-                    <section class="mb-5">
-                        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-primary"><i class="bi bi-stars"></i>
-                            Новые квизы</h2>
-                        <div class="row g-3">
-                            <% newQuizzes.forEach(q=> { %>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <div class="card quiz-highlight-card h-100 shadow-sm border-0">
-                                        <% if (q.cover) { %>
-                                            <img src="<%= q.cover %>" class="card-img-top" alt="cover"
-                                                style="object-fit:cover;max-height:160px;">
-                                            <% } %>
-                                                <div class="card-body">
-                                                    <h5 class="card-title mb-2"><a href="/quizzes/<%= q._id %>"
-                                                            class="stretched-link text-decoration-none text-dark">
-                                                            <%= q.title %>
-                                                        </a></h5>
-                                                    <p class="card-text text-muted small mb-2">
-                                                        <%= q.description ? q.description.substring(0, 80) : '' %>
-                                                    </p>
-                                                    <div
-                                                        class="d-flex justify-content-between align-items-center small">
-                                                        <span><i class="bi bi-question-circle"></i>
-                                                            <%= q.questionsCount || 0 %> вопросов
-                                                        </span>
-                                                        <span><i class="bi bi-calendar"></i>
-                                                            <%= q.createdAt.toLocaleDateString ?
-                                                                q.createdAt.toLocaleDateString() :
-                                                                q.createdAt.substring(0,10) %>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                    </div>
-                                </div>
-                                <% }) %>
-                        </div>
-                    </section>
-                    <% } %>
-
-                        <!-- Популярные квизы -->
-                        <% if (hasPopularQuizzes) { %>
-                            <section class="mb-5">
-                                <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-success"><i
-                                        class="bi bi-fire"></i> Популярные квизы</h2>
-                                <div class="row g-3">
-                                    <% popularQuizzes.forEach(q=> { %>
-                                        <div class="col-12 col-md-6 col-lg-4">
-                                            <div class="card quiz-highlight-card h-100 shadow-sm border-0">
-                                                <% if (q.cover) { %>
-                                                    <img src="<%= q.cover %>" class="card-img-top" alt="cover"
-                                                        style="object-fit:cover;max-height:160px;">
-                                                    <% } %>
-                                                        <div class="card-body">
-                                                            <h5 class="card-title mb-2"><a href="/quizzes/<%= q._id %>"
-                                                                    class="stretched-link text-decoration-none text-dark">
-                                                                    <%= q.title %>
-                                                                </a></h5>
-                                                            <p class="card-text text-muted small mb-2">
-                                                                <%= q.description ? q.description.substring(0, 80) : ''
-                                                                    %>
-                                                            </p>
-                                                            <div
-                                                                class="d-flex justify-content-between align-items-center small">
+<!-- Популярные квизы -->
+<% if (hasPopularQuizzes) { %>
+    <section class="mb-5">
+        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-success"><i
+                    class="bi bi-fire"></i> Популярные квизы</h2>
+        <div class="row g-3">
+            <% popularQuizzes.forEach(q=> { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card quiz-highlight-card h-100 shadow-sm border-0">
+                        <% if (q.cover) { %>
+                            <img src="<%= q.cover %>" class="card-img-top" alt="cover"
+                                 style="object-fit:cover;max-height:160px;">
+                        <% } %>
+                        <div class="card-body">
+                            <h5 class="card-title mb-2"><a href="/quizzes/<%= q._id %>"
+                                                           class="stretched-link text-decoration-none text-dark">
+                                    <%= q.title %>
+                                </a></h5>
+                            <p class="card-text text-muted small mb-2">
+                                <%= q.description ? q.description.substring(0, 80) : ''
+                                %>
+                            </p>
+                            <div
+                                    class="d-flex justify-content-between align-items-center small">
                                                                 <span><i class="bi bi-bar-chart"></i> Попыток: <%=
                                                                         q.stats?.attemptsCount || 0 %></span>
-                                                                <span><i class="bi bi-question-circle"></i>
+                                <span><i class="bi bi-question-circle"></i>
                                                                     <%= q.questionsCount || 0 %>
                                                                 </span>
-                                                            </div>
-                                                        </div>
-                                            </div>
-                                        </div>
-                                        <% }) %>
-                                </div>
-                            </section>
-                            <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+<% } %>
 
-                                <!-- Самые сложные квизы -->
-                                <% if (hasHardQuizzes) { %>
-                                    <section class="mb-5">
-                                        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-danger"><i
-                                                class="bi bi-emoji-frown"></i> Самые сложные квизы</h2>
-                                        <div class="row g-3">
-                                            <% hardQuizzes.forEach(q=> { %>
-                                                <div class="col-12 col-md-6 col-lg-4">
-                                                    <div class="card quiz-highlight-card h-100 shadow-sm border-0">
-                                                        <% if (q.cover) { %>
-                                                            <img src="<%= q.cover %>" class="card-img-top" alt="cover"
-                                                                style="object-fit:cover;max-height:160px;">
-                                                            <% } %>
-                                                                <div class="card-body">
-                                                                    <h5 class="card-title mb-2"><a
-                                                                            href="/quizzes/<%= q._id %>"
-                                                                            class="stretched-link text-decoration-none text-dark">
-                                                                            <%= q.title %>
-                                                                        </a></h5>
-                                                                    <p class="card-text text-muted small mb-2">
-                                                                        <%= q.description ? q.description.substring(0,
-                                                                            80) : '' %>
-                                                                    </p>
-                                                                    <div
-                                                                        class="d-flex justify-content-between align-items-center small">
+<!-- Самые сложные квизы -->
+<% if (hasHardQuizzes) { %>
+    <section class="mb-5">
+        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-danger"><i
+                    class="bi bi-emoji-frown"></i> Самые сложные квизы</h2>
+        <div class="row g-3">
+            <% hardQuizzes.forEach(q=> { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card quiz-highlight-card h-100 shadow-sm border-0">
+                        <% if (q.cover) { %>
+                            <img src="<%= q.cover %>" class="card-img-top" alt="cover"
+                                 style="object-fit:cover;max-height:160px;">
+                        <% } %>
+                        <div class="card-body">
+                            <h5 class="card-title mb-2"><a
+                                        href="/quizzes/<%= q._id %>"
+                                        class="stretched-link text-decoration-none text-dark">
+                                    <%= q.title %>
+                                </a></h5>
+                            <p class="card-text text-muted small mb-2">
+                                <%= q.description ? q.description.substring(0,
+                                        80) : '' %>
+                            </p>
+                            <div
+                                    class="d-flex justify-content-between align-items-center small">
                                                                         <span><i class="bi bi-graph-down"></i> Средний
                                                                             балл: <%= q.stats?.averageScore?.toFixed(1)
-                                                                                || 0 %></span>
-                                                                        <span><i class="bi bi-bar-chart"></i> Попыток:
+                                                                            || 0 %></span>
+                                <span><i class="bi bi-bar-chart"></i> Попыток:
                                                                             <%= q.stats?.attemptsCount || 0 %>
                                                                         </span>
-                                                                    </div>
-                                                                </div>
-                                                    </div>
-                                                </div>
-                                                <% }) %>
-                                        </div>
-                                    </section>
-                                    <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+<% } %>
 
-                                        <!-- Квиз дня -->
-                                        <% if (quizOfTheDay) { %>
-                                            <section class="mb-5">
-                                                <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-warning"><i
-                                                        class="bi bi-star-fill"></i> Квиз дня</h2>
-                                                <div class="card quiz-highlight-card h-100 shadow-sm border-0 mb-3">
-                                                    <% if (quizOfTheDay.cover) { %>
-                                                        <img src="<%= quizOfTheDay.cover %>" class="card-img-top"
-                                                            alt="cover" style="object-fit:cover;max-height:160px;">
-                                                        <% } %>
-                                                            <div class="card-body">
-                                                                <h5 class="card-title mb-2"><a
-                                                                        href="/quizzes/<%= quizOfTheDay._id %>"
-                                                                        class="stretched-link text-decoration-none text-dark">
-                                                                        <%= quizOfTheDay.title %>
-                                                                    </a></h5>
-                                                                <p class="card-text text-muted small mb-2">
-                                                                    <%= quizOfTheDay.description ?
-                                                                        quizOfTheDay.description.substring(0, 100) : ''
-                                                                        %>
-                                                                </p>
-                                                                <div
-                                                                    class="d-flex justify-content-between align-items-center small">
+<!-- Квиз дня -->
+<% if (quizOfTheDay) { %>
+    <section class="mb-5">
+        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-warning"><i
+                    class="bi bi-star-fill"></i> Квиз дня</h2>
+        <div class="card quiz-highlight-card h-100 shadow-sm border-0 mb-3">
+            <% if (quizOfTheDay.cover) { %>
+                <img src="<%= quizOfTheDay.cover %>" class="card-img-top"
+                     alt="cover" style="object-fit:cover;max-height:160px;">
+            <% } %>
+            <div class="card-body">
+                <h5 class="card-title mb-2"><a
+                            href="/quizzes/<%= quizOfTheDay._id %>"
+                            class="stretched-link text-decoration-none text-dark">
+                        <%= quizOfTheDay.title %>
+                    </a></h5>
+                <p class="card-text text-muted small mb-2">
+                    <%= quizOfTheDay.description ?
+                            quizOfTheDay.description.substring(0, 100) : ''
+                    %>
+                </p>
+                <div
+                        class="d-flex justify-content-between align-items-center small">
                                                                     <span><i class="bi bi-question-circle"></i>
                                                                         <%= quizOfTheDay.questionsCount || 0 %> вопросов
                                                                     </span>
-                                                                </div>
-                                                            </div>
-                                                </div>
-                                            </section>
-                                            <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+<% } %>
 
-                                                <!-- Лента активности -->
-                                                <% if (activityFeed && activityFeed.length) { %>
-                                                    <section class="mb-5">
-                                                        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-info"><i
-                                                                class="bi bi-activity"></i> Лента активности</h2>
-                                                        <ul class="list-group list-group-flush activity-feed">
-                                                            <% activityFeed.forEach(a=> { %>
-                                                                <li
-                                                                    class="list-group-item d-flex align-items-center gap-2">
-                                                                    <i class="bi bi-person-circle text-secondary"></i>
-                                                                    <span class="fw-semibold">
+<!-- Лента активности -->
+<% if (activityFeed && activityFeed.length) { %>
+    <section class="mb-5">
+        <h2 class="h4 mb-3 d-flex align-items-center gap-2 text-info"><i
+                    class="bi bi-activity"></i> Лента активности</h2>
+        <ul class="list-group list-group-flush activity-feed">
+            <% activityFeed.forEach(a=> { %>
+                <li
+                        class="list-group-item d-flex align-items-center gap-2">
+                    <i class="bi bi-person-circle text-secondary"></i>
+                    <span class="fw-semibold">
                                                                         <%= a.user?.name || 'Гость' %>
                                                                     </span>
-                                                                    <span class="text-muted">прошёл(а)</span>
-                                                                    <a href="/quizzes/<%= a.quiz?._id %>"
-                                                                        class="fw-semibold">
-                                                                        <%= a.quiz?.title || 'Квиз' %>
-                                                                    </a>
-                                                                    <span class="text-muted">на</span>
-                                                                    <span class="badge bg-success">
+                    <span class="text-muted">прошёл(а)</span>
+                    <a href="/quizzes/<%= a.quiz?._id %>"
+                       class="fw-semibold">
+                        <%= a.quiz?.title || 'Квиз' %>
+                    </a>
+                    <span class="text-muted">на</span>
+                    <span class="badge bg-success">
                                                                         <%= a.score %>
                                                                     </span>
-                                                                    <span class="text-muted small ms-auto"><i
-                                                                            class="bi bi-clock"></i>
+                    <span class="text-muted small ms-auto"><i
+                                class="bi bi-clock"></i>
                                                                         <%= new Date(a.createdAt).toLocaleTimeString([],
-                                                                            {hour: '2-digit' , minute:'2-digit'}) %>
+                                                                                {hour: '2-digit', minute: '2-digit'}) %>
                                                                     </span>
-                                                                </li>
-                                                                <% }) %>
-                                                        </ul>
-                                                    </section>
-                                                    <% } %>
+                </li>
+            <% }) %>
+        </ul>
+    </section>
+<% } %>
 
-                                                        <!-- Топ-участники -->
-                                                        <% if (topUsers && topUsers.length) { %>
-                                                            <section class="mb-5">
-                                                                <h2
-                                                                    class="h4 mb-3 d-flex align-items-center gap-2 text-success">
-                                                                    <i class="bi bi-trophy"></i> Топ-участники месяца
-                                                                </h2>
-                                                                <div class="row g-3">
-                                                                    <% topUsers.forEach((u, i)=> { %>
-                                                                        <div class="col-12 col-md-6 col-lg-4">
-                                                                            <div
-                                                                                class="card h-100 shadow-sm border-0 top-user-card">
-                                                                                <div
-                                                                                    class="card-body d-flex flex-column align-items-center justify-content-center">
-                                                                                    <div class="display-5 mb-2"><i
-                                                                                            class="bi bi-person-badge"></i>
-                                                                                    </div>
-                                                                                    <h5 class="card-title mb-1">
-                                                                                        <%= u.name %>
-                                                                                    </h5>
-                                                                                    <div class="mb-2 text-muted small">
-                                                                                        Место: <span class="fw-bold">
-                                                                                            <%= i+1 %>
+<!-- Топ-участники -->
+<% if (topUsers && topUsers.length) { %>
+    <section class="mb-5">
+        <h2
+                class="h4 mb-3 d-flex align-items-center gap-2 text-success">
+            <i class="bi bi-trophy"></i> Топ-участники месяца
+        </h2>
+        <div class="row g-3">
+            <% topUsers.forEach((u, i)=> { %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div
+                            class="card h-100 shadow-sm border-0 top-user-card">
+                        <div
+                                class="card-body d-flex flex-column align-items-center justify-content-center">
+                            <div class="display-5 mb-2"><i
+                                        class="bi bi-person-badge"></i>
+                            </div>
+                            <h5 class="card-title mb-1">
+                                <%= u.name %>
+                            </h5>
+                            <div class="mb-2 text-muted small">
+                                Место: <span class="fw-bold">
+                                                                                            <%= i + 1 %>
                                                                                         </span></div>
-                                                                                    <div class="mb-1"><i
-                                                                                            class="bi bi-bar-chart"></i>
-                                                                                        Попыток: <span
-                                                                                            class="fw-semibold">
+                            <div class="mb-1"><i
+                                        class="bi bi-bar-chart"></i>
+                                Попыток: <span
+                                        class="fw-semibold">
                                                                                             <%= u.attemptsCount %>
                                                                                         </span></div>
-                                                                                    <div><i class="bi bi-star"></i>
-                                                                                        Баллов: <span
-                                                                                            class="fw-semibold">
+                            <div><i class="bi bi-star"></i>
+                                Баллов: <span
+                                        class="fw-semibold">
                                                                                             <%= u.totalScore %>
                                                                                         </span></div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <% }) %>
-                                                                </div>
-                                                            </section>
-                                                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+<% } %>
 
-                                                                <!-- Toast container -->
-                                                                <div id="toast-container"
-                                                                    style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;">
-                                                                </div>
+<!-- Toast container -->
+<div id="toast-container"
+     style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;">
+</div>
 
-                                                                <style>
-                                                                    .kpi-card:hover {
-                                                                        transform: translateY(-2px);
-                                                                        transition: .15s;
-                                                                    }
+<style>
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        transition: .15s;
+    }
 
-                                                                    .kpi-icon {
-                                                                        width: 48px;
-                                                                        height: 48px;
-                                                                        border-radius: 50%;
-                                                                        display: flex;
-                                                                        align-items: center;
-                                                                        justify-content: center;
-                                                                        color: #fff;
-                                                                        font-size: 1.35rem;
-                                                                    }
+    .kpi-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.35rem;
+    }
 
-                                                                    .quiz-highlight-card {
-                                                                        transition: box-shadow .2s, transform .2s;
-                                                                        border-radius: 1rem;
-                                                                    }
+    .quiz-highlight-card {
+        transition: box-shadow .2s, transform .2s;
+        border-radius: 1rem;
+    }
 
-                                                                    .quiz-highlight-card:hover {
-                                                                        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.10);
-                                                                        transform: translateY(-4px) scale(1.02);
-                                                                    }
+    .quiz-highlight-card:hover {
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.10);
+        transform: translateY(-4px) scale(1.02);
+    }
 
-                                                                    .quiz-highlight-card .card-img-top {
-                                                                        border-top-left-radius: 1rem;
-                                                                        border-top-right-radius: 1rem;
-                                                                    }
+    .quiz-highlight-card .card-img-top {
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
 
-                                                                    .random-quiz-btn {
-                                                                        font-size: 1.2rem;
-                                                                        padding: 0.75rem 2.5rem;
-                                                                        border-radius: 2rem;
-                                                                        font-weight: 600;
-                                                                        box-shadow: 0 0.25rem 0.75rem rgba(255, 193, 7, 0.10);
-                                                                        transition: background .15s, box-shadow .15s, transform .15s;
-                                                                    }
+    .random-quiz-btn {
+        font-size: 1.2rem;
+        padding: 0.75rem 2.5rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        box-shadow: 0 0.25rem 0.75rem rgba(255, 193, 7, 0.10);
+        transition: background .15s, box-shadow .15s, transform .15s;
+    }
 
-                                                                    .random-quiz-btn:hover {
-                                                                        background: #ffc107cc;
-                                                                        box-shadow: 0 0.5rem 1.5rem rgba(255, 193, 7, 0.15);
-                                                                        transform: translateY(-2px) scale(1.04);
-                                                                    }
+    .random-quiz-btn:hover {
+        background: #ffc107cc;
+        box-shadow: 0 0.5rem 1.5rem rgba(255, 193, 7, 0.15);
+        transform: translateY(-2px) scale(1.04);
+    }
 
-                                                                    .activity-feed .list-group-item {
-                                                                        border: none;
-                                                                        border-bottom: 1px solid #f0f0f0;
-                                                                        font-size: 1.05rem;
-                                                                        background: #fcfcfc;
-                                                                    }
+    .activity-feed .list-group-item {
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 1.05rem;
+        background: #fcfcfc;
+    }
 
-                                                                    .activity-feed .list-group-item:last-child {
-                                                                        border-bottom: none;
-                                                                    }
+    .activity-feed .list-group-item:last-child {
+        border-bottom: none;
+    }
 
-                                                                    .top-user-card {
-                                                                        border-radius: 1rem;
-                                                                        background: linear-gradient(135deg, #f8fff8 0%, #e6f9f6 100%);
-                                                                        transition: box-shadow .2s, transform .2s;
-                                                                    }
+    .top-user-card {
+        border-radius: 1rem;
+        background: linear-gradient(135deg, #f8fff8 0%, #e6f9f6 100%);
+        transition: box-shadow .2s, transform .2s;
+    }
 
-                                                                    .top-user-card:hover {
-                                                                        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.10);
-                                                                        transform: translateY(-4px) scale(1.02);
-                                                                    }
+    .top-user-card:hover {
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.10);
+        transform: translateY(-4px) scale(1.02);
+    }
 
-                                                                    /* --- KPI Cards Mobile Fix --- */
-                                                                    @media (max-width: 575.98px) {
-                                                                        .kpi-card .card-body {
-                                                                            gap: 0.75rem !important;
-                                                                            padding: 0.75rem 0.5rem !important;
-                                                                        }
+    /* --- KPI Cards Mobile Fix --- */
+    @media (max-width: 575.98px) {
+        .kpi-card .card-body {
+            gap: 0.75rem !important;
+            padding: 0.75rem 0.5rem !important;
+        }
 
-                                                                        .kpi-icon {
-                                                                            width: 36px !important;
-                                                                            height: 36px !important;
-                                                                            font-size: 1rem !important;
-                                                                        }
+        .kpi-icon {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 1rem !important;
+        }
 
-                                                                        .kpi-card .fs-4 {
-                                                                            font-size: 1.1rem !important;
-                                                                        }
-                                                                    }
-                                                                </style>
+        .kpi-card .fs-4 {
+            font-size: 1.1rem !important;
+        }
+    }
+</style>

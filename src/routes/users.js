@@ -1,26 +1,18 @@
 ﻿import {Router} from 'express';
 import {body} from 'express-validator';
 import {ensureAuthenticated, requireOwnerOrAdminForProfile} from '../middleware/auth.js';
-import {requireOwnerOrAdmin} from '../middleware/auth.js';
 import * as UC from '../controllers/userController.js';
 
 const router = Router();
 
-// свой профиль (alias)
 router.get('/profile', ensureAuthenticated, UC.showOwnProfile);
-
-// чужой профиль
 router.get('/user/:id', ensureAuthenticated, UC.showUserProfile);
-
-// GET форма редактирования
 router.get(
     '/user/:id/edit',
     ensureAuthenticated,
     requireOwnerOrAdminForProfile,
     UC.showEditForm
 );
-
-// PUT обновление (password optional)
 router.put(
     '/user/:id',
     ensureAuthenticated,

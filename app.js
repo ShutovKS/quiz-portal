@@ -7,9 +7,9 @@ import flash from 'connect-flash';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 
-import { connectDB } from './src/config/db.js';
+import {connectDB} from './src/config/db.js';
 import indexRouter from './src/routes/index.js';
 import passport from './src/config/passport.js';
 
@@ -26,7 +26,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // — Логирование запросов
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+} else {
+    app.use(morgan('dev'));
+}
 
 // — Layouts для EJS
 app.set('views', path.join(__dirname, 'src', 'views'));
@@ -44,7 +48,7 @@ app.use((req, res, next) => {
 });
 
 // — Парсинг тела запросов
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 // — Method-override для PUT/DELETE из форм
@@ -56,7 +60,7 @@ app.use(session({
     resave: false,
     async: true,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    store: MongoStore.create({mongoUrl: process.env.MONGO_URI}),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,   // 1 день
         httpOnly: true,

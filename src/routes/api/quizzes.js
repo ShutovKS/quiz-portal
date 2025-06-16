@@ -1,6 +1,6 @@
 ﻿// src/routes/api/quizzes.js
 import {Router} from 'express';
-import {ensureAuthenticated, requireAdmin} from '../../middleware/auth.js';
+import {ensureAuthenticated} from '../../middleware/auth.js';
 import * as C from '../../controllers/api/quizzesController.js';
 import * as questionsC from '../../controllers/api/questionsController.js';
 

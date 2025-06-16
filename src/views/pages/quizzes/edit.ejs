@@ -1,126 +1,129 @@
 ﻿<div class="container my-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-lg-10 col-xl-8">
-      <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body p-4 p-sm-5">
-          <h1 class="h4 mb-4">Редактировать квиз</h1>
-          <%- include('../../partials/flash') %>
-            <form action="/quizzes/<%= quiz._id %>/edit" method="POST" class="needs-validation" novalidate>
-              <div class="form-floating mb-3">
-                <input id="title" name="title" type="text" class="form-control" placeholder="Название"
-                  value="<%= quiz.title %>" required>
-                <label for="title">Название</label>
-                <div class="invalid-feedback">Нужно название.</div>
-              </div>
-              <div class="form-floating mb-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4 p-sm-5">
+                    <h1 class="h4 mb-4">Редактировать квиз</h1>
+                    <%- include('../../partials/flash') %>
+                    <form action="/quizzes/<%= quiz._id %>/edit" method="POST" class="needs-validation" novalidate>
+                        <div class="form-floating mb-3">
+                            <input id="title" name="title" type="text" class="form-control" placeholder="Название"
+                                   value="<%= quiz.title %>" required>
+                            <label for="title">Название</label>
+                            <div class="invalid-feedback">Нужно название.</div>
+                        </div>
+                        <div class="form-floating mb-4">
                 <textarea id="description" name="description" class="form-control" style="height: 120px"
-                  placeholder="Описание"><%= quiz.description %></textarea>
-                <label for="description">Описание</label>
-              </div>
-              <div class="form-check form-switch mb-4">
-                <input class="form-check-input" type="checkbox" role="switch" id="isPublic" name="isPublic"
-                  <%=quiz.isPublic ? 'checked' : '' %>>
-                <label class="form-check-label" for="isPublic">Сделать публичным</label>
-              </div>
-              <div class="mb-4">
-                <label for="categories" class="form-label">Категории</label>
-                <select id="categories" name="categories" class="form-select" multiple>
-                  <% categories.forEach(cat=> { %>
-                    <option value="<%= cat._id %>" <%=quiz.categories && quiz.categories.includes(cat._id) ? 'selected'
-                      : '' %>><%= cat.name %>
-                    </option>
-                    <% }) %>
-                </select>
-                <div class="form-text">Можно выбрать одну или несколько категорий</div>
-              </div>
-              <button class="btn btn-primary w-100 mb-2" type="submit">Сохранить квиз</button>
-            </form>
-        </div>
-      </div>
+                          placeholder="Описание"><%= quiz.description %></textarea>
+                            <label for="description">Описание</label>
+                        </div>
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch" id="isPublic" name="isPublic"
+                                    <%= quiz.isPublic ? 'checked' : '' %>>
+                            <label class="form-check-label" for="isPublic">Сделать публичным</label>
+                        </div>
+                        <div class="mb-4">
+                            <label for="categories" class="form-label">Категории</label>
+                            <select id="categories" name="categories" class="form-select" multiple>
+                                <% categories.forEach(cat=> { %>
+                                    <option value="<%= cat._id %>" <%= quiz.categories && quiz.categories.includes(cat._id) ? 'selected'
+                                            : '' %>><%= cat.name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                            <div class="form-text">Можно выбрать одну или несколько категорий</div>
+                        </div>
+                        <button class="btn btn-primary w-100 mb-2" type="submit">Сохранить квиз</button>
+                    </form>
+                </div>
+            </div>
 
-      <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
-        <h2 class="h5 mb-0">Вопросы</h2>
-        <button class="btn btn-outline-primary" id="addQuestionBtn"><i class="bi bi-plus-lg me-1"></i>Добавить
-          вопрос</button>
-      </div>
+            <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+                <h2 class="h5 mb-0">Вопросы</h2>
+                <button class="btn btn-outline-primary" id="addQuestionBtn"><i class="bi bi-plus-lg me-1"></i>Добавить
+                    вопрос
+                </button>
+            </div>
 
-      <div id="questionsList">
-        <% questions.forEach((q, i)=> { %>
-          <div class="card mb-3 question-card" data-question-id="<%= q._id %>">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
+            <div id="questionsList">
+                <% questions.forEach((q, i)=> { %>
+                    <div class="card mb-3 question-card" data-question-id="<%= q._id %>">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
                   <span class="badge bg-secondary me-2">
                     <%= i + 1 %>
                   </span>
-                  <span class="fw-semibold">
+                                    <span class="fw-semibold">
                     <%= q.text %>
                   </span>
-                  <span class="badge bg-light text-dark ms-2">
-                    <%= q.type==='single' ? 'Один вариант' : (q.type==='multiple' ? 'Несколько вариантов' :
-                      (q.type==='truefalse' ? 'Верно/Неверно' : 'Текст' )) %>
+                                    <span class="badge bg-light text-dark ms-2">
+                    <%= q.type === 'single' ? 'Один вариант' : (q.type === 'multiple' ? 'Несколько вариантов' :
+                            (q.type === 'truefalse' ? 'Верно/Неверно' : 'Текст')) %>
                   </span>
-                </div>
-                <div class="d-flex gap-2">
-                  <button class="btn btn-sm btn-outline-danger delete-question-btn" data-question-id="<%= q._id %>"
-                    data-quiz-id="<%= quiz._id %>"><i class="bi bi-trash"></i></button>
-                </div>
-              </div>
-              <% if (q.type==='single' || q.type==='multiple' || q.type==='truefalse' ) { %>
-                <ul class="list-group list-group-flush">
-                  <% q.options.forEach((opt, j)=> { %>
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-danger delete-question-btn"
+                                            data-question-id="<%= q._id %>"
+                                            data-quiz-id="<%= quiz._id %>"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                            <% if (q.type === 'single' || q.type === 'multiple' || q.type === 'truefalse' ) { %>
+                                <ul class="list-group list-group-flush">
+                                    <% q.options.forEach((opt, j)=> { %>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                       <span>
                         <%= opt.text %>
                       </span>
-                      <% if (opt.isCorrect) { %>
-                        <span class="badge bg-success">Правильный</span>
-                        <% } %>
-                    </li>
-                    <% }) %>
-                </ul>
-                <% } else if (q.type==='text' ) { %>
-                  <div class="mt-2"><span class="text-muted">Правильный ответ:</span> <span class="fw-semibold">
+                                            <% if (opt.isCorrect) { %>
+                                                <span class="badge bg-success">Правильный</span>
+                                            <% } %>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            <% } else if (q.type === 'text' ) { %>
+                                <div class="mt-2"><span class="text-muted">Правильный ответ:</span> <span
+                                            class="fw-semibold">
                       <%= q.options[0]?.text %>
                     </span></div>
-                  <% } %>
+                            <% } %>
+                        </div>
+                    </div>
+                <% }) %>
             </div>
-          </div>
-          <% }) %>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Модальное окно для добавления/редактирования вопроса -->
 <div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="questionModalLabel">Вопрос</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-      </div>
-      <div class="modal-body">
-        <%- include('../../partials/questionForm', { quizId: quiz._id, question: {} }) %>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionModalLabel">Вопрос</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <%- include('../../partials/questionForm', { quizId: quiz._id, question: {} }) %>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Toast container -->
 <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 1080;"></div>
 
 <!-- select2 -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    $('#categories').select2({
-      placeholder: 'Выберите категории',
-      allowClear: true,
-      width: '100%'
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#categories').select2({
+            placeholder: 'Выберите категории',
+            allowClear: true,
+            width: '100%'
+        });
     });
-  });
 </script>
 
 <script src="/javascripts/quiz-edit.js"></script>

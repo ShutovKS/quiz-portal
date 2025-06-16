@@ -4,54 +4,54 @@
             <h1 class="h4 text-center mb-4">Редактировать профиль</h1>
             <%- include('../../partials/flash') %>
 
-                <form action="/user/<%= currentUser._id %>?_method=PUT" method="POST" class="needs-validation"
-                    novalidate>
+            <form action="/user/<%= currentUser._id %>?_method=PUT" method="POST" class="needs-validation"
+                  novalidate>
 
-                    <!-- name -->
-                    <div class="form-floating mb-3">
-                        <input id="name" name="name" type="text" class="form-control" placeholder="Имя"
-                            value="<%= currentUser.name %>" required>
-                        <label for="name"><i class="bi bi-person me-1"></i>Имя</label>
-                        <div class="invalid-feedback">Имя не может быть пустым.</div>
-                    </div>
+                <!-- name -->
+                <div class="form-floating mb-3">
+                    <input id="name" name="name" type="text" class="form-control" placeholder="Имя"
+                           value="<%= currentUser.name %>" required>
+                    <label for="name"><i class="bi bi-person me-1"></i>Имя</label>
+                    <div class="invalid-feedback">Имя не может быть пустым.</div>
+                </div>
 
-                    <!-- email -->
-                    <div class="form-floating mb-4">
-                        <input id="email" name="email" type="email" class="form-control" placeholder="name@example.com"
-                            value="<%= currentUser.email %>" required>
-                        <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
-                        <div class="invalid-feedback">Валидный email, плиз.</div>
-                    </div>
+                <!-- email -->
+                <div class="form-floating mb-4">
+                    <input id="email" name="email" type="email" class="form-control" placeholder="name@example.com"
+                           value="<%= currentUser.email %>" required>
+                    <label for="email"><i class="bi bi-envelope me-1"></i>Email</label>
+                    <div class="invalid-feedback">Валидный email, плиз.</div>
+                </div>
 
-                    <!-- divider -->
-                    <h6 class="text-uppercase text-muted small mb-3">Сменить пароль (необязательно)</h6>
+                <!-- divider -->
+                <h6 class="text-uppercase text-muted small mb-3">Сменить пароль (необязательно)</h6>
 
-                    <!-- new password -->
-                    <div class="form-floating mb-3 position-relative">
-                        <input id="newPassword" name="newPassword" type="password" class="form-control"
-                            placeholder="Новый пароль" minlength="6">
-                        <label for="newPassword"><i class="bi bi-lock me-1"></i>Новый пароль</label>
-                        <button type="button"
+                <!-- new password -->
+                <div class="form-floating mb-3 position-relative">
+                    <input id="newPassword" name="newPassword" type="password" class="form-control"
+                           placeholder="Новый пароль" minlength="6">
+                    <label for="newPassword"><i class="bi bi-lock me-1"></i>Новый пароль</label>
+                    <button type="button"
                             class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <div class="invalid-feedback">Мин. 6 символов.</div>
-                    </div>
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="invalid-feedback">Мин. 6 символов.</div>
+                </div>
 
-                    <!-- confirm -->
-                    <div class="form-floating mb-4 position-relative">
-                        <input id="newPassword2" name="newPassword2" type="password" class="form-control"
-                            placeholder="Повторите пароль">
-                        <label for="newPassword2"><i class="bi bi-check2-square me-1"></i>Повторите пароль</label>
-                        <button type="button"
+                <!-- confirm -->
+                <div class="form-floating mb-4 position-relative">
+                    <input id="newPassword2" name="newPassword2" type="password" class="form-control"
+                           placeholder="Повторите пароль">
+                    <label for="newPassword2"><i class="bi bi-check2-square me-1"></i>Повторите пароль</label>
+                    <button type="button"
                             class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y toggle-pass">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <div class="invalid-feedback">Пароли должны совпадать.</div>
-                    </div>
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <div class="invalid-feedback">Пароли должны совпадать.</div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Сохранить&nbsp;изменения</button>
-                </form>
+                <button type="submit" class="btn btn-primary w-100">Сохранить&nbsp;изменения</button>
+            </form>
         </div>
     </div>
 </div>

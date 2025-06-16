@@ -26,7 +26,7 @@ router.get('/login', C.showLoginForm);
 
 // POST /login
 router.post('/login', (req, res, next) => {
-    req.flash('oldData', { email: req.body.email });
+    req.flash('oldData', {email: req.body.email});
     passport.authenticate('local', {
         successRedirect: '/profile',
         failureRedirect: '/login',

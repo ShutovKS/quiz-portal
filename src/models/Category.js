@@ -9,7 +9,6 @@ const categorySchema = new Schema({
     slug: {type: String, unique: true, index: true}
 }, {timestamps: true});
 
-/* генерим slug автоматически */
 categorySchema.pre('save', function (next) {
     if (!this.isModified('name')) return next();
     this.slug = slugify(this.name, {lower: true, strict: true});

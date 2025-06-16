@@ -162,6 +162,7 @@ a:hover, .btn-link:hover {
     color: var(--brand-mint-900);
     text-decoration: none;
 }
+
 a:focus, .btn-link:focus {
     outline: none;
     box-shadow: 0 0 0 .2rem var(--bs-focus-ring-color);
@@ -182,21 +183,23 @@ a:focus, .btn-link:focus {
 
 /* quiz-card */
 .quiz-card {
-    transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s, border 0.18s;
+    transition: transform 0.18s cubic-bezier(.4, 2, .6, 1), box-shadow 0.18s, border 0.18s;
     border: 2px solid transparent;
     background-clip: padding-box;
     position: relative;
     z-index: 1;
 }
+
 .quiz-card:hover, .quiz-card:focus-within {
     transform: translateY(-8px) scale(1.035) rotate(-0.5deg);
-    box-shadow: 0 8px 32px rgba(99,192,99,0.18), 0 2px 8px rgba(99,192,99,0.10);
+    box-shadow: 0 8px 32px rgba(99, 192, 99, 0.18), 0 2px 8px rgba(99, 192, 99, 0.10);
     border-image: linear-gradient(135deg, var(--brand-mint-300), var(--brand-mint-700)) 1;
     border-radius: 1.25rem;
 }
+
 .quiz-card:active {
     transform: scale(0.98) translateY(2px);
-    box-shadow: 0 2px 8px rgba(99,192,99,0.10);
+    box-shadow: 0 2px 8px rgba(99, 192, 99, 0.10);
 }
 
 .quiz-card img {
@@ -239,6 +242,7 @@ input:focus, textarea:focus, select:focus {
     box-shadow: 0 0 0 .2rem var(--bs-focus-ring-color) !important;
     outline: none !important;
 }
+
 input:disabled, textarea:disabled, select:disabled {
     background: var(--brand-mint-100) !important;
     color: var(--brand-mint-300) !important;
@@ -251,27 +255,33 @@ input:disabled, textarea:disabled, select:disabled {
     color: var(--brand-mint-900);
     border-color: var(--brand-mint-300);
 }
+
 .badge-primary {
     background: var(--brand-mint-700);
     color: #fff;
 }
+
 .progress-bar {
     background: var(--brand-mint-700);
 }
+
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     background: var(--brand-mint-700);
     color: #fff;
 }
+
 .pagination .page-link {
     color: var(--brand-mint-700);
     border-color: var(--brand-mint-300);
     transition: background 0.15s, color 0.15s;
 }
+
 .pagination .page-link:hover, .pagination .page-link:focus {
     background: var(--brand-mint-100);
     color: var(--brand-mint-900);
     border-color: var(--brand-mint-700);
 }
+
 .pagination .active .page-link {
     background: var(--brand-mint-700);
     border-color: var(--brand-mint-700);
@@ -289,15 +299,17 @@ button, .btn, a, input, select, textarea {
     color: var(--bs-body-color);
     border-radius: 1.25rem;
     border: none;
-    box-shadow: 0 1.5rem 3rem rgba(99,192,99,0.10), 0 0.5rem 1rem rgba(46,130,50,0.08);
+    box-shadow: 0 1.5rem 3rem rgba(99, 192, 99, 0.10), 0 0.5rem 1rem rgba(46, 130, 50, 0.08);
     padding: 0.5rem 0;
-    animation: modalPop .25s cubic-bezier(.4,2,.6,1) both;
+    animation: modalPop .25s cubic-bezier(.4, 2, .6, 1) both;
 }
+
 .modal-custom-mint .modal-header {
     border: none;
     background: transparent;
     align-items: center;
 }
+
 .modal-custom-mint .modal-title {
     color: var(--brand-mint-900);
     font-weight: 600;
@@ -305,21 +317,31 @@ button, .btn, a, input, select, textarea {
     align-items: center;
     gap: 0.5rem;
 }
+
 .modal-custom-mint .modal-body {
     background: transparent;
     color: var(--bs-body-color);
     font-size: 1.05rem;
 }
+
 .modal-custom-mint .modal-footer {
     border: none;
     background: transparent;
     justify-content: flex-end;
     gap: 0.5rem;
 }
+
 @keyframes modalPop {
-    0% { transform: scale(.95) translateY(20px); opacity: 0; }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
+    0% {
+        transform: scale(.95) translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
 }
+
 .modal-custom-mint .btn-close {
     filter: none;
     background: none;
@@ -329,15 +351,18 @@ button, .btn, a, input, select, textarea {
 .table {
     border-radius: 1rem;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(99,192,99,0.06);
+    box-shadow: 0 2px 8px rgba(99, 192, 99, 0.06);
 }
+
 .table-striped > tbody > tr:nth-of-type(odd) {
     background-color: var(--brand-mint-100);
 }
+
 .table-hover > tbody > tr:hover {
     background-color: var(--brand-mint-300);
     transition: background 0.2s;
 }
+
 .table th, .table td {
     vertical-align: middle;
 }
@@ -347,19 +372,23 @@ button, .btn, a, input, select, textarea {
     border-radius: 0.7rem !important;
     font-weight: 500;
     letter-spacing: 0.01em;
-    box-shadow: 0 2px 8px rgba(99,192,99,0.04);
+    box-shadow: 0 2px 8px rgba(99, 192, 99, 0.04);
     transition: box-shadow 0.15s, background 0.15s, color 0.15s;
 }
+
 .btn-primary, .btn-outline-primary {
-    box-shadow: 0 2px 8px rgba(99,192,99,0.10);
+    box-shadow: 0 2px 8px rgba(99, 192, 99, 0.10);
 }
+
 .btn-primary:hover, .btn-outline-primary:hover {
-    box-shadow: 0 4px 16px rgba(99,192,99,0.18);
+    box-shadow: 0 4px 16px rgba(99, 192, 99, 0.18);
 }
+
 .btn-danger {
     background: #ff6b6b !important;
     border-color: #ff6b6b !important;
 }
+
 .btn-danger:hover {
     background: #ff3b3b !important;
     border-color: #ff3b3b !important;
@@ -382,8 +411,11 @@ button, .btn, a, input, select, textarea {
     margin: 2rem auto;
     display: block;
 }
+
 @keyframes mintSpin {
-    100% { transform: rotate(360deg); }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* ===== TOASTS ===== */
@@ -391,7 +423,7 @@ button, .btn, a, input, select, textarea {
     background: var(--brand-mint-grad-main);
     color: var(--brand-mint-900);
     border-radius: 1rem;
-    box-shadow: 0 4px 24px rgba(99,192,99,0.10);
+    box-shadow: 0 4px 24px rgba(99, 192, 99, 0.10);
     border: none;
     min-width: 220px;
     font-weight: 500;
@@ -401,13 +433,16 @@ button, .btn, a, input, select, textarea {
     gap: 0.75rem;
     font-size: 1.05rem;
 }
+
 .toast-mint .bi {
     font-size: 1.3em;
 }
+
 .toast-mint-success {
     background: var(--brand-mint-grad-light);
     color: var(--brand-mint-900);
 }
+
 .toast-mint-error {
     background: linear-gradient(135deg, #ffeaea 0%, #ff6b6b 100%);
     color: #b10000;
@@ -424,9 +459,11 @@ button, .btn, a, input, select, textarea {
     font-size: 1.15em;
     margin-right: 0.25rem;
 }
+
 .admin-action-btns .btn-sm:last-child {
     margin-right: 0;
 }
+
 .admin-action-btns i.bi {
     font-size: 1.15em;
 }

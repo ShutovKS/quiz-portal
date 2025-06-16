@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import quizzesRouter from './quizzes.js';
 import questionsRouter from './questions.js';
-import { importQuizFromJsonApi } from '../../controllers/adminController.js';
+import {importQuizFromJsonApi} from '../../controllers/adminController.js';
 
 const router = Router();
 

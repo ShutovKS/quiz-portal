@@ -18,10 +18,10 @@ const quizSchema = {
     "type": "object",
     "required": ["title", "description", "userEmail", "questions"],
     "properties": {
-        "title": { "type": "string", "minLength": 1 },
-        "description": { "type": "string", "minLength": 1 },
-        "userEmail": { "type": "string", "format": "email" },
-        "isPublic": { "type": "boolean", "default": true },
+        "title": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "userEmail": {"type": "string", "format": "email"},
+        "isPublic": {"type": "boolean", "default": true},
         "questions": {
             "type": "array",
             "minItems": 1,
@@ -29,8 +29,8 @@ const quizSchema = {
                 "type": "object",
                 "required": ["text", "type", "options"],
                 "properties": {
-                    "text": { "type": "string", "minLength": 1 },
-                    "type": { "type": "string", "enum": ["single", "multiple", "truefalse"] },
+                    "text": {"type": "string", "minLength": 1},
+                    "type": {"type": "string", "enum": ["single", "multiple", "truefalse"]},
                     "options": {
                         "type": "array",
                         "minItems": 2,
@@ -38,8 +38,8 @@ const quizSchema = {
                             "type": "object",
                             "required": ["text", "isCorrect"],
                             "properties": {
-                                "text": { "type": "string", "minLength": 1 },
-                                "isCorrect": { "type": "boolean" }
+                                "text": {"type": "string", "minLength": 1},
+                                "isCorrect": {"type": "boolean"}
                             }
                         }
                     }
@@ -59,7 +59,7 @@ async function main() {
         console.error(`❌ Не удалось прочитать папку с квизами: ${QUIZZES_DIR}`);
         process.exit(1);
     }
-    const ajv = new Ajv({ allErrors: true });
+    const ajv = new Ajv({allErrors: true});
     const validate = ajv.compile(quizSchema);
 
     let success = 0, fail = 0;
@@ -74,7 +74,7 @@ async function main() {
                 fail++;
                 continue;
             }
-            const user = await User.findOne({ email: data.userEmail });
+            const user = await User.findOne({email: data.userEmail});
             if (!user) {
                 console.error(`❌ ${file}: Пользователь не найден: ${data.userEmail}`);
                 fail++;
