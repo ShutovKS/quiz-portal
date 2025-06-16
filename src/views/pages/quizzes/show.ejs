@@ -5,6 +5,13 @@
     </div>
 </div>
 
+<% if (!currentUser) { %>
+    <div class="alert alert-warning" role="alert">
+        Для просмотра результатов прохождения квиза необходима авторизация на сайте.
+        <a href="/login" class="alert-link">Войти</a> или <a href="/register" class="alert-link">Зарегистрироваться</a>
+    </div>
+<% } %>
+
 <h1 class="h4 mb-2 fw-semibold">
     <%= quiz.title %>
 </h1>
