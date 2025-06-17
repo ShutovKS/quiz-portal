@@ -31,6 +31,8 @@
                 <td class="text-center">
                     <% if (u.role === 'admin' ) { %>
                         <span class="badge bg-danger"><i class="bi bi-shield-lock"></i> admin</span>
+                    <% } else if (u.role === 'ban') { %>
+                        <span class="badge bg-warning"><i class="bi bi-ban"></i> ban</span>
                     <% } else { %>
                         <span class="badge bg-secondary">user</span>
                     <% } %>
@@ -40,6 +42,13 @@
                 <td class="text-end">
                     <% if (!u._id.equals(currentUser._id)) { %>
                         <div class="admin-action-btns d-inline">
+                            <form action="/admin/users/<%= u._id %>/toggle-ban" method="POST"
+                                  class="d-inline">
+                                <button class="btn btn-sm btn-outline-warning me-1"
+                                        title="<%= u.role === 'ban' ? 'Разблокировать' : 'Заблокировать' %>">
+                                    <i class="bi bi-ban"></i>
+                                </button>
+                            </form>
                             <form action="/admin/users/<%= u._id %>/toggle-admin" method="POST"
                                   class="d-inline">
                                 <button class="btn btn-sm btn-outline-secondary me-1"

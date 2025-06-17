@@ -1,11 +1,8 @@
-﻿<% /*=========QUIZ CARD=========* req.vars: * quiz – объект Quiz (обяз.) * currentUser – для прав (не обяз.) * showDesc
-    – false ▸ прячет описание (опц.) * showActions – false ▸ убирает edit/del (опц.) */ %>
-<% const _showDesc = (typeof showDesc === 'undefined') ? true : showDesc; %>
+﻿<% const _showDesc = (typeof showDesc === 'undefined') ? true : showDesc; %>
 <% const _showActions = (typeof showActions === 'undefined') ? true : showActions; %>
 <% const canEdit = currentUser && (currentUser._id.equals(quiz.user?._id) || currentUser.role === 'admin'); %>
 
 <div class="col">
-    <% /* TODO: Add CSS for .quiz-card-hover to a stylesheet to enable hover effects */ %>
     <div class="card quiz-card quiz-card-hover h-100 border-0 shadow-sm">
         <!-- cover -->
         <img src="<%= quiz.cover || '/images/quiz-placeholder.svg' %>" class="card-img-top"

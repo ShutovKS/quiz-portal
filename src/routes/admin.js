@@ -13,6 +13,7 @@ router.get('/', C.showDashboard);
 router.get('/users', C.listUsers);
 router.delete('/users/:id', C.deleteUser);
 router.post('/users/:id/toggle-admin', C.toggleAdmin);
+router.post('/users/:id/toggle-ban', C.toggleBan);
 
 // Квизы
 router.get('/quizzes', C.listQuizzes);

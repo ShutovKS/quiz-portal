@@ -8,7 +8,7 @@ export function ensureAuthenticated(req, res, next) {
 export function requireAdmin(req, res, next) {
     if (!req.isAuthenticated() || req.user.role !== 'admin') {
         console.log('User is not admin or not logged in', req.user);
-        return res.status(404).render('pages/404', {title: '404', layout: false});
+        return res.status(404).render('pages/404', { title: '404', layout: false });
     }
     next();
 }
@@ -24,7 +24,6 @@ export function requireOwnerOrAdminForProfile(req, res, next) {
 
 export function requireOwnerOrAdmin(modelName) {
     return async (req, res, next) => {
-
         const module = await import(`../models/${modelName}.js`);
         const Model = module.default;
         const id = req.params.id || req.params.quizId;
@@ -37,3 +36,14 @@ export function requireOwnerOrAdmin(modelName) {
         next();
     };
 }
+
+export const checkNotBanned = (req, res, next) => {
+    if (req.user && req.user.role === 'ban') {
+        req.logout(err => {
+            if (err) return next(err);
+            req.flash('error', 'Ваш аккаунт заблокирован');
+            res.redirect('/login');
+        });
+    }
+    next();
+};

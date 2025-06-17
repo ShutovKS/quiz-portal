@@ -1,7 +1,5 @@
 // public/javascripts/quiz-edit.js
-// Логика для страницы редактирования квиза и вопросов
 
-// Bootstrap modal
 let questionModal;
 document.addEventListener('DOMContentLoaded', function () {
     // Инициализация Bootstrap Modal

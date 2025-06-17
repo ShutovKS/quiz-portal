@@ -105,7 +105,7 @@ export const deleteUser = async (req, res) => {
     res.redirect('/admin/users');
 };
 
-/** ===== PATCH /admin/users/:id/toggle ===== */
+/** ===== PATCH /admin/users/:id/toggle-admin ===== */
 export const toggleAdmin = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -113,6 +113,19 @@ export const toggleAdmin = async (req, res) => {
         return res.redirect('/admin/users');
     }
     user.role = user.role === 'admin' ? 'user' : 'admin';
+    await user.save();
+    req.flash('success', `Роль пользователя "${user.name}" теперь "${user.role}"`);
+    res.redirect('/admin/users');
+};
+
+/** ===== PATCH /admin/users/:id/toggle-ban ===== */
+export const toggleBan = async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        req.flash('error', 'Пользователь не найден');
+        return res.redirect('/admin/users');
+    }
+    user.role = user.role === 'ban' ? 'user' : 'ban';
     await user.save();
     req.flash('success', `Роль пользователя "${user.name}" теперь "${user.role}"`);
     res.redirect('/admin/users');

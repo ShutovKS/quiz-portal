@@ -1,18 +1,22 @@
 ﻿// src/config/passport.js
 import passport from 'passport';
-import {Strategy as LocalStrategy} from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
 import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 
 passport.use(new LocalStrategy(
-    {usernameField: 'email', passwordField: 'password'},
+    { usernameField: 'email', passwordField: 'password' },
     async (email, password, done) => {
         try {
-            const user = await User.findOne({email: email.toLowerCase()});
-            if (!user) return done(null, false, {message: 'Неверный email'});
+            const user = await User.findOne({ email: email.toLowerCase() });
+            if (!user) return done(null, false, { message: 'Неверный email' });
+
+            if (user.role === 'ban') {
+                return done(null, false, { message: 'Ваш аккаунт заблокирован' });
+            }
 
             const ok = await bcrypt.compare(password, user.passwordHash);
-            if (!ok) return done(null, false, {message: 'Неверный пароль'});
+            if (!ok) return done(null, false, { message: 'Неверный пароль' });
 
             return done(null, user);
         } catch (err) {

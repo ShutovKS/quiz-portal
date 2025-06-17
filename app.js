@@ -12,6 +12,7 @@ import {fileURLToPath} from 'url';
 import {connectDB} from './src/config/db.js';
 import indexRouter from './src/routes/index.js';
 import passport from './src/config/passport.js';
+import {checkNotBanned} from './src/middleware/auth.js';
 
 // эмуляция __dirname/__filename
 const __filename = fileURLToPath(import.meta.url);
@@ -74,6 +75,8 @@ app.use(passport.session());
 
 // — Flash-сообщения (через сессии)
 app.use(flash());
+
+app.use(checkNotBanned);
 
 // — Прокинуть в locals, чтобы в любом шаблоне был доступ
 app.use((req, res, next) => {
